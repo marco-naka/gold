@@ -146,10 +146,17 @@ nella route.
 | Hashtag | `#PayCryptoWinGold` `#LuganoPlanB` `#Naka` |
 | Piattaforme | Instagram, Facebook, TikTok, LinkedIn (su LinkedIn si può taggare la pagina NAKA) |
 | Annuncio ufficiale | [LinkedIn NAKA](https://www.linkedin.com/company/nakafinances/) |
-| Assistenza merchant | `assistenza@naka.com` · telefono **da configurare** in `CONTEST.merchantSupportPhone` |
+| Assistenza merchant | `assistenza@naka.com` · tel. 091 222 02 00 · WhatsApp 077 991 65 87 |
 
-Il telefono è volutamente vuoto: la riga compare solo quando è valorizzato, così non si pubblica
-un recapito inventato.
+I numeri svizzeri sono convertiti in formato internazionale nei link `tel:` e `wa.me`, così
+funzionano anche dal telefono di un visitatore straniero.
+
+**XAUT non è un metodo di pagamento**: nei dati della crypto map tutti e 336 i merchant accettano
+BTC e USDt, nessuno XAUT. Il token resta l'asset del premio. Se NAKA conferma che i POS incassano
+anche in XAUT, si rimette la voce in `PAYMENT_ASSETS` e tutti i testi si aggiornano da soli.
+
+Il premio si chiama **Best Social Content** (non più "Video"): accetta video, post e immagini.
+La pagina è `/best-social-content`, con redirect permanente dal vecchio `/best-social-video`.
 
 ## Lingue
 

@@ -72,7 +72,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                 </a>
               </li>
               <li>
-                <Link href={localePath(locale, "/best-social-video")} className="text-sm text-muted transition hover:text-gold">
+                <Link href={localePath(locale, "/best-social-content")} className="text-sm text-muted transition hover:text-gold">
                   {d.bestVideo}
                 </Link>
               </li>

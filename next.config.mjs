@@ -3,6 +3,15 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
+  // La pagina si chiamava /best-social-video: un redirect permanente evita che un link
+  // già condiviso (o stampato su un QR) finisca su un 404.
+  async redirects() {
+    return [
+      { source: '/best-social-video', destination: '/best-social-content', permanent: true },
+      { source: '/en/best-social-video', destination: '/en/best-social-content', permanent: true },
+    ];
+  },
+
   async headers() {
     return [
       {

@@ -63,8 +63,8 @@ test('ogni codice di errore ha un messaggio in entrambe le lingue', () => {
 test('i percorsi per lingua sono corretti', () => {
   assert.equal(localePath('it', '/'), '/');
   assert.equal(localePath('en', '/'), '/en');
-  assert.equal(localePath('en', '/best-social-video'), '/en/best-social-video');
-  assert.equal(localePath('it', '/best-social-video'), '/best-social-video');
+  assert.equal(localePath('en', '/best-social-content'), '/en/best-social-content');
+  assert.equal(localePath('it', '/best-social-content'), '/best-social-content');
 });
 
 test('getDictionary ricade sull’italiano per lingue sconosciute', () => {

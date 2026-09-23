@@ -6,6 +6,7 @@ import {
   Star,
   QrCode,
   Store,
+  MessageCircle,
   FileText,
   Image as ImageIcon,
   Video,
@@ -27,15 +28,24 @@ import SectionTitle from './ui/SectionTitle';
 import { NakaLogo, PlanBLogo } from './Brand';
 import Footer from './Footer';
 import LanguageSwitch from './LanguageSwitch';
-import { CONTEST, EVENT, OFFICIAL_CHANNELS, PRIZES, SOCIAL_CONTEST, formatXaut } from '@/lib/constants';
+import {
+  CONTEST,
+  EVENT,
+  OFFICIAL_CHANNELS,
+  PRIZES,
+  SOCIAL_CONTEST,
+  formatXaut,
+  toInternational,
+  whatsappUrl,
+} from '@/lib/constants';
 import { formatDate, getDictionary, localePath } from '@/lib/i18n';
 
 const STEP_ICONS = [Video, Hash, AtSign, Mail];
 
-export default function BestSocialVideo({ locale }) {
+export default function BestSocialContent({ locale }) {
   const dict = getDictionary(locale);
   const t = dict.video;
-  const prize = PRIZES.merchants.items.find((i) => i.place === 'Best Social Video');
+  const prize = PRIZES.merchants.items.find((i) => i.place === 'Best Social Content');
   const deadline = formatDate(SOCIAL_CONTEST.publishDeadline, locale);
   const specs = SOCIAL_CONTEST.specs;
 
@@ -367,10 +377,28 @@ export default function BestSocialVideo({ locale }) {
                     <dt className="text-xs text-muted">{t.support.phoneLabel}</dt>
                     <dd className="truncate text-sm font-semibold">
                       <a
-                        href={`tel:${CONTEST.merchantSupportPhone.replace(/\s/g, '')}`}
+                        href={`tel:${toInternational(CONTEST.merchantSupportPhone)}`}
                         className="text-white underline-offset-2 hover:text-gold hover:underline"
                       >
                         {CONTEST.merchantSupportPhone}
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+              )}
+              {CONTEST.merchantSupportWhatsapp && (
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                  <MessageCircle className="h-4 w-4 shrink-0 text-gold" />
+                  <div className="min-w-0">
+                    <dt className="text-xs text-muted">{t.support.whatsappLabel}</dt>
+                    <dd className="truncate text-sm font-semibold">
+                      <a
+                        href={whatsappUrl(CONTEST.merchantSupportWhatsapp)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-white underline-offset-2 hover:text-gold hover:underline"
+                      >
+                        {CONTEST.merchantSupportWhatsapp}
                       </a>
                     </dd>
                   </div>

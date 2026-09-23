@@ -2,7 +2,7 @@ import { SITE_URL } from '@/lib/site';
 
 export default function sitemap() {
   const lastModified = new Date();
-  const pages = ['', '/best-social-video'];
+  const pages = ['', '/best-social-content'];
   // Ogni pagina è dichiarata nelle due lingue con i rispettivi alternate hreflang.
   return pages.flatMap((page) =>
     ['it', 'en'].map((locale) => {
