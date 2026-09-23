@@ -134,6 +134,29 @@ rifiutata, lo scontrino già archiviato viene rimosso: niente file orfani.
 Resta da fare in produzione la verifica incrociata sul gateway POS NAKA, marcata `TODO produzione`
 nella route.
 
+## Deploy su Render
+
+Il repository contiene `render.yaml` (blueprint): su Render → **New → Blueprint** si punta alla repo
+e il servizio si crea da solo.
+
+| Voce | Valore |
+|---|---|
+| Runtime | Node 22 · `npm ci && npm run build` → `npm run start` |
+| Region | Frankfurt (il più vicino alla Svizzera) |
+| Piano | **Starter o superiore** — i dischi persistenti non esistono sul free |
+| Disco | `data`, mount su `/var/data`, 5 GB |
+| Health check | `/api/health` — verifica anche che il disco sia **scrivibile** |
+
+Variabili da impostare a mano (`sync: false` nel blueprint):
+`NEXT_PUBLIC_SITE_URL`, `MAIL_PROVIDER_API_KEY`, `MAIL_FROM`.
+
+⚠️ `DATA_DIR` deve restare uguale a `mountPath`: giocate, scontrini e outbox vivono lì. Su un piano
+senza disco il servizio parte lo stesso ma **perde tutti i dati a ogni riavvio o deploy**; il health
+check lo segnala restituendo 503.
+
+I comandi di back-office ed estrazione si eseguono dalla **Shell** del servizio Render, dove il
+disco è montato.
+
 ## Back-office giocate
 
 ```bash

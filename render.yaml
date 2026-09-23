@@ -1,0 +1,32 @@
+# Blueprint Render — https://render.com/docs/blueprint-spec
+#
+# Il disco persistente è la parte essenziale: giocate, scontrini ed email vivono su file.
+# Senza disco (piano free) il servizio riparte con i dati azzerati a ogni deploy o riavvio.
+services:
+  - type: web
+    name: naka-paga-in-crypto
+    runtime: node
+    region: frankfurt # il più vicino alla Svizzera tra quelli disponibili
+    plan: starter # i dischi richiedono almeno il piano Starter
+    branch: main
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    autoDeploy: true
+
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 5 # scontrini: ~1 MB per giocata, 5 GB coprono ampiamente l'evento
+
+    envVars:
+      - key: NODE_VERSION
+        value: 22.11.0
+      - key: DATA_DIR
+        value: /var/data # deve coincidere con mountPath
+      - key: NEXT_PUBLIC_SITE_URL
+        sync: false # impostare a mano: URL pubblico definitivo
+      - key: MAIL_PROVIDER_API_KEY
+        sync: false # chiave del provider email (Resend o compatibile)
+      - key: MAIL_FROM
+        sync: false # es. "NAKA <contest@naka.com>"

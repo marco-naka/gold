@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p ${PORT:-3000}",
     "lint": "next lint",
     "import:merchants": "node scripts/import-merchants.mjs",
     "test": "node --test \"tests/**/*.test.mjs\"",
@@ -23,5 +23,8 @@
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14"
+  },
+  "engines": {
+    "node": ">=20.9.0"
   }
 }
