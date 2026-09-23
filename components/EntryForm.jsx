@@ -41,7 +41,7 @@ export default function EntryForm({ onOpenRules }) {
   const [status, setStatus] = useState('idle'); // idle | submitting | error
   const [serverError, setServerError] = useState('');
   const [result, setResult] = useState(null);
-  const [closed, setClosed] = useState(null);
+  const [closed, setClosed] = useState(IS_DEMO ? { reason: 'demo' } : null);
   const fileInput = useRef(null);
   // Marca temporale di apertura del form: serve al controllo anti-bot lato server.
   const startedAt = useRef(0);
@@ -51,10 +51,7 @@ export default function EntryForm({ onOpenRules }) {
   // che diventerebbe sbagliato con il passare delle ore (pagina statica + cache).
   useEffect(() => {
     startedAt.current = Date.now();
-    if (IS_DEMO) {
-      setClosed({ reason: 'demo' });
-      return;
-    }
+    if (IS_DEMO) return;
     const win = submissionWindow();
     if (!win.open) setClosed(win);
   }, []);
