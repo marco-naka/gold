@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    /* compensa la navbar sticky quando si naviga con gli anchor link */
+    scroll-padding-top: 6rem;
+  }
+
+  body {
+    @apply bg-ink text-white font-sans antialiased;
+    background-image:
+      radial-gradient(60rem 40rem at 78% -10%, rgba(243, 186, 47, 0.13), transparent 60%),
+      radial-gradient(45rem 35rem at -5% 15%, rgba(255, 215, 0, 0.07), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    @apply bg-gold/30 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold/70 ring-offset-2 ring-offset-ink rounded-md;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply rounded-2xl border border-white/10 bg-white/[0.035] backdrop-blur-xl;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-hover {
+    @apply transition duration-300 hover:border-gold/40 hover:bg-white/[0.06] hover:shadow-gold-sm;
+  }
+
+  .text-gold-gradient {
+    @apply bg-gold-gradient bg-clip-text text-transparent;
+  }
+
+  .section-pad {
+    @apply mx-auto w-full max-w-7xl px-5 py-20 sm:px-8 md:py-28;
+  }
+
+  .field {
+    @apply w-full rounded-xl border border-white/10 bg-ink-deep/70 px-4 py-3 text-sm text-white
+           placeholder:text-muted/60 transition
+           focus:border-gold/60 focus:ring-2 focus:ring-gold/25 focus:outline-none;
+  }
+
+  .field-error {
+    @apply border-red-500/70 focus:border-red-500 focus:ring-red-500/25;
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5
+           px-3 py-1 text-xs font-medium text-muted;
+  }
+}
+
+/* Scrollbar coerente con il tema dark/oro */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #0d0d0d;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a33;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3d3d48;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,5049 @@
+{
+  "source": "Crypto Map – Città di Lugano / Plan ₿ Lugano",
+  "sourceUrl": "https://planb.lugano.ch/crypto-map/",
+  "endpoint": "https://planb.lugano.ch/wp-json/bfx-crypto-map/v1/merchants?env=production",
+  "importedAt": "2026-09-23T11:16:21.339Z",
+  "count": 336,
+  "merchants": [
+    {
+      "id": "lug-11teamsports-lugano-28c234",
+      "name": "11teamsports Lugano",
+      "category": "shopping",
+      "address": "Maghetti 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://instagram.com/11ts_lugano?igshid=YmMyMTA2M2Y=",
+      "lat": 46.005314,
+      "lng": 8.953802
+    },
+    {
+      "id": "lug-12zero4-caffe-ristorant-e-winebar-1a508e",
+      "name": "12zero4 Caffè, Ristorant e Winebar",
+      "category": "food",
+      "address": "Via Cattedrale 16, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/12.zero.4/",
+      "lat": 46.005274,
+      "lng": 8.94869
+    },
+    {
+      "id": "lug-1979-tattoo-shop-a8a8a9",
+      "name": "1979 Tattoo Shop",
+      "category": "services",
+      "address": "Via Zurigo 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011922,
+      "lng": 8.953978
+    },
+    {
+      "id": "lug-3p-food-837b0c",
+      "name": "3P Food",
+      "category": "food",
+      "address": "Via Al Nido 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006893,
+      "lng": 8.942078
+    },
+    {
+      "id": "lug-agricola-chiera-b3019d",
+      "name": "Agricola Chiera",
+      "category": "food",
+      "address": "Via Balestra 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.agricolachiera.ch/",
+      "lat": 46.007785,
+      "lng": 8.953563
+    },
+    {
+      "id": "lug-agua-8c74c7",
+      "name": "Agua",
+      "category": "food",
+      "address": "Piazza Riforma 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://agualugano.ch/",
+      "lat": 46.003179,
+      "lng": 8.951313
+    },
+    {
+      "id": "lug-ail-arena-experience-center-cdf8c9",
+      "name": "AIL Arena Experience Center",
+      "category": "services",
+      "address": "Piazza Cioccaro 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.fclugano.com/lail-arena-experience-center-vi-accogliera-da-martedi-3-giugno-2025/",
+      "lat": 46.004394,
+      "lng": 8.950006
+    },
+    {
+      "id": "lug-aline-battistella-parrucchiera-48955b",
+      "name": "Aline Battistella - Parrucchiera",
+      "category": "services",
+      "address": "c/o MDP. Michele Di Paolo AESTHETIC HUB, Via Pioda 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/p/DVT_kJYCHHZ/",
+      "lat": 46.007285,
+      "lng": 8.953904
+    },
+    {
+      "id": "lug-alla-fermata-0fec90",
+      "name": "Alla Fermata",
+      "category": "shopping",
+      "address": "Via Ludovico Ariosto 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.alla-fermata.ch",
+      "lat": 46.005763,
+      "lng": 8.951053
+    },
+    {
+      "id": "lug-alpine-smiles-b99982",
+      "name": "Alpine Smiles",
+      "category": "services",
+      "address": "Via Pico 19, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.alpinesmiles.ch/",
+      "lat": 46.008765,
+      "lng": 8.969404
+    },
+    {
+      "id": "lug-altea-atelier-1c3fbd",
+      "name": "ALTEA Atelier",
+      "category": "shopping",
+      "address": "Via Olgiati 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.alteaatelier.ch/",
+      "lat": 46.011869,
+      "lng": 8.952816
+    },
+    {
+      "id": "lug-am-hub-interiors-bb5551",
+      "name": "AM Hub Interiors",
+      "category": "shopping",
+      "address": "Via Pian Scairolo 23, 6912 Pazzallo",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://amhubinteriors.com",
+      "lat": 45.983114,
+      "lng": 8.930734
+    },
+    {
+      "id": "lug-amabike-e1a2b7",
+      "name": "Amabike",
+      "category": "shopping",
+      "address": "Piazza Cinque Vie 2, 6932 Breganzona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.amabike.ch/",
+      "lat": 46.011345,
+      "lng": 8.936017
+    },
+    {
+      "id": "lug-amazing-games-2403a3",
+      "name": "Amazing Games",
+      "category": "shopping",
+      "address": "Via madonnetta 15, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": "https://amazingames.ch",
+      "lat": 46.011827,
+      "lng": 8.957191
+    },
+    {
+      "id": "lug-antica-osteria-del-porto-169071",
+      "name": "Antica Osteria del Porto",
+      "category": "food",
+      "address": "Via Foce 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "http://anticaosteriadelporto.ch/",
+      "lat": 46.003394,
+      "lng": 8.961711
+    },
+    {
+      "id": "lug-antonioli-boutique-donna-5c1cfb",
+      "name": "Antonioli Boutique Donna",
+      "category": "shopping",
+      "address": "Via Nassa 29, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://antoniolishop.ch",
+      "lat": 46.000577,
+      "lng": 8.949533
+    },
+    {
+      "id": "lug-argentino-bistrot-pizza-f2a876",
+      "name": "Argentino Bistrot & Pizza",
+      "category": "food",
+      "address": "Crocicchio Cortogna 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ristoranteargentino.ch",
+      "lat": 46.004101,
+      "lng": 8.95157
+    },
+    {
+      "id": "lug-artestetica-889add",
+      "name": "Artestetica",
+      "category": "services",
+      "address": "Via Zurigo 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://artestetica.ch/",
+      "lat": 46.011827,
+      "lng": 8.954051
+    },
+    {
+      "id": "lug-ashri-boutique-678277",
+      "name": "Ashri Boutique",
+      "category": "shopping",
+      "address": "Quartiere Maghetti 20, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ashri.ch/",
+      "lat": 46.005239,
+      "lng": 8.954032
+    },
+    {
+      "id": "lug-auberge-117b28",
+      "name": "Auberge",
+      "category": "services",
+      "address": "Corso Enrico Pestalozzi 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.aubergelugano.ch/?fbclid=IwAR3KIoH1RR0EcrRSYSLiTONfWv0Zm3B0gTLOwvjHXYkns2cxAYk-gkvZGVw",
+      "lat": 46.005917,
+      "lng": 8.953906
+    },
+    {
+      "id": "lug-autentiko-gusto-napoletano-a5ff94",
+      "name": "Autentiko Gusto Napoletano",
+      "category": "food",
+      "address": "Riva Albertolli 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.autentiko.it/menu-lugano/",
+      "lat": 46.003816,
+      "lng": 8.954824
+    },
+    {
+      "id": "lug-av-informatica-846ab6",
+      "name": "AV Informatica",
+      "category": "shopping",
+      "address": "Via Ceresio 30, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.avinfo.ch",
+      "lat": 46.019387,
+      "lng": 8.965037
+    },
+    {
+      "id": "lug-bancarella-abbigliamento-donna-pellegrini-ef3284",
+      "name": "Bancarella abbigliamento donna Pellegrini",
+      "category": "shopping",
+      "address": "Piazza Alessandro Manzoni, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004117,
+      "lng": 8.951998
+    },
+    {
+      "id": "lug-bar-civico-40-a90368",
+      "name": "Bar Civico 40",
+      "category": "food",
+      "address": "Viale Franscini 40, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011412,
+      "lng": 8.954826
+    },
+    {
+      "id": "lug-bar-corallo-4544cb",
+      "name": "Bar Corallo",
+      "category": "food",
+      "address": "Via Mons. Angelo Jelmini 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006734,
+      "lng": 8.941904
+    },
+    {
+      "id": "lug-bar-kream-ec8299",
+      "name": "Bar Kream",
+      "category": "food",
+      "address": "Piazza Manzoni 2B, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003921,
+      "lng": 8.952244
+    },
+    {
+      "id": "lug-bar-lando-32d46f",
+      "name": "Bar Lando",
+      "category": "food",
+      "address": "Via Simen 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/bar.lando/",
+      "lat": 46.012303,
+      "lng": 8.956802
+    },
+    {
+      "id": "lug-bar-pinard-d24fc7",
+      "name": "Bar Pinard",
+      "category": "food",
+      "address": "Piazza Molino Nuovo 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.01205,
+      "lng": 8.954725
+    },
+    {
+      "id": "lug-bar-ristorante-gabbani-74a757",
+      "name": "Bar Ristorante Gabbani",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-bar-sempione-9b1583",
+      "name": "Bar Sempione",
+      "category": "food",
+      "address": "Via Peri 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://barsempione.ch/",
+      "lat": 46.005336,
+      "lng": 8.950617
+    },
+    {
+      "id": "lug-bar-the-climb-4a4711",
+      "name": "Bar The Climb",
+      "category": "food",
+      "address": "Via Maggio 23, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008924,
+      "lng": 8.963723
+    },
+    {
+      "id": "lug-barber-shop-wellington-fade-170ba9",
+      "name": "Barber Shop Wellington Fade",
+      "category": "services",
+      "address": "Via alle Caragne 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.015328,
+      "lng": 8.955538
+    },
+    {
+      "id": "lug-barbiere-latino-3cce3c",
+      "name": "Barbiere Latino",
+      "category": "services",
+      "address": "Via Antonio Ciseri 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.010269,
+      "lng": 8.95314
+    },
+    {
+      "id": "lug-be-different-2daf7b",
+      "name": "Be Different",
+      "category": "services",
+      "address": "Via Beltramina 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.backtobasik.ch",
+      "lat": 46.017115,
+      "lng": 8.957275
+    },
+    {
+      "id": "lug-beauty-corner-by-elba-sechi-c4af01",
+      "name": "BEAUTY CORNER by Elba Sechi",
+      "category": "services",
+      "address": "Via al Fiume 1, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.014983,
+      "lng": 8.962304
+    },
+    {
+      "id": "lug-beauty-room-036ad6",
+      "name": "Beauty Room",
+      "category": "services",
+      "address": "Via Adamini 32, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://beautyroomlugano.ch/",
+      "lat": 45.997132,
+      "lng": 8.943181
+    },
+    {
+      "id": "lug-bec-vintage-sartoria-72f835",
+      "name": "BEC Vintage & Sartoria",
+      "category": "shopping",
+      "address": "Via Guglielmo Marconi 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004001,
+      "lng": 8.954295
+    },
+    {
+      "id": "lug-benessere-musaj-bca036",
+      "name": "Benessere Musaj",
+      "category": "services",
+      "address": "Via Pietro Capelli 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.benesseremusaj.ch/",
+      "lat": 46.007421,
+      "lng": 8.961032
+    },
+    {
+      "id": "lug-bijoux-io-bb69b2",
+      "name": "Bijoux Io",
+      "category": "shopping",
+      "address": "Via Pretorio 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.bijoux-io.ch",
+      "lat": 46.005671,
+      "lng": 8.951507
+    },
+    {
+      "id": "lug-boatcenter-lugano-23e005",
+      "name": "Boatcenter Lugano",
+      "category": "services",
+      "address": "Piazza Bernardino Luini 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://boatcenterlugano.com",
+      "lat": 45.999871,
+      "lng": 8.949828
+    },
+    {
+      "id": "lug-body-work-lugano-ems-e-vacu-gym-ce71ff",
+      "name": "Body Work Lugano - EMS e Vacu Gym",
+      "category": "services",
+      "address": "Via Tesserete 65, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://bodyworklugano.ch/",
+      "lat": 46.01682,
+      "lng": 8.950644
+    },
+    {
+      "id": "lug-boite-d-or-gioielli-2f8b1b",
+      "name": "Boite D'Or Gioielli",
+      "category": "shopping",
+      "address": "Via Nassa 54, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://boitedor.ch/",
+      "lat": 46.001619,
+      "lng": 8.949369
+    },
+    {
+      "id": "lug-boutique-bolle-di-sapone-893b99",
+      "name": "Boutique Bolle di Sapone",
+      "category": "shopping",
+      "address": "Via La Santa 11, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011604,
+      "lng": 8.962847
+    },
+    {
+      "id": "lug-boutique-naaf-11ea7d",
+      "name": "Boutique Naaf",
+      "category": "shopping",
+      "address": "Via Cattedrale 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/naaf_lugano/",
+      "lat": 46.00505,
+      "lng": 8.949258
+    },
+    {
+      "id": "lug-boutique-per-la-schiena-b6027e",
+      "name": "Boutique per la schiena",
+      "category": "shopping",
+      "address": "Viale Cattaneo 19, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.boutiqueperlaschiena.ch/",
+      "lat": 46.005902,
+      "lng": 8.959286
+    },
+    {
+      "id": "lug-boutique-s2-2nd-hand-shop-afae26",
+      "name": "Boutique S2 2nd Hand Shop",
+      "category": "shopping",
+      "address": "Via Cattedrale 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005054,
+      "lng": 8.949269
+    },
+    {
+      "id": "lug-boutique-scrupoli-f74dd7",
+      "name": "Boutique Scrupoli",
+      "category": "shopping",
+      "address": "Via Cattedrale 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004913,
+      "lng": 8.949391
+    },
+    {
+      "id": "lug-boutique-sesto-senso-b86d54",
+      "name": "Boutique Sesto Senso",
+      "category": "shopping",
+      "address": "Via Serafino Balestra 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007312,
+      "lng": 8.952576
+    },
+    {
+      "id": "lug-boutique-steps-a9605e",
+      "name": "Boutique Steps",
+      "category": "shopping",
+      "address": "Via Cattedrale 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/_stepslugan_/",
+      "lat": 46.005331,
+      "lng": 8.949328
+    },
+    {
+      "id": "lug-caffe-in-ee7def",
+      "name": "Caffè In",
+      "category": "food",
+      "address": "Via Balestra 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008733,
+      "lng": 8.954181
+    },
+    {
+      "id": "lug-caffe-milano-f3c86f",
+      "name": "Caffè Milano",
+      "category": "food",
+      "address": "Piazza Cioccaro 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://caffemilanolugano.ch",
+      "lat": 46.004567,
+      "lng": 8.949185
+    },
+    {
+      "id": "lug-caffe-roma-c85da6",
+      "name": "Caffè Roma",
+      "category": "food",
+      "address": "Quartiere Maghetti 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://it.tripadvisor.ch/Restaurant_Review-g188095-d7211733-Reviews-Caffe_Roma-Lugano_Canton_of_Ticino_Swiss_Alps.html",
+      "lat": 46.005305,
+      "lng": 8.953529
+    },
+    {
+      "id": "lug-casino-lugano-ristorante-elementi-bar-ai-piani-b255cc",
+      "name": "Casinò Lugano (Ristorante Elementi + bar ai piani)",
+      "category": "food",
+      "address": "Via Stauffacher 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://casinolugano.ch/ristorante/",
+      "lat": 46.004149,
+      "lng": 8.955121
+    },
+    {
+      "id": "lug-cct-formazione-linguistica-e-culturale-a5f695",
+      "name": "CCT Formazione Linguistica e Culturale",
+      "category": "services",
+      "address": "Viale Cattaneo 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.cct.ch",
+      "lat": 46.00602,
+      "lng": 8.960395
+    },
+    {
+      "id": "lug-centrostampa-express-di-stefano-marinuzzi-fc5bb2",
+      "name": "Centrostampa Express di Stefano Marinuzzi",
+      "category": "services",
+      "address": "Via Vignola 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.centrostampa.ch/",
+      "lat": 46.016401,
+      "lng": 8.956287
+    },
+    {
+      "id": "lug-ceresaottica-e02868",
+      "name": "CeresaOTTICA",
+      "category": "shopping",
+      "address": "Via Maghetti 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ceresaottica.ch",
+      "lat": 46.005314,
+      "lng": 8.953802
+    },
+    {
+      "id": "lug-ceresio-gold-899942",
+      "name": "Ceresio Gold",
+      "category": "shopping",
+      "address": "Via Carlo Maderno 24, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.010916,
+      "lng": 8.955635
+    },
+    {
+      "id": "lug-ceresio-jewelry-958938",
+      "name": "Ceresio Jewelry",
+      "category": "shopping",
+      "address": "Galleria Rezzonico - Via Pessina 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004093,
+      "lng": 8.950179
+    },
+    {
+      "id": "lug-chili-adv-07e920",
+      "name": "Chili Adv",
+      "category": "services",
+      "address": "Via Trevano 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.chiliadv.ch/",
+      "lat": 46.012789,
+      "lng": 8.954993
+    },
+    {
+      "id": "lug-christmas-gift-village-131ff6",
+      "name": "Christmas Gift Village",
+      "category": "services",
+      "address": "Viale Castagnola 31 (Grand Hotel Villa Castagnola), 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://my-brandable.com/shop/entry-and-lottery-tecket-christmas-gift-market-event-3-december-2025/",
+      "lat": 46.006991,
+      "lng": 8.969631
+    },
+    {
+      "id": "lug-cigar-must-93ca64",
+      "name": "Cigar Must",
+      "category": "food",
+      "address": "Piazza Riforma 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://cigarmust.com/it/",
+      "lat": 46.003554,
+      "lng": 8.951054
+    },
+    {
+      "id": "lug-cigar-must-la-casa-del-habano-71bf71",
+      "name": "Cigar Must La Casa del Habano",
+      "category": "food",
+      "address": "Via Giuseppe Motta 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://cigarmust.ch",
+      "lat": 46.003931,
+      "lng": 8.949555
+    },
+    {
+      "id": "lug-cinema-iride-2b6b7c",
+      "name": "Cinema Iride",
+      "category": "services",
+      "address": "Piazza S. Rocco 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.jfcinema.ch/",
+      "lat": 46.004894,
+      "lng": 8.953721
+    },
+    {
+      "id": "lug-cinema-lux-caf511",
+      "name": "Cinema LUX",
+      "category": "services",
+      "address": "Via Giuseppe Motta 67, 6900 Massagno",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.jfcinema.ch/",
+      "lat": 46.012517,
+      "lng": 8.94383
+    },
+    {
+      "id": "lug-circular-lugano-noleggio-di-oggetti-comuni-38075d",
+      "name": "Circular Lugano | Noleggio di oggetti comuni",
+      "category": "shopping",
+      "address": "Via S. Gottardo 77, 6900 Massagno",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://circular-lugano.ch",
+      "lat": 46.012444,
+      "lng": 8.946464
+    },
+    {
+      "id": "lug-class-cafe-ba191f",
+      "name": "Class Cafè",
+      "category": "food",
+      "address": "Corso Pestalozzi 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.classcafe.ch",
+      "lat": 46.006365,
+      "lng": 8.951265
+    },
+    {
+      "id": "lug-clinica-del-sale-c2a3ea",
+      "name": "Clinica del sale",
+      "category": "services",
+      "address": "Via Trevano 73, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.019142,
+      "lng": 8.957121
+    },
+    {
+      "id": "lug-club-g-161dab",
+      "name": "Club G.",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-club-g-597ee9",
+      "name": "Club.G",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004205,
+      "lng": 8.950451
+    },
+    {
+      "id": "lug-color-x-f094ae",
+      "name": "Color X",
+      "category": "services",
+      "address": "Via Arbostra 2, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.colorx.ch",
+      "lat": 46.023282,
+      "lng": 8.968939
+    },
+    {
+      "id": "lug-coltelleria-maturi-01f95d",
+      "name": "Coltelleria Maturi",
+      "category": "shopping",
+      "address": "Via Ariosto 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.coltelleriamaturi.com/",
+      "lat": 46.005812,
+      "lng": 8.951328
+    },
+    {
+      "id": "lug-conservatorio-della-svizzera-italiana-0357e5",
+      "name": "Conservatorio della Svizzera italiana",
+      "category": "services",
+      "address": "Via Soldino 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.conservatorio.ch/it",
+      "lat": 46.006256,
+      "lng": 8.939922
+    },
+    {
+      "id": "lug-convivio-lugano-bacco-e-luppolo-59bf8a",
+      "name": "Convivio Lugano - bacco e luppolo",
+      "category": "food",
+      "address": "Via della Posta 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://convivio-lugano.ch/",
+      "lat": 46.004495,
+      "lng": 8.953078
+    },
+    {
+      "id": "lug-cyberconnect-9ced8a",
+      "name": "Cyberconnect",
+      "category": "services",
+      "address": "Via Besso 59, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://cyberconnect.ch/",
+      "lat": 46.010161,
+      "lng": 8.937398
+    },
+    {
+      "id": "lug-d-amico-alimentari-frutta-e-verdura-fe1af0",
+      "name": "D'Amico Alimentari frutta e verdura",
+      "category": "food",
+      "address": "Via Pretorio 19, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00767,
+      "lng": 8.952222
+    },
+    {
+      "id": "lug-d4b-digital-for-business-f44fb4",
+      "name": "D4B - Digital for Business",
+      "category": "services",
+      "address": "Via Polar 24, 6932 Breganzona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://d4b.ch/it/",
+      "lat": 46.009909,
+      "lng": 8.932859
+    },
+    {
+      "id": "lug-da-lia-coiffure-891a97",
+      "name": "Da Lia Coiffure",
+      "category": "services",
+      "address": "Via Maraini 18, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 45.998193,
+      "lng": 8.943329
+    },
+    {
+      "id": "lug-da-lino-prosciutteria-aa77f6",
+      "name": "Da Lino Prosciutteria",
+      "category": "food",
+      "address": "Piazza Riforma 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003916,
+      "lng": 8.9517
+    },
+    {
+      "id": "lug-dance-in-your-essence-di-romina-henle-10036f",
+      "name": "Dance In your Essence di Romina Henle",
+      "category": "services",
+      "address": "Via Crivelli Torricelli 15, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://danceinyouressence.com/index.html",
+      "lat": 46.003457,
+      "lng": 8.940715
+    },
+    {
+      "id": "lug-david-glamour-2b10e4",
+      "name": "David Glamour",
+      "category": "shopping",
+      "address": "Piazza Cioccaro 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005028,
+      "lng": 8.949757
+    },
+    {
+      "id": "lug-desk-food-12cb64",
+      "name": "DESK FOOD",
+      "category": "food",
+      "address": "Viale Franscini 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://deskfood.ch/",
+      "lat": 46.011151,
+      "lng": 8.954405
+    },
+    {
+      "id": "lug-dhalia-beauty-center-lugano-638fd8",
+      "name": "Dhalia Beauty Center Lugano",
+      "category": "services",
+      "address": "Via Lucchini 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.dhalia-beauty.ch/",
+      "lat": 46.006467,
+      "lng": 8.957457
+    },
+    {
+      "id": "lug-didi-s-food-truck-only-during-food-truck-events-985501",
+      "name": "Didi's Food Truck (only during food truck events)",
+      "category": "food",
+      "address": "Via Nassa, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": null,
+      "lat": 46.003074,
+      "lng": 8.949994
+    },
+    {
+      "id": "lug-dieci-style-factory-83d07f",
+      "name": "Dieci Style Factory",
+      "category": "shopping",
+      "address": "Via Cattedrale 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00491,
+      "lng": 8.949322
+    },
+    {
+      "id": "lug-dilo-s-lugano-af23ba",
+      "name": "Dilo’s Lugano",
+      "category": "food",
+      "address": "Via Serafino Balestra 31, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://diloslugano.ch",
+      "lat": 46.007889,
+      "lng": 8.959012
+    },
+    {
+      "id": "lug-doctor-phone-c5c9fc",
+      "name": "Doctor Phone",
+      "category": "shopping",
+      "address": "Corso Elvezia 13, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.doctorphone.ch",
+      "lat": 46.007306,
+      "lng": 8.955519
+    },
+    {
+      "id": "lug-dolce-vita-shop-13d5d4",
+      "name": "Dolce Vita Shop",
+      "category": "food",
+      "address": "Via Valletta 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": "https://www.dolcevitashop.ch",
+      "lat": 45.994538,
+      "lng": 8.942797
+    },
+    {
+      "id": "lug-donde-art-gallery-ba741a",
+      "name": "Donde Art Gallery",
+      "category": "shopping",
+      "address": "Via Nassa 68, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://dondeartgallery.com",
+      "lat": 46.000277,
+      "lng": 8.94904
+    },
+    {
+      "id": "lug-dr-med-luca-ballestra-chirurgia-e-medicina-estetica-33bf88",
+      "name": "Dr.med. Luca Ballestra - chirurgia e medicina estetica",
+      "category": "services",
+      "address": "Via al Forte 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://lucaballestra.ch/",
+      "lat": 46.005477,
+      "lng": 8.953235
+    },
+    {
+      "id": "lug-e-6900-sagl-b061e6",
+      "name": "E-6900 SAGL",
+      "category": "services",
+      "address": "Via Trevano 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://e-6900.ch",
+      "lat": 46.013363,
+      "lng": 8.954798
+    },
+    {
+      "id": "lug-e-outlet-e-6900-451352",
+      "name": "E-outlet E-6900",
+      "category": "food",
+      "address": "Via Trevano 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.013035,
+      "lng": 8.954754
+    },
+    {
+      "id": "lug-edicola-molino-nuovo-0a69a0",
+      "name": "Edicola Molino Nuovo",
+      "category": "food",
+      "address": "Via Zurigo 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011277,
+      "lng": 8.956384
+    },
+    {
+      "id": "lug-edimen-sa-prodotti-editoriali-ed-eventi-4389f6",
+      "name": "Edimen SA - Prodotti editoriali ed eventi",
+      "category": "services",
+      "address": "Via Massagno 20, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://edimen.ch/",
+      "lat": 46.009777,
+      "lng": 8.947193
+    },
+    {
+      "id": "lug-effe-c-hair-studio-barberia-8b8a4b",
+      "name": "Effe.c Hair Studio & Barberia",
+      "category": "services",
+      "address": "Via Ceresio 9, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.016748,
+      "lng": 8.964349
+    },
+    {
+      "id": "lug-elisir-coiffure-b16496",
+      "name": "Elisir Coiffure",
+      "category": "services",
+      "address": "Viale Stefano Franscini 38, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://elisircoiffure.ch/",
+      "lat": 46.01097,
+      "lng": 8.954746
+    },
+    {
+      "id": "lug-elite-caffe-afa8c6",
+      "name": "Élite Caffè",
+      "category": "food",
+      "address": "Via Orti 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.elitecaffe.com/",
+      "lat": 46.012517,
+      "lng": 8.956536
+    },
+    {
+      "id": "lug-elite-lashes-swiss-8f21a3",
+      "name": "Elite Lashes Swiss",
+      "category": "services",
+      "address": "Via dei Solari 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://elitelashesswiss.ch/",
+      "lat": 46.003798,
+      "lng": 8.949944
+    },
+    {
+      "id": "lug-ermitage-lugano-negozio-di-arredamenti-77b0a2",
+      "name": "Ermitage Lugano - Negozio di arredamenti",
+      "category": "shopping",
+      "address": "Via Giacometti, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ermitagelugano.ch/",
+      "lat": 46.007828,
+      "lng": 8.95541
+    },
+    {
+      "id": "lug-erresse-beauty-spa-13bc91",
+      "name": "Erresse Beauty & SPA",
+      "category": "services",
+      "address": "Via Balestra 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://erressebeautyandspa.ch/",
+      "lat": 46.008653,
+      "lng": 8.954276
+    },
+    {
+      "id": "lug-europeancar-ch-sa-autoleasing-senza-banca-12efdb",
+      "name": "EuropeanCar.ch SA - Autoleasing Senza Banca",
+      "category": "services",
+      "address": "Viale Cassarate 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://europeancar.ch/",
+      "lat": 46.007084,
+      "lng": 8.960368
+    },
+    {
+      "id": "lug-evellyn-beauty-693462",
+      "name": "Evellyn Beauty",
+      "category": "services",
+      "address": "Via Simen 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://evellynbeauty.com/",
+      "lat": 46.012392,
+      "lng": 8.956561
+    },
+    {
+      "id": "lug-exel-watches-lugano-2661bf",
+      "name": "Exel Watches Lugano",
+      "category": "shopping",
+      "address": "Via Cantonale 1A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://exelwatches.com/",
+      "lat": 46.006814,
+      "lng": 8.949798
+    },
+    {
+      "id": "lug-fadezone-barbershop-29a47d",
+      "name": "Fadezone Barbershop",
+      "category": "services",
+      "address": "Via Zurigo 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://yourstylebarber.com/",
+      "lat": 46.011475,
+      "lng": 8.956455
+    },
+    {
+      "id": "lug-farmacia-chimica-internazionale-83f59d",
+      "name": "Farmacia Chimica Internazionale",
+      "category": "services",
+      "address": "Via Balestra 22B, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.farmaciachimica.ch",
+      "lat": 46.007615,
+      "lng": 8.958873
+    },
+    {
+      "id": "lug-farmacia-nassa-88aeeb",
+      "name": "Farmacia Nassa",
+      "category": "services",
+      "address": "Via Nassa 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.001542,
+      "lng": 8.949653
+    },
+    {
+      "id": "lug-farmacia-salus-d7de0c",
+      "name": "Farmacia Salus",
+      "category": "services",
+      "address": "Via Canova 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.farmaciasalus.ch",
+      "lat": 46.004251,
+      "lng": 8.952424
+    },
+    {
+      "id": "lug-farmacia-semper-fidelis-2d1ce6",
+      "name": "Farmacia Semper Fidelis",
+      "category": "services",
+      "address": "Via alla Chiesa 1, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011769,
+      "lng": 8.966496
+    },
+    {
+      "id": "lug-fc-lugano-biglietteria-1edccc",
+      "name": "FC Lugano - Biglietteria",
+      "category": "services",
+      "address": "Via Trevano 100, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://fclugano.com/biglietti/",
+      "lat": 46.024132,
+      "lng": 8.960491
+    },
+    {
+      "id": "lug-fc-lugano-food-and-beverages-eabe1b",
+      "name": "FC Lugano - Food and Beverages",
+      "category": "food",
+      "address": "Via Trevano 100, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.023931,
+      "lng": 8.960263
+    },
+    {
+      "id": "lug-fc-lugano-merchandising-fc9098",
+      "name": "FC Lugano - Merchandising",
+      "category": "shopping",
+      "address": "Via Trevano 100, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://shop.fclugano.com/?utm_source=fclugano.com&utm_medium=menu",
+      "lat": 46.023931,
+      "lng": 8.960263
+    },
+    {
+      "id": "lug-flora-ticino-8d752b",
+      "name": "Flora Ticino",
+      "category": "shopping",
+      "address": "Via Trevano 89, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://floraticino.ch/",
+      "lat": 46.020701,
+      "lng": 8.957716
+    },
+    {
+      "id": "lug-florart-lugano-9d0518",
+      "name": "Florart Lugano",
+      "category": "shopping",
+      "address": "Via Sorengo 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://florart-lugano.ch",
+      "lat": 46.005498,
+      "lng": 8.944186
+    },
+    {
+      "id": "lug-frutor-fruttivendolo-7c0da0",
+      "name": "Frutor fruttivendolo",
+      "category": "food",
+      "address": "Via Fusoni 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.009369,
+      "lng": 8.958838
+    },
+    {
+      "id": "lug-fully-burgers-and-fries-e6312b",
+      "name": "Fully Burgers and Fries",
+      "category": "food",
+      "address": "Via Pretorio 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://fullyburgers.ch",
+      "lat": 46.006249,
+      "lng": 8.951769
+    },
+    {
+      "id": "lug-gabbani-enoteca-d5d6f4",
+      "name": "Gabbani Enoteca",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-gabbani-formaggeria-1e7474",
+      "name": "Gabbani Formaggeria",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-gabbani-frutteto-327875",
+      "name": "Gabbani Frutteto",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-gabbani-macelleria-39f562",
+      "name": "Gabbani Macelleria",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-gabbani-panetteria-d30b52",
+      "name": "Gabbani Panetteria",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-gabbani-portici-843e61",
+      "name": "Gabbani Portici",
+      "category": "food",
+      "address": "Via Pessina 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004208,
+      "lng": 8.95044
+    },
+    {
+      "id": "lug-gabrielli-hair-concept-f2a0f2",
+      "name": "Gabrielli Hair Concept",
+      "category": "services",
+      "address": "Vicolo del Lido 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003362,
+      "lng": 8.950381
+    },
+    {
+      "id": "lug-galleria-doppia-v-atelier-walter-69095c",
+      "name": "Galleria Doppia V - Atelier Walter",
+      "category": "shopping",
+      "address": "Via Moncucco 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.galleriadoppiav.com/",
+      "lat": 46.005603,
+      "lng": 8.942837
+    },
+    {
+      "id": "lug-gastrosnack-bernasconi-c8ab05",
+      "name": "GastroSnack Bernasconi",
+      "category": "food",
+      "address": "Via Nassa 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.cibodivino.ch",
+      "lat": 46.00272,
+      "lng": 8.950038
+    },
+    {
+      "id": "lug-gea-2025-comic-art-fest-dal-16-ottobre-al-15-novembre-ed3ce2",
+      "name": "Gea 2025 Comic Art Fest (dal 16 ottobre al 15 novembre)",
+      "category": "services",
+      "address": "Via Cattedrale 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004606,
+      "lng": 8.949613
+    },
+    {
+      "id": "lug-gelateria-naturale-c-era-una-volta-10083f",
+      "name": "Gelateria naturale - C'era una volta",
+      "category": "food",
+      "address": "Via Dufour 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/ceraunavolta_gelateria_lugano?igsh=MWo3MXdrcGJobG50Mw==",
+      "lat": 46.008906,
+      "lng": 8.951337
+    },
+    {
+      "id": "lug-gioielleria-f-h-18-81-c65642",
+      "name": "Gioielleria F&H 18.81",
+      "category": "shopping",
+      "address": "Via Nassa 3 A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.fh1881.ch/",
+      "lat": 46.003527,
+      "lng": 8.95056
+    },
+    {
+      "id": "lug-gioielleria-fortuny-5ccb37",
+      "name": "Gioielleria Fortuny",
+      "category": "shopping",
+      "address": "Via Nassa 64, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.fortunyjewels.com/",
+      "lat": 46.000849,
+      "lng": 8.949052
+    },
+    {
+      "id": "lug-gioielleria-preziosi-e39749",
+      "name": "Gioielleria Preziosi",
+      "category": "shopping",
+      "address": "Viale Carlo Cattaneo 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.preziosi.ch",
+      "lat": 46.005712,
+      "lng": 8.955752
+    },
+    {
+      "id": "lug-gioielleria-rocca-1794-2047dc",
+      "name": "Gioielleria Rocca 1794",
+      "category": "shopping",
+      "address": "Via Nassa 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.002629,
+      "lng": 8.949671
+    },
+    {
+      "id": "lug-gis-the-international-school-of-lugano-91882c",
+      "name": "GIS The International School of Lugano",
+      "category": "services",
+      "address": "Via Senago 42 E, 6912 Pazzallo",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://gisschoollugano.ch/it/",
+      "lat": 45.983656,
+      "lng": 8.932444
+    },
+    {
+      "id": "lug-giulia-beauty-lounge-eff82b",
+      "name": "Giulia Beauty Lounge",
+      "category": "services",
+      "address": "Via al Chioso 28, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008965,
+      "lng": 8.962929
+    },
+    {
+      "id": "lug-globocar-5e298b",
+      "name": "Globocar",
+      "category": "services",
+      "address": "Via Pian Scairolo 17, 6912 Pazzallo",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.globocar.ch/",
+      "lat": 45.983538,
+      "lng": 8.931781
+    },
+    {
+      "id": "lug-grande-caffe-bistrot-74e456",
+      "name": "Grande Caffè Bistrot",
+      "category": "food",
+      "address": "Via Carducci 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://grande-caffe-bistrot.digitalone.site/",
+      "lat": 46.004845,
+      "lng": 8.953516
+    },
+    {
+      "id": "lug-groovy-concept-4addb9",
+      "name": "Groovy Concept",
+      "category": "shopping",
+      "address": "Via Vegezzi 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.groovyconcept.com",
+      "lat": 46.004894,
+      "lng": 8.952977
+    },
+    {
+      "id": "lug-guess-477318",
+      "name": "Guess",
+      "category": "shopping",
+      "address": "Via Pessina 13, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004211,
+      "lng": 8.950298
+    },
+    {
+      "id": "lug-guess-accessories-82958d",
+      "name": "Guess Accessories",
+      "category": "shopping",
+      "address": "Via Pessina 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003937,
+      "lng": 8.950431
+    },
+    {
+      "id": "lug-hair-l-essenza-32a41e",
+      "name": "Hair L'Essenza",
+      "category": "services",
+      "address": "Via Balestra 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.009228,
+      "lng": 8.95422
+    },
+    {
+      "id": "lug-health-park-21f4f5",
+      "name": "Health Park",
+      "category": "services",
+      "address": "Via Balestra 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.healthpark.ch/",
+      "lat": 46.008077,
+      "lng": 8.954681
+    },
+    {
+      "id": "lug-healthy-life-clinic-883066",
+      "name": "Healthy Life Clinic",
+      "category": "services",
+      "address": "Via Maraini 19, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://hlifeclinic.ch/",
+      "lat": 46.027258,
+      "lng": 8.968887
+    },
+    {
+      "id": "lug-helvetiacom-7fd016",
+      "name": "HelvetiaCom",
+      "category": "services",
+      "address": "Via Balestra 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://helvetiacom.ch/",
+      "lat": 46.008188,
+      "lng": 8.958039
+    },
+    {
+      "id": "lug-historian-lugano-80ebf0",
+      "name": "Historian Lugano",
+      "category": "shopping",
+      "address": "Via al Forte 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://historianlugano.com",
+      "lat": 46.005575,
+      "lng": 8.953764
+    },
+    {
+      "id": "lug-hotel-acquarello-16f3f1",
+      "name": "Hotel Acquarello",
+      "category": "hotel",
+      "address": "Piazza Cioccaro 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://acquarello.ch/",
+      "lat": 46.004599,
+      "lng": 8.949325
+    },
+    {
+      "id": "lug-hotel-colorado-3ff935",
+      "name": "Hotel Colorado",
+      "category": "hotel",
+      "address": "Via Maraini 19, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://colorado.ch/",
+      "lat": 45.998503,
+      "lng": 8.944326
+    },
+    {
+      "id": "lug-hotel-delfino-43bdea",
+      "name": "Hotel Delfino",
+      "category": "hotel",
+      "address": "Via Cassarinetta 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://hoteldelfinolugano.ch/",
+      "lat": 45.993661,
+      "lng": 8.942112
+    },
+    {
+      "id": "lug-hotel-gabbani-15f234",
+      "name": "Hotel Gabbani",
+      "category": "hotel",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004295,
+      "lng": 8.950176
+    },
+    {
+      "id": "lug-hotel-pestalozzi-lugano-baada2",
+      "name": "Hotel Pestalozzi Lugano",
+      "category": "hotel",
+      "address": "Piazza Indipendenza 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.pestalozzi-lugano.ch",
+      "lat": 46.005769,
+      "lng": 8.955034
+    },
+    {
+      "id": "lug-hotel-zurigo-downtown-0de3f3",
+      "name": "Hotel Zurigo Downtown",
+      "category": "hotel",
+      "address": "Corso Pestalozzi 13, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.hotelzurigo.ch",
+      "lat": 46.006121,
+      "lng": 8.953372
+    },
+    {
+      "id": "lug-ifa-trade-sa-26fe79",
+      "name": "IFA Trade SA",
+      "category": "services",
+      "address": "Via Trevano 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ifa-suisse.com/",
+      "lat": 46.013634,
+      "lng": 8.954872
+    },
+    {
+      "id": "lug-il-cannolo-sua-eccellenza-0a39ae",
+      "name": "Il Cannolo sua eccellenza",
+      "category": "food",
+      "address": "Via Lucchini 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005791,
+      "lng": 8.957203
+    },
+    {
+      "id": "lug-il-fermento-c053b6",
+      "name": "Il Fermento",
+      "category": "food",
+      "address": "Via Marconi 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ilfermento.ch/it",
+      "lat": 46.003876,
+      "lng": 8.954098
+    },
+    {
+      "id": "lug-il-piccolo-principe-ottico-michel-d92fd2",
+      "name": "Il Piccolo Principe - Ottico Michel",
+      "category": "shopping",
+      "address": "Corso Pestalozzi 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.otticomichel.ch/",
+      "lat": 46.006146,
+      "lng": 8.951227
+    },
+    {
+      "id": "lug-imago-art-gallery-ea791d",
+      "name": "Imago Art Gallery",
+      "category": "shopping",
+      "address": "Via Nassa 46, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://imago-artgallery.com",
+      "lat": 46.00171,
+      "lng": 8.94943
+    },
+    {
+      "id": "lug-innovacomix-26-02-01-03-2026-5adf01",
+      "name": "InnovaComix 26.02 - 01.03.2026",
+      "category": "services",
+      "address": "Piazza Indipendenza 1 - Villa Ciani, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://innovacomix.ch/",
+      "lat": 46.004867,
+      "lng": 8.956551
+    },
+    {
+      "id": "lug-intersport-zappa-7f8766",
+      "name": "Intersport Zappa",
+      "category": "shopping",
+      "address": "Via Peri 15, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.zappasport.ch",
+      "lat": 46.00585,
+      "lng": 8.950551
+    },
+    {
+      "id": "lug-istituto-sanders-f9a734",
+      "name": "Istituto Sanders",
+      "category": "services",
+      "address": "Via Pretorio 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.sanders.it/analisi-gratuita/?utm_medium=cpc&utm_source=google&utm_content=search_na_brand_prospect_na_vvkc59aa3ef9e9e6330183c&utm_campaign=sanders_tricologico_analisi_lead_brand&gad=1&gclid=Cj0KCQjwwvilBhCFARIsADvYi7K4bxf5t_ukwUGCB-nkv1Hv58L4t2zheq9MSaeAMpNv6ELNgxz6q38aAoGWEALw_wcB",
+      "lat": 46.00655,
+      "lng": 8.951784
+    },
+    {
+      "id": "lug-juliana-jewelry-e8b1d0",
+      "name": "Juliana Jewelry",
+      "category": "shopping",
+      "address": "Via Nassa 64, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.julianajewelry.ch/",
+      "lat": 46.000838,
+      "lng": 8.949063
+    },
+    {
+      "id": "lug-jungle-club-54c26b",
+      "name": "Jungle Club",
+      "category": "services",
+      "address": "Via Cantonale 1A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006707,
+      "lng": 8.949804
+    },
+    {
+      "id": "lug-k-moto-lugano-c27b69",
+      "name": "K Moto Lugano",
+      "category": "services",
+      "address": "Via Balestra 39 A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.kmoto.ch/",
+      "lat": 46.007959,
+      "lng": 8.959914
+    },
+    {
+      "id": "lug-katuboshy-concept-store-sartoria-creativa-09f9bc",
+      "name": "KATUBOSHY CONCEPT STORE Sartoria creativa",
+      "category": "services",
+      "address": "Via Peri, in fondo alla corte 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.orlospeedy.ch",
+      "lat": 46.005901,
+      "lng": 8.950294
+    },
+    {
+      "id": "lug-kavin-barbershop-afe4ea",
+      "name": "Kavin Barbershop",
+      "category": "services",
+      "address": "Via Bagutti 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/kavin_barber_shop/",
+      "lat": 46.014085,
+      "lng": 8.956418
+    },
+    {
+      "id": "lug-kinetic-center-02645e",
+      "name": "Kinetic Center",
+      "category": "services",
+      "address": "Via Pelli 13, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.kinetic-center.ch/",
+      "lat": 46.008198,
+      "lng": 8.950831
+    },
+    {
+      "id": "lug-kios-ka-d03fcf",
+      "name": "Kios-ka",
+      "category": "food",
+      "address": "Via alla Chiesa 1, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.011769,
+      "lng": 8.966496
+    },
+    {
+      "id": "lug-klasse-a-parrucchieri-7b18f8",
+      "name": "Klasse A Parrucchieri",
+      "category": "services",
+      "address": "Via Nassa 3 A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003367,
+      "lng": 8.950527
+    },
+    {
+      "id": "lug-kohakinho-6eb377",
+      "name": "Kohakinho",
+      "category": "food",
+      "address": "Via della Posta 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://kohakinho.com",
+      "lat": 46.004655,
+      "lng": 8.952944
+    },
+    {
+      "id": "lug-kost-make-up-cfac51",
+      "name": "Kost Make-Up",
+      "category": "shopping",
+      "address": "Via Serafino Balestra 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007652,
+      "lng": 8.953273
+    },
+    {
+      "id": "lug-kyoto-sushi-839818",
+      "name": "Kyoto Sushi",
+      "category": "food",
+      "address": "Via Pazzalino 15, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.015837,
+      "lng": 8.97033
+    },
+    {
+      "id": "lug-la-boheme-e28439",
+      "name": "La Bohème",
+      "category": "food",
+      "address": "Via Cattedrale 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004854,
+      "lng": 8.949501
+    },
+    {
+      "id": "lug-la-caveja-21926e",
+      "name": "La Caveja",
+      "category": "food",
+      "address": "Viale Cattaneo 15, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006179,
+      "lng": 8.958279
+    },
+    {
+      "id": "lug-la-caveja-lugano-68f816",
+      "name": "La Caveja Lugano",
+      "category": "food",
+      "address": "Via Dufour 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008626,
+      "lng": 8.951865
+    },
+    {
+      "id": "lug-la-cucina-di-alice-c7fcb3",
+      "name": "La Cucina di Alice",
+      "category": "food",
+      "address": "Riva Vela 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lacucinadialice.ch/",
+      "lat": 46.002163,
+      "lng": 8.950041
+    },
+    {
+      "id": "lug-la-dispensa-e80fbf",
+      "name": "La Dispensa",
+      "category": "food",
+      "address": "Via della Posta 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ladispensa.ch",
+      "lat": 46.004655,
+      "lng": 8.952944
+    },
+    {
+      "id": "lug-la-fioreria-f1b7af",
+      "name": "La Fioreria",
+      "category": "shopping",
+      "address": "Via Maggio 53, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.fioreria.ch/",
+      "lat": 46.009254,
+      "lng": 8.967741
+    },
+    {
+      "id": "lug-la-kloche-a625a2",
+      "name": "La Kloche",
+      "category": "food",
+      "address": "Via Pioda 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://kloche.ch",
+      "lat": 46.007553,
+      "lng": 8.954122
+    },
+    {
+      "id": "lug-la-signora-degli-anelli-a177fc",
+      "name": "La signora degli anelli",
+      "category": "shopping",
+      "address": "Via Cattedrale 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lasignoradeglianelli.ch",
+      "lat": 46.004854,
+      "lng": 8.949501
+    },
+    {
+      "id": "lug-lac-lugano-arte-e-cultura-e8d844",
+      "name": "LAC Lugano Arte e Cultura",
+      "category": "services",
+      "address": "Piazza Luini 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://luganolac.ch",
+      "lat": 45.999431,
+      "lng": 8.947884
+    },
+    {
+      "id": "lug-lala-caffe-77548c",
+      "name": "Lala Caffè",
+      "category": "food",
+      "address": "Via Industria 20, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lalacaffe.ch/",
+      "lat": 46.020643,
+      "lng": 8.96525
+    },
+    {
+      "id": "lug-lavanderia-san-nicolao-37f047",
+      "name": "Lavanderia San Nicolao",
+      "category": "services",
+      "address": "Via al Nido 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lavanderiamary.ch",
+      "lat": 46.006893,
+      "lng": 8.942078
+    },
+    {
+      "id": "lug-lefty-717ad9",
+      "name": "LEFTY",
+      "category": "food",
+      "address": "Corso Pestalozzi 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/lefty_lugano/?hl=it",
+      "lat": 46.005677,
+      "lng": 8.954445
+    },
+    {
+      "id": "lug-leplaw-ch-0e74d1",
+      "name": "LepLaw CH",
+      "category": "services",
+      "address": "Corso Elvezia 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://leplaw.co.uk/",
+      "lat": 46.008978,
+      "lng": 8.955771
+    },
+    {
+      "id": "lug-libera-events-organizzazione-eventi-b09282",
+      "name": "Libera Events - Organizzazione eventi",
+      "category": "services",
+      "address": "Via Carducci 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005441,
+      "lng": 8.953099
+    },
+    {
+      "id": "lug-libreria-dietro-l-angolo-56acb0",
+      "name": "Libreria Dietro L'Angolo",
+      "category": "shopping",
+      "address": "Piazza Cioccaro 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.libreriadietrolangolo.ch/",
+      "lat": 46.005146,
+      "lng": 8.949895
+    },
+    {
+      "id": "lug-lievito-madre-b45b91",
+      "name": "Lievito Madre",
+      "category": "food",
+      "address": "Strada di Pregassona 54, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://pizzerialievitomadre.ch/",
+      "lat": 46.025269,
+      "lng": 8.976556
+    },
+    {
+      "id": "lug-linea-sana-lugano-040c7b",
+      "name": "Linea Sana Lugano",
+      "category": "services",
+      "address": "Via Pretorio 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lineasana.ch",
+      "lat": 46.006562,
+      "lng": 8.951796
+    },
+    {
+      "id": "lug-locanda-castagnola-1a2471",
+      "name": "Locanda Castagnola",
+      "category": "hotel",
+      "address": "Contrada Vecchio Municipio 1, 6976 Castagnola",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.locandacastagnola.ch/it",
+      "lat": 46.001328,
+      "lng": 8.97745
+    },
+    {
+      "id": "lug-love-estetica-f5f677",
+      "name": "Love Estetica",
+      "category": "services",
+      "address": "Via Giuseppe Motta 42, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.love-estetica-lugano.info",
+      "lat": 46.001335,
+      "lng": 8.947884
+    },
+    {
+      "id": "lug-love-is-in-the-hair-ae5ebf",
+      "name": "Love is in the Hair",
+      "category": "services",
+      "address": "Via delle Scuole 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://loveisinthe-hair.com/?fbclid=IwAR3nTuhTVS6By5kR3BE7hWwJ_NXhGUblJ_YmBlElDzjZReEWoX_oTDZb5Ew",
+      "lat": 46.006184,
+      "lng": 8.966552
+    },
+    {
+      "id": "lug-lubrano-elettrodomestici-1b0322",
+      "name": "Lubrano Elettrodomestici",
+      "category": "shopping",
+      "address": "Via Mercoli 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lubrano-elettrodomestici.ch/",
+      "lat": 46.015996,
+      "lng": 8.956521
+    },
+    {
+      "id": "lug-lugadrive-3f16fe",
+      "name": "LugaDrive",
+      "category": "services",
+      "address": "-, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://lugadrive.ch/?gclid=Cj0KCQjwwvilBhCFARIsADvYi7LYBi7emJYG8PnrrnLTytfqY1ka-snBOJ9liw4xGA7mNKKXYqZRE70aAshwEALw_wcB",
+      "lat": 46.020805,
+      "lng": 8.975589
+    },
+    {
+      "id": "lug-lugano-plan-b-info-point-e878e0",
+      "name": "Lugano Plan B Info Point",
+      "category": "shopping",
+      "address": "Via Motta 7 A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://planb.network/it",
+      "lat": 46.004188,
+      "lng": 8.949825
+    },
+    {
+      "id": "lug-lugano-top-watches-9de52f",
+      "name": "Lugano Top Watches",
+      "category": "shopping",
+      "address": "Via Nassa 52, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.luganotopwatches.com/",
+      "lat": 46.001595,
+      "lng": 8.949412
+    },
+    {
+      "id": "lug-lungo-lugano-cbfdae",
+      "name": "Lungo Lugano",
+      "category": "shopping",
+      "address": "Via Cattedrale 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004689,
+      "lng": 8.949578
+    },
+    {
+      "id": "lug-luther-art-ink-960fd9",
+      "name": "Luther Art Ink",
+      "category": "services",
+      "address": "Stràda de Sòra 10, 6968 Sonvico",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://luther-artink-tattoo.business.site/",
+      "lat": 46.05251,
+      "lng": 8.988127
+    },
+    {
+      "id": "lug-lvgano-barbershop-fb093e",
+      "name": "Lvgano Barbershop",
+      "category": "services",
+      "address": "Corso Pestalozzi 14, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://luganobarbershop.ch/",
+      "lat": 46.005666,
+      "lng": 8.954708
+    },
+    {
+      "id": "lug-m-holding-sagl-bf3d6f",
+      "name": "M Holding SAGL",
+      "category": "services",
+      "address": "Piazza Cioccaro 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00492,
+      "lng": 8.950062
+    },
+    {
+      "id": "lug-magazine-luxury-report-b67a47",
+      "name": "Magazine Luxury Report",
+      "category": "services",
+      "address": "Contrada di Sassello 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003986,
+      "lng": 8.949793
+    },
+    {
+      "id": "lug-maison-clinic-34270e",
+      "name": "Maison Clinic",
+      "category": "services",
+      "address": "Salita dei Frati 2A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://maison-clinic.com/",
+      "lat": 46.007581,
+      "lng": 8.949796
+    },
+    {
+      "id": "lug-makari-gastronomia-440385",
+      "name": "Màkari Gastronomia",
+      "category": "food",
+      "address": "Via alle Caragne 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.015345,
+      "lng": 8.955872
+    },
+    {
+      "id": "lug-make-up-express-di-lisa-sommella-1f3773",
+      "name": "Make up Express di Lisa Sommella",
+      "category": "services",
+      "address": "Via Maggio 43, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://lisasommella.com/",
+      "lat": 46.008899,
+      "lng": 8.965931
+    },
+    {
+      "id": "lug-marco-lucchetti-art-gallery-d61f89",
+      "name": "Marco Lucchetti Art Gallery",
+      "category": "shopping",
+      "address": "Via Cattedrale 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.marcolucchettiartgallery.ch",
+      "lat": 46.004566,
+      "lng": 8.949599
+    },
+    {
+      "id": "lug-marilu-shoes-bags-709161",
+      "name": "Marilù Shoes & Bags",
+      "category": "shopping",
+      "address": "Vicolo Ariosto 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005932,
+      "lng": 8.95129
+    },
+    {
+      "id": "lug-maros-gioielli-monvis-orologi-7288d2",
+      "name": "Maros Gioielli - MonVis Orologi",
+      "category": "shopping",
+      "address": "Via Carducci 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004783,
+      "lng": 8.953366
+    },
+    {
+      "id": "lug-maruska-riva-gioielli-fef657",
+      "name": "Maruska Riva Gioielli",
+      "category": "shopping",
+      "address": "Cattedrale 13, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://maruskariva.ch",
+      "lat": 46.005101,
+      "lng": 8.94889
+    },
+    {
+      "id": "lug-masi-palazzo-reali-f988b1",
+      "name": "Masi Palazzo Reali",
+      "category": "services",
+      "address": "Via Canova 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004177,
+      "lng": 8.953336
+    },
+    {
+      "id": "lug-matrix-vr-realta-virtuale-e-simulatori-di-guida-118203",
+      "name": "Matrix VR - Realtà virtuale e Simulatori di guida",
+      "category": "services",
+      "address": "Str. Ponte di Valle 8, 6964 Davesco",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://matrixvr.ch",
+      "lat": 46.032068,
+      "lng": 8.974423
+    },
+    {
+      "id": "lug-mauri-concept-food-beverage-d8c665",
+      "name": "Mauri Concept Food & Beverage",
+      "category": "food",
+      "address": "Via Vegezzi 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.mauriconcept.ch/",
+      "lat": 46.004539,
+      "lng": 8.952082
+    },
+    {
+      "id": "lug-mcdonald-s-lugano-578ce0",
+      "name": "McDonald’s Lugano",
+      "category": "food",
+      "address": "Riva Albertolli 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://mcdonalds.ch",
+      "lat": 46.003835,
+      "lng": 8.953872
+    },
+    {
+      "id": "lug-mem-di-gentili-maurizio-8e2a9e",
+      "name": "mem di Gentili Maurizio",
+      "category": "shopping",
+      "address": "Via Giosuè Carducci 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://mem-fashion.ch/",
+      "lat": 46.005269,
+      "lng": 8.953121
+    },
+    {
+      "id": "lug-mercato-di-dino-mazzalovo-b58a2c",
+      "name": "Mercato di Dino Mazzalovo",
+      "category": "shopping",
+      "address": "Piazzetta via Canova, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004158,
+      "lng": 8.952093
+    },
+    {
+      "id": "lug-mia-linnea-scarati-parrucchiera-7d189e",
+      "name": "Mia Linnéa Scarati - Parrucchiera",
+      "category": "services",
+      "address": "c/o MDP. Michele Di Paolo AESTHETIC HUB, Via Pioda 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007285,
+      "lng": 8.953904
+    },
+    {
+      "id": "lug-mini-groovy-44851f",
+      "name": "Mini Groovy",
+      "category": "shopping",
+      "address": "Piazza S. Rocco 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": null,
+      "lat": 46.004601,
+      "lng": 8.953325
+    },
+    {
+      "id": "lug-misterx-the-gentlemen-s-beauty-barber-shop-f0f360",
+      "name": "MisterX The Gentlemen's Beauty&Barber Shop",
+      "category": "services",
+      "address": "Piazzale Stazione 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.misterx-thegentlemensbarbershopandbeautycenter.com",
+      "lat": 46.005556,
+      "lng": 8.946915
+    },
+    {
+      "id": "lug-moncucchetto-6e3109",
+      "name": "Moncucchetto",
+      "category": "food",
+      "address": "Via Marietta Crivelli Torricelli 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.002391,
+      "lng": 8.938252
+    },
+    {
+      "id": "lug-monster-house-tattoo-piercing-321ef6",
+      "name": "Monster House Tattoo & Piercing",
+      "category": "services",
+      "address": "Via Canonica 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://monsterhouse.ch/",
+      "lat": 46.006837,
+      "lng": 8.95675
+    },
+    {
+      "id": "lug-monvis-orologi-a6c97f",
+      "name": "MonVis Orologi",
+      "category": "shopping",
+      "address": "Via Carducci 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004793,
+      "lng": 8.953259
+    },
+    {
+      "id": "lug-moogi-kebab-4a9d49",
+      "name": "Moogi Kebab",
+      "category": "food",
+      "address": "Via Camoghè 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://lugano.moogi.ch/",
+      "lat": 46.012009,
+      "lng": 8.957001
+    },
+    {
+      "id": "lug-moogi-kebab-parco-ciani-5d3e6d",
+      "name": "Moogi Kebab | Parco Ciani",
+      "category": "food",
+      "address": "Viale Cattaneo 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://lugano.moogi.ch/",
+      "lat": 46.005797,
+      "lng": 8.960772
+    },
+    {
+      "id": "lug-mr-vino-726632",
+      "name": "Mr. Vino",
+      "category": "food",
+      "address": "Via Carlo Maderno 23, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://mrvino.ch/it/",
+      "lat": 46.010909,
+      "lng": 8.955326
+    },
+    {
+      "id": "lug-musicdoor-2d0c25",
+      "name": "Musicdoor",
+      "category": "shopping",
+      "address": "Via dei Gorini 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.musicdoor.com",
+      "lat": 46.004109,
+      "lng": 8.950806
+    },
+    {
+      "id": "lug-mustis-pizza-kebab-hamburger-0fcc06",
+      "name": "MUSTIS- Pizza - Kebab - Hamburger",
+      "category": "food",
+      "address": "Viale Franscini 23, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://mustispizzakebab.ch/",
+      "lat": 46.010877,
+      "lng": 8.954273
+    },
+    {
+      "id": "lug-ncc-lugano-94e2e0",
+      "name": "NCC Lugano",
+      "category": "services",
+      "address": "Strada di Pregassona 43C, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ncclugano.ch/",
+      "lat": 46.022723,
+      "lng": 8.974509
+    },
+    {
+      "id": "lug-negio-food-kebab-grill-5a693e",
+      "name": "Negio Food, Kebab & Grill",
+      "category": "food",
+      "address": "Piazza dell'Indipendenza 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://negiofood.com",
+      "lat": 46.005495,
+      "lng": 8.954771
+    },
+    {
+      "id": "lug-new-limousine-03c0e6",
+      "name": "New Limousine",
+      "category": "services",
+      "address": "Via Carona 62, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.newlimousine.ch",
+      "lat": 45.980874,
+      "lng": 8.940344
+    },
+    {
+      "id": "lug-new-motors-32e42e",
+      "name": "New Motors",
+      "category": "services",
+      "address": "Via Brentani 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://newmotorslugano.com",
+      "lat": 46.019136,
+      "lng": 8.960339
+    },
+    {
+      "id": "lug-no-name-bee383",
+      "name": "No Name",
+      "category": "food",
+      "address": "Via Pelli 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007954,
+      "lng": 8.950772
+    },
+    {
+      "id": "lug-noleggio-auto-dg-buildings-b3ac6f",
+      "name": "Noleggio Auto DG Buildings",
+      "category": "services",
+      "address": "Vicolo Concordia 1, 6932 Breganzona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.010939,
+      "lng": 8.935757
+    },
+    {
+      "id": "lug-oakberry-acai-bowls-dfc7d1",
+      "name": "OAKBERRY Açaí Bowls",
+      "category": "food",
+      "address": "Corso Enrico Pestalozzi 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.oakberry.com/en-CH",
+      "lat": 46.006314,
+      "lng": 8.951208
+    },
+    {
+      "id": "lug-ortotecnica-ortopedia-riabilitazione-calzoleria-795021",
+      "name": "Ortotecnica - Ortopedia|Riabilitazione|Calzoleria",
+      "category": "shopping",
+      "address": "Viale Cassarate 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ortotecnica.ch/",
+      "lat": 46.006164,
+      "lng": 8.960428
+    },
+    {
+      "id": "lug-osteria-odeon-cafe-94c190",
+      "name": "Osteria Odeon Cafè",
+      "category": "food",
+      "address": "Via Peri 14, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005948,
+      "lng": 8.950811
+    },
+    {
+      "id": "lug-osteria-pizzeria-pazzallo-987952",
+      "name": "Osteria Pizzeria Pazzallo",
+      "category": "food",
+      "address": "Vicolo Bossi 2, 6912 Pazzallo",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.instagram.com/osteria_pazzallo?igsh=MTlpb2FqMXBxMG91cQ%3D%3D",
+      "lat": 45.984755,
+      "lng": 8.943034
+    },
+    {
+      "id": "lug-ottica-gotte-ecc563",
+      "name": "Ottica Götte",
+      "category": "shopping",
+      "address": "Via Pessina 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.otticagoette.ch",
+      "lat": 46.00405,
+      "lng": 8.950421
+    },
+    {
+      "id": "lug-ottica-ticinese-c3bc59",
+      "name": "Ottica Ticinese",
+      "category": "shopping",
+      "address": "Via alla Bozzoreda 37, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://otticaticinese.ch/",
+      "lat": 46.023919,
+      "lng": 8.967362
+    },
+    {
+      "id": "lug-ottica-vicari-85760f",
+      "name": "Ottica Vicari",
+      "category": "shopping",
+      "address": "Via Balestra 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.otticavicari.ch",
+      "lat": 46.007652,
+      "lng": 8.953273
+    },
+    {
+      "id": "lug-ottica-visio-157494",
+      "name": "Ottica Visio",
+      "category": "shopping",
+      "address": "Via Motta 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.otticavisio.ch",
+      "lat": 46.003931,
+      "lng": 8.949555
+    },
+    {
+      "id": "lug-ottico-michel-di-claudia-047293",
+      "name": "Ottico Michel di Claudia",
+      "category": "shopping",
+      "address": "Via Pretorio 14, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.otticomichellugano.ch/",
+      "lat": 46.006302,
+      "lng": 8.952167
+    },
+    {
+      "id": "lug-p356-concessionario-multimarca-fa7553",
+      "name": "P356 - Concessionario multimarca",
+      "category": "services",
+      "address": "Via alla Stampa 6 B, 6964 Davesco",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.p356.ch/",
+      "lat": 46.036831,
+      "lng": 8.973213
+    },
+    {
+      "id": "lug-pane-e-pomodoro-b0bf7c",
+      "name": "Pane e Pomodoro",
+      "category": "food",
+      "address": "Quartiere Maghetti 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005102,
+      "lng": 8.953756
+    },
+    {
+      "id": "lug-pasha-truck-b5f29d",
+      "name": "Pasha Truck",
+      "category": "food",
+      "address": "Via Pian Scairolo 48, 6915 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 45.98075,
+      "lng": 8.928762
+    },
+    {
+      "id": "lug-pasha-s-dd3f77",
+      "name": "Pasha's",
+      "category": "food",
+      "address": "Via alla Roggia 9, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://pashaskebab.ch/",
+      "lat": 46.01047,
+      "lng": 8.963431
+    },
+    {
+      "id": "lug-patrick-balmelli-vendita-diretta-di-carne-e-formaggio-9d7a39",
+      "name": "Patrick Balmelli - vendita diretta di carne e formaggio",
+      "category": "food",
+      "address": "Rosone 9, 6968 Sonvico",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.biomondo.ch/it/business/balmelli-patrick-971?srsltid=AfmBOopF6OV5130ZA9wA02MEcxssomf0fNal-Jd9sFSNttvxDR83ck80",
+      "lat": 46.06787,
+      "lng": 9.015235
+    },
+    {
+      "id": "lug-pepita-take-away-54dddb",
+      "name": "Pepita Take Away",
+      "category": "food",
+      "address": "Riva Vincenzo Vela, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.002188,
+      "lng": 8.950374
+    },
+    {
+      "id": "lug-phonextra-eb3d1b",
+      "name": "Phonextra",
+      "category": "shopping",
+      "address": "Via Maderno 24, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.phonextra.ch/",
+      "lat": 46.010905,
+      "lng": 8.955635
+    },
+    {
+      "id": "lug-piimove-studio-fitness-e-pilates-14ea44",
+      "name": "PiiMove Studio - Fitness e Pilates",
+      "category": "services",
+      "address": "Via Monte Brè 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.piivalue.ch/bio-link/",
+      "lat": 46.012031,
+      "lng": 8.958174
+    },
+    {
+      "id": "lug-plan-b-store-f45a68",
+      "name": "Plan B store",
+      "category": "shopping",
+      "address": "Viale Stefano Faranscini 16, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://planb.lugano.ch/",
+      "lat": 46.009684,
+      "lng": 8.95405
+    },
+    {
+      "id": "lug-podoticino-di-gaia-marroffino-fdfda0",
+      "name": "PodoTicino di Gaia Marroffino",
+      "category": "services",
+      "address": "Via Sorengo 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://podoticino.ch/",
+      "lat": 46.005806,
+      "lng": 8.944076
+    },
+    {
+      "id": "lug-pokekiosk-96940a",
+      "name": "Pokekiosk",
+      "category": "shopping",
+      "address": "Via Pretorio 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005883,
+      "lng": 8.952314
+    },
+    {
+      "id": "lug-porto-bello-6a92ce",
+      "name": "Porto Bello!",
+      "category": "food",
+      "address": "Via Foce 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003035,
+      "lng": 8.96204
+    },
+    {
+      "id": "lug-pow-space-6f7905",
+      "name": "PoW. Space",
+      "category": "services",
+      "address": "Contrada Sassello 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://pow.space/",
+      "lat": 46.003855,
+      "lng": 8.949915
+    },
+    {
+      "id": "lug-pow-gym-pow-space-members-only-dedf6e",
+      "name": "PoW.Gym (pow.space members only)",
+      "category": "services",
+      "address": "Contrada di Sassello 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003855,
+      "lng": 8.949915
+    },
+    {
+      "id": "lug-pr-cleaning-system-00e926",
+      "name": "PR cleaning System",
+      "category": "services",
+      "address": "Via Maraini 16, 6963 Pregassona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.prcleaning.ch/",
+      "lat": 46.02677,
+      "lng": 8.969516
+    },
+    {
+      "id": "lug-primaclasse-hairstyle-beauty-705c18",
+      "name": "PrimaClasse hairstyle & beauty",
+      "category": "services",
+      "address": "Via Peri 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://primaclasselugano.ch/",
+      "lat": 46.005511,
+      "lng": 8.950927
+    },
+    {
+      "id": "lug-proof-of-steak-351cf2",
+      "name": "Proof of Steak",
+      "category": "food",
+      "address": "Contrada Sassello 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003889,
+      "lng": 8.949772
+    },
+    {
+      "id": "lug-purest-accessori-in-cachemire-5f5bf5",
+      "name": "Purest Accessori In Cachemire",
+      "category": "shopping",
+      "address": "Via Pietro Capelli 2, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.purest.com",
+      "lat": 46.010054,
+      "lng": 8.959906
+    },
+    {
+      "id": "lug-r-d-sound-cuzzocrea-50da58",
+      "name": "R&D Sound Cuzzocrea",
+      "category": "shopping",
+      "address": "Quartiere Maghetti 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": null,
+      "lat": 46.005333,
+      "lng": 8.953803
+    },
+    {
+      "id": "lug-repairstore-d1b1b0",
+      "name": "RepairStore",
+      "category": "shopping",
+      "address": "Piazza Molino Nuovo 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.repairstore.ch",
+      "lat": 46.011715,
+      "lng": 8.954722
+    },
+    {
+      "id": "lug-ristorante-bianconero-221491",
+      "name": "Ristorante Bianconero",
+      "category": "food",
+      "address": "Via Trevano 100, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.fclugano.com/stadio/ristorante-bianconero/",
+      "lat": 46.024449,
+      "lng": 8.960327
+    },
+    {
+      "id": "lug-ristorante-cantinone-5118f3",
+      "name": "Ristorante Cantinone",
+      "category": "food",
+      "address": "Piazza Cioccaro 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005111,
+      "lng": 8.950042
+    },
+    {
+      "id": "lug-ristorante-cinese-orient-express-11bfb0",
+      "name": "Ristorante Cinese Orient Express",
+      "category": "food",
+      "address": "Corso Elvezia 22, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "http://ristoranteorient.ch/",
+      "lat": 46.008463,
+      "lng": 8.956067
+    },
+    {
+      "id": "lug-ristorante-commercio-24a081",
+      "name": "Ristorante Commercio",
+      "category": "food",
+      "address": "Via Ariosto 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005932,
+      "lng": 8.95129
+    },
+    {
+      "id": "lug-ristorante-federale-1855-4a1147",
+      "name": "Ristorante Federale 1855",
+      "category": "food",
+      "address": "Piazza Riforma 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://federale1855.ch/",
+      "lat": 46.004024,
+      "lng": 8.951142
+    },
+    {
+      "id": "lug-ristorante-ikobani-14cd32",
+      "name": "Ristorante Ikobani",
+      "category": "food",
+      "address": "Piazza Cioccaro 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.gabbani.com/home/",
+      "lat": 46.004779,
+      "lng": 8.949864
+    },
+    {
+      "id": "lug-ristorante-la-fermata-141c95",
+      "name": "Ristorante La Fermata",
+      "category": "food",
+      "address": "Via Carlo Cattaneo 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005919,
+      "lng": 8.959558
+    },
+    {
+      "id": "lug-ristorante-mary-c887b4",
+      "name": "Ristorante Mary",
+      "category": "food",
+      "address": "Piazza Rezzonico 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ristorantemary.ch",
+      "lat": 46.003379,
+      "lng": 8.950853
+    },
+    {
+      "id": "lug-ristorante-moncucchetto-b432cf",
+      "name": "Ristorante Moncucchetto",
+      "category": "food",
+      "address": "Via Marietta Crivelli Torricelli 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.002406,
+      "lng": 8.938327
+    },
+    {
+      "id": "lug-ristorante-pizzeria-breva-9e8799",
+      "name": "Ristorante Pizzeria Breva",
+      "category": "food",
+      "address": "Viale Castagnola 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "http://www.brevalugano.ch/",
+      "lat": 46.00618,
+      "lng": 8.966275
+    },
+    {
+      "id": "lug-ristorante-pizzeria-domino-38d62d",
+      "name": "Ristorante Pizzeria Domino",
+      "category": "food",
+      "address": "Riva Antonio Caccia 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.dominolugano.com",
+      "lat": 45.993424,
+      "lng": 8.945955
+    },
+    {
+      "id": "lug-ristorante-pizzeria-fresco-5ec2ce",
+      "name": "Ristorante pizzeria Fresco",
+      "category": "food",
+      "address": "Via Bertaro Lambertenghi 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://ristorantefresco.ch/",
+      "lat": 46.008719,
+      "lng": 8.957365
+    },
+    {
+      "id": "lug-ristorante-pizzeria-stadio-8b7fa8",
+      "name": "Ristorante Pizzeria Stadio",
+      "category": "food",
+      "address": "Via Trevano 93, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ristorantestadiolugano.ch",
+      "lat": 46.021337,
+      "lng": 8.958218
+    },
+    {
+      "id": "lug-ristorante-seven-lugano-a7be58",
+      "name": "Ristorante Seven Lugano",
+      "category": "food",
+      "address": "Via Stauffacher - Vedani 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.seven.ch/restaurants/seven-lugano-restaurant",
+      "lat": 46.003964,
+      "lng": 8.955107
+    },
+    {
+      "id": "lug-ristorante-tango-lugano-8d6753",
+      "name": "Ristorante Tango Lugano",
+      "category": "food",
+      "address": "Piazza Riforma 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.tango-ti.ch",
+      "lat": 46.004002,
+      "lng": 8.951687
+    },
+    {
+      "id": "lug-rolfing-ticino-3ef71a",
+      "name": "Rolfing Ticino",
+      "category": "services",
+      "address": "Corso Pestalozzi 21 B, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.ticinorolfing.com/",
+      "lat": 46.005908,
+      "lng": 8.954608
+    },
+    {
+      "id": "lug-roma-rent-noleggio-auto-a-lungo-termine-d566ee",
+      "name": "Roma Rent - noleggio auto a lungo termine",
+      "category": "services",
+      "address": "Via Vicari 14, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007386,
+      "lng": 8.968342
+    },
+    {
+      "id": "lug-rq-lash-brow-beauty-academy-b8c904",
+      "name": "RQ Lash Brow Beauty Academy",
+      "category": "services",
+      "address": "Via Ciseri 6, Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://rosequezada.my.canva.site/sito-web-rq-sito-web",
+      "lat": 46.01074,
+      "lng": 8.951941
+    },
+    {
+      "id": "lug-rq-lash-brow-beauty-academy-ed9cb1",
+      "name": "RQ Lash Brow Beauty Academy",
+      "category": "services",
+      "address": "Via Ciseri 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://rosequezada.my.canva.site/sito-web-rq-sito-web",
+      "lat": 46.01074,
+      "lng": 8.951941
+    },
+    {
+      "id": "lug-salone-7-hairstyle-92f1d8",
+      "name": "Salone 7 Hairstyle",
+      "category": "services",
+      "address": "Corso Elvezia 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008439,
+      "lng": 8.955619
+    },
+    {
+      "id": "lug-salone-conticello-f1e328",
+      "name": "Salone Conticello",
+      "category": "services",
+      "address": "Viale dei Faggi 10, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.008462,
+      "lng": 8.964477
+    },
+    {
+      "id": "lug-salone-di-bellezza-ama-il-tuo-stile-03d3f6",
+      "name": "Salone di Bellezza Ama il tuo Stile",
+      "category": "services",
+      "address": "Via Besso 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://amailtuostilepf.ch/",
+      "lat": 46.005883,
+      "lng": 8.943407
+    },
+    {
+      "id": "lug-salone-la-lounge-loreto-318e8d",
+      "name": "Salone La Lounge Loreto",
+      "category": "services",
+      "address": "Via Maraini 31, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 45.996409,
+      "lng": 8.943929
+    },
+    {
+      "id": "lug-salone-manuela-ba92f4",
+      "name": "Salone Manuela",
+      "category": "services",
+      "address": "Via Frasca 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006122,
+      "lng": 8.955071
+    },
+    {
+      "id": "lug-salone-smeraldo-36d68e",
+      "name": "Salone Smeraldo",
+      "category": "services",
+      "address": "Salita Chiattone 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005136,
+      "lng": 8.949513
+    },
+    {
+      "id": "lug-sam-hair-attitude-barber-shop-c3e2ed",
+      "name": "SAM Hair Attitude & Barber Shop",
+      "category": "services",
+      "address": "Via Soave 5A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004212,
+      "lng": 8.950748
+    },
+    {
+      "id": "lug-sass-cafe-vineria-cea916",
+      "name": "Sass Cafè Vineria",
+      "category": "food",
+      "address": "Piazza della Riforma 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://sasscafe.ch",
+      "lat": 46.004014,
+      "lng": 8.951031
+    },
+    {
+      "id": "lug-sci-club-sasso-grande-400dd4",
+      "name": "Sci Club Sasso Grande",
+      "category": "services",
+      "address": "Pian Piret, 6968 Sonvico",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.sciclubsassogrande.ch/sagra-della-costina",
+      "lat": 46.070514,
+      "lng": 9.007229
+    },
+    {
+      "id": "lug-scuola-nautica-3-nodi-6c9704",
+      "name": "Scuola nautica 3 nodi",
+      "category": "services",
+      "address": "Via Foce 11, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": null,
+      "lat": 46.003046,
+      "lng": 8.96204
+    },
+    {
+      "id": "lug-sd-studi-dentistici-e5e6d0",
+      "name": "SD Studi dentistici",
+      "category": "services",
+      "address": "Via Lavizzari 2A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://studidentistici.ch/#LUGANO",
+      "lat": 46.006462,
+      "lng": 8.958256
+    },
+    {
+      "id": "lug-serena-maisto-artist-a35fc0",
+      "name": "Serena Maisto - Artist",
+      "category": "shopping",
+      "address": "Via Balestra 30, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.serenamaisto.com/",
+      "lat": 46.007804,
+      "lng": 8.96017
+    },
+    {
+      "id": "lug-sh21-boutique-piazza-riforma-e33568",
+      "name": "SH21 Boutique, Piazza Riforma",
+      "category": "shopping",
+      "address": "Piazza Riforma 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://sh21.ch",
+      "lat": 46.003758,
+      "lng": 8.951784
+    },
+    {
+      "id": "lug-sh21-via-nassa-4f52e7",
+      "name": "SH21, Via Nassa",
+      "category": "shopping",
+      "address": "Via Nassa 36/38, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.002242,
+      "lng": 8.949575
+    },
+    {
+      "id": "lug-shisha-bar-el-cid-lugano-8be8ed",
+      "name": "Shisha Bar El Cid Lugano",
+      "category": "food",
+      "address": "Via Antonio Adamini 28, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 45.997643,
+      "lng": 8.94371
+    },
+    {
+      "id": "lug-shoeclub-d270f6",
+      "name": "ShoeClub",
+      "category": "shopping",
+      "address": "Via della Posta 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004969,
+      "lng": 8.952708
+    },
+    {
+      "id": "lug-shoppa-smart-technology-store-276c0f",
+      "name": "Shoppa Smart Technology Store",
+      "category": "shopping",
+      "address": "Viale Castagnola 21, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.shoppa.ch/",
+      "lat": 46.00644,
+      "lng": 8.965552
+    },
+    {
+      "id": "lug-simone-marchi-tattoo-6c3c43",
+      "name": "Simone Marchi Tattoo",
+      "category": "services",
+      "address": "Via Canonica 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.marchitattoo.com/",
+      "lat": 46.006974,
+      "lng": 8.956793
+    },
+    {
+      "id": "lug-smile-institute-lugano-90f815",
+      "name": "SMILE INSTITUTE Lugano",
+      "category": "services",
+      "address": "Via Pioda 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://smileinstitute.ch/",
+      "lat": 46.006599,
+      "lng": 8.953667
+    },
+    {
+      "id": "lug-snack-bar-lido-riva-caccia-5e7b88",
+      "name": "Snack Bar Lido Riva Caccia",
+      "category": "food",
+      "address": "Via Antonio Riva Caccia 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "www.gabbani.com",
+      "lat": 45.995755,
+      "lng": 8.947121
+    },
+    {
+      "id": "lug-sonego-lugano-16-26414e",
+      "name": "Sonego Lugano 16",
+      "category": "shopping",
+      "address": "Via Peri 16, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://sonego.ch/",
+      "lat": 46.006041,
+      "lng": 8.950864
+    },
+    {
+      "id": "lug-sport-rehab-8ab045",
+      "name": "Sport Rehab",
+      "category": "services",
+      "address": "Via Moncucco 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005332,
+      "lng": 8.942279
+    },
+    {
+      "id": "lug-stach-clothing-cf5686",
+      "name": "Stach Clothing",
+      "category": "shopping",
+      "address": "Via Magatti 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00438,
+      "lng": 8.951958
+    },
+    {
+      "id": "lug-stage-12-053a20",
+      "name": "Stage 12",
+      "category": "services",
+      "address": "Corso Pestalozzi 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://stage12.ch/",
+      "lat": 46.005519,
+      "lng": 8.954462
+    },
+    {
+      "id": "lug-staglio-la-pizza-al-taglio-lugano-eb7843",
+      "name": "Staglio, La Pizza al Taglio Lugano",
+      "category": "food",
+      "address": "Corso Elvezia 8, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.staglio.ch",
+      "lat": 46.006837,
+      "lng": 8.955828
+    },
+    {
+      "id": "lug-studio-antonini-107a19",
+      "name": "Studio Antonini",
+      "category": "services",
+      "address": "Viale Franscini 27, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.studioantonini.info/",
+      "lat": 46.010931,
+      "lng": 8.954392
+    },
+    {
+      "id": "lug-studio-ceramica-lurra-98ff06",
+      "name": "Studio Ceramica Lurra",
+      "category": "services",
+      "address": "Via Frasca 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.lurra.ch/",
+      "lat": 46.006551,
+      "lng": 8.95517
+    },
+    {
+      "id": "lug-studio-laterale-yoga-health-coaching-dc38fd",
+      "name": "Studio Laterale Yoga & Health Coaching",
+      "category": "services",
+      "address": "Via Besso 42, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.studiolaterale.ch/",
+      "lat": 46.007306,
+      "lng": 8.94172
+    },
+    {
+      "id": "lug-studio-massaggi-medicali-di-gabriella-sessa-ce2f26",
+      "name": "Studio massaggi medicali di Gabriella Sessa",
+      "category": "services",
+      "address": "Via delle Scuole 15 A, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00837,
+      "lng": 8.966232
+    },
+    {
+      "id": "lug-studio-medico-dr-alfonso-iodice-418b74",
+      "name": "Studio Medico Dr. Alfonso Iodice",
+      "category": "services",
+      "address": "Via Bottogno 7A, 6962 Viganello",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.012544,
+      "lng": 8.968086
+    },
+    {
+      "id": "lug-studio-medico-dr-giunchi-cc26b0",
+      "name": "Studio Medico Dr. Giunchi",
+      "category": "services",
+      "address": "Via Petrini 2 (presso Centro Medico Lugano Centro), Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.dariogiunchi.ch/",
+      "lat": 46.013504,
+      "lng": 8.955185
+    },
+    {
+      "id": "lug-swiss-free-shop-b35c55",
+      "name": "Swiss Free Shop",
+      "category": "food",
+      "address": "Via Zurigo 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.swissfreeshop.com",
+      "lat": 46.011475,
+      "lng": 8.956455
+    },
+    {
+      "id": "lug-swissxpat-23f795",
+      "name": "SwissXPat",
+      "category": "services",
+      "address": "Viale Franscini 16, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.swissxpat.ch/",
+      "lat": 46.009879,
+      "lng": 8.95406
+    },
+    {
+      "id": "lug-taleda-ba040f",
+      "name": "Taleda",
+      "category": "shopping",
+      "address": "Via Pessina 20, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://taleda.com",
+      "lat": 46.004629,
+      "lng": 8.950695
+    },
+    {
+      "id": "lug-tasty-bites-904acb",
+      "name": "Tasty Bites",
+      "category": "food",
+      "address": "Via Lavizzari 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.tastybiteslugano.ch/",
+      "lat": 46.006607,
+      "lng": 8.957915
+    },
+    {
+      "id": "lug-taxi-daniele-8fef29",
+      "name": "Taxi Daniele",
+      "category": "services",
+      "address": "-, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005334,
+      "lng": 8.951463
+    },
+    {
+      "id": "lug-taxi-driver-c6ef6a",
+      "name": "Taxi Driver",
+      "category": "services",
+      "address": "Piazza Riforma, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.003671,
+      "lng": 8.951916
+    },
+    {
+      "id": "lug-taxi-luca-4fe52a",
+      "name": "Taxi Luca",
+      "category": "services",
+      "address": "Via Clemente Maraini, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.004102,
+      "lng": 8.947414
+    },
+    {
+      "id": "lug-taxi-lugano-24-nostop-189464",
+      "name": "Taxi Lugano 24 NoStop",
+      "category": "services",
+      "address": "Via Beltramina 16, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://taxilugano24nostop.ch/",
+      "lat": 46.016903,
+      "lng": 8.959305
+    },
+    {
+      "id": "lug-tech-lugano-ed4a10",
+      "name": "Tech Lugano",
+      "category": "shopping",
+      "address": "Via G.B. Pioda 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://techlugano.ch",
+      "lat": 46.006079,
+      "lng": 8.953925
+    },
+    {
+      "id": "lug-teddy-spiel-233d33",
+      "name": "Teddy Spiel",
+      "category": "shopping",
+      "address": "Quartiere Maghetti 6, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.teddyspiel.ch/?srsltid=AfmBOoppTUZ5I4Hcb_gz1tBHg0T5Nhb-TfWwhgsv7eWAjrdDs2togbXY",
+      "lat": 46.005261,
+      "lng": 8.95356
+    },
+    {
+      "id": "lug-the-market-d714d6",
+      "name": "The Market",
+      "category": "food",
+      "address": "Via Pasquale Lucchini 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": null,
+      "lat": 46.007605,
+      "lng": 8.957488
+    },
+    {
+      "id": "lug-the-perfumery-e37b08",
+      "name": "The Perfumery",
+      "category": "shopping",
+      "address": "Via Pretorio 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00585,
+      "lng": 8.951517
+    },
+    {
+      "id": "lug-the-store-66ddf2",
+      "name": "The Store",
+      "category": "shopping",
+      "address": "Via della posta 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.thestorelugano.ch/",
+      "lat": 46.005105,
+      "lng": 8.952298
+    },
+    {
+      "id": "lug-tomatis-ticino-8469b6",
+      "name": "Tomatis Ticino",
+      "category": "services",
+      "address": "Via delle Scuole 12, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.tomatis-ticino.com/",
+      "lat": 46.007425,
+      "lng": 8.966935
+    },
+    {
+      "id": "lug-trinity-irish-pub-4159aa",
+      "name": "Trinity Irish Pub",
+      "category": "food",
+      "address": "Via Canonica 1, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.006915,
+      "lng": 8.96028
+    },
+    {
+      "id": "lug-triticum-bakery-13180c",
+      "name": "Triticum Bakery",
+      "category": "food",
+      "address": "Viale Franscini 27 angolo Via Vanoni, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.triticumbakery.com/",
+      "lat": 46.011005,
+      "lng": 8.954189
+    },
+    {
+      "id": "lug-tuina-massage-by-sido-a-domicilio-39c063",
+      "name": "Tuina Massage by Sido (a domicilio)",
+      "category": "services",
+      "address": "Via Sorengo 17, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": false,
+      "verified": false,
+      "website": "https://tuinamassagebysido.net/it/massaggi-a-lugano/",
+      "lat": 46.00433,
+      "lng": 8.942272
+    },
+    {
+      "id": "lug-tutti-servizi-mercato-alimentare-2b891f",
+      "name": "Tutti Servizi - Mercato alimentare",
+      "category": "food",
+      "address": "Contrada Verla, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://tuttiservizi.ch/",
+      "lat": 46.00515,
+      "lng": 8.952115
+    },
+    {
+      "id": "lug-valentina-beauty-center-596d31",
+      "name": "Valentina Beauty Center",
+      "category": "services",
+      "address": "Via Besso 7, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.005839,
+      "lng": 8.943737
+    },
+    {
+      "id": "lug-valentina-cervo-parrucchiera-7d1794",
+      "name": "Valentina Cervo - Parrucchiera",
+      "category": "services",
+      "address": "c/o MDP. Michele Di Paolo AESTHETIC HUB, Via Pioda 9, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.007409,
+      "lng": 8.953884
+    },
+    {
+      "id": "lug-vibotech-sagl-217cd1",
+      "name": "Vibotech Sagl",
+      "category": "services",
+      "address": "Salita Ines Bolla 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.vibotech.ch/",
+      "lat": 46.009806,
+      "lng": 8.949706
+    },
+    {
+      "id": "lug-vin-co-wine-bar-more-bistrot-72dd7e",
+      "name": "Vin & Co. - Wine Bar & More Bistrot",
+      "category": "food",
+      "address": "Viale Franscini 38, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://bco-food-beverage.digitalone.site/",
+      "lat": 46.011006,
+      "lng": 8.954733
+    },
+    {
+      "id": "lug-vitti-7dd2f5",
+      "name": "Vitti",
+      "category": "food",
+      "address": "Via Pretorio 2, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://vittilugano.ch/",
+      "lat": 46.00533,
+      "lng": 8.951617
+    },
+    {
+      "id": "lug-vivi-breganzona-108a73",
+      "name": "Vivi Breganzona",
+      "category": "services",
+      "address": "Piazza Chiattone, 6932 Breganzona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://vivibreganzona.ch/",
+      "lat": 46.007887,
+      "lng": 8.929319
+    },
+    {
+      "id": "lug-voltech-controllo-impianti-elettrici-b72894",
+      "name": "Voltech Controllo Impianti Elettrici",
+      "category": "services",
+      "address": "Corso Elvezia 37, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.voltechsagl.ch/",
+      "lat": 46.010903,
+      "lng": 8.956062
+    },
+    {
+      "id": "lug-women-s-movimento-fb2271",
+      "name": "Women's Movimento",
+      "category": "services",
+      "address": "Via San Carlo 7, 6932 Breganzona",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://womensmovimento.ch/it/",
+      "lat": 46.013231,
+      "lng": 8.9331
+    },
+    {
+      "id": "lug-yes-swiss-global-event-services-de7f87",
+      "name": "Yes Swiss Global Event Services",
+      "category": "services",
+      "address": "Via Marconi 4, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://yes-swiss.ch/",
+      "lat": 46.00416,
+      "lng": 8.954767
+    },
+    {
+      "id": "lug-yoyo-tennis-phili-riding-55c66b",
+      "name": "Yoyo-Tennis & Phili-Riding",
+      "category": "shopping",
+      "address": "Via del Tiglio 3, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://yoyo-tennis.ch",
+      "lat": 46.007298,
+      "lng": 8.9615
+    },
+    {
+      "id": "lug-z-bike-lugano-da11c8",
+      "name": "Z-Bike Lugano",
+      "category": "shopping",
+      "address": "Via Vignola 14, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://z-bike.ch/",
+      "lat": 46.015899,
+      "lng": 8.958772
+    },
+    {
+      "id": "lug-zenzero-beauty-culture-fd3663",
+      "name": "Zenzero Beauty Culture",
+      "category": "services",
+      "address": "Via Canova 15, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://www.zezerobeautyculture.com",
+      "lat": 46.004588,
+      "lng": 8.954654
+    },
+    {
+      "id": "lug-zigozago-produzione-e-ingrosso-abbigliamento-per-bambini-92ea76",
+      "name": "ZigoZago - Produzione e ingrosso abbigliamento per bambini",
+      "category": "shopping",
+      "address": "Via Bregà 13, 6965 Cadro",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": "https://zigozago.ch/",
+      "lat": 46.05132,
+      "lng": 8.988593
+    },
+    {
+      "id": "lug-zoeyland-8d629e",
+      "name": "Zoeyland",
+      "category": "shopping",
+      "address": "Via Contrada Sassello 5, 6900 Lugano",
+      "assets": [
+        "BTC",
+        "USDT"
+      ],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "lat": 46.00356,
+      "lng": 8.949737
+    }
+  ]
+}
