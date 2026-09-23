@@ -8,7 +8,7 @@ import { cn } from './cn';
  * Modale accessibile: chiusura con ESC / click sull'overlay, blocco dello scroll di pagina,
  * focus spostato sul pannello all'apertura e restituito all'elemento chiamante alla chiusura.
  */
-export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md' }) {
+export default function Modal({ open, onClose, title, subtitle, children, footer, size = 'md', closeLabel = 'Chiudi' }) {
   const panelRef = useRef(null);
   const lastFocused = useRef(null);
 
@@ -76,7 +76,7 @@ export default function Modal({ open, onClose, title, subtitle, children, footer
           <button
             type="button"
             onClick={onClose}
-            aria-label="Chiudi"
+            aria-label={closeLabel}
             className="rounded-lg border border-white/10 p-2 text-muted transition hover:border-gold/40 hover:text-gold"
           >
             <X className="h-4 w-4" />

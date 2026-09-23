@@ -3,16 +3,20 @@ import { Trophy, Users, Store, Video, TrendingUp, Gift, ArrowUpRight } from 'luc
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import { PRIZES, CONTEST, TOTAL_POOL, TOTAL_WINNERS, formatXaut } from '@/lib/constants';
+import { formatDate, localePath } from '@/lib/i18n';
 
 const MERCHANT_ICONS = [TrendingUp, Video, Gift];
 
-export default function Prizes() {
+export default function Prizes({ t, locale }) {
+  // I testi dei premi vivono nel dizionario; importi e conteggi restano in constants.
+  const label = (item) => t.items[item.place] ?? { place: item.place, desc: item.desc };
+
   return (
     <section id="montepremi" className="section-pad">
       <SectionTitle
-        eyebrow="Montepremi"
-        title={`${formatXaut(TOTAL_POOL)} di Oro Digitale in palio`}
-        subtitle={`${TOTAL_WINNERS} premi in palio, divisi in due montepremi separati: uno per i clienti che pagano in crypto, uno per i merchant aderenti.`}
+        eyebrow={t.eyebrow}
+        title={t.title(formatXaut(TOTAL_POOL))}
+        subtitle={t.subtitle(TOTAL_WINNERS)}
       />
 
       <div className="mt-14 grid gap-6 lg:grid-cols-2">
@@ -20,9 +24,10 @@ export default function Prizes() {
         <GlassCard className="p-7 sm:p-9">
           <Header
             icon={Users}
-            kicker="Sezione Clienti"
+            kicker={t.usersKicker}
             pool={formatXaut(PRIZES.users.pool)}
-            note={PRIZES.users.note}
+            poolLabel={t.poolLabel}
+            note={t.usersNote}
           />
           <ul className="mt-8 space-y-3">
             {PRIZES.users.items.map((item, i) => (
@@ -35,10 +40,10 @@ export default function Prizes() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <p className="text-sm font-semibold text-white">{item.place}</p>
+                    <p className="text-sm font-semibold text-white">{label(item).place}</p>
                     <p className="text-sm font-bold text-gold">{formatXaut(item.amount)}</p>
                   </div>
-                  <p className="mt-1 text-xs leading-relaxed text-muted">{item.desc}</p>
+                  <p className="mt-1 text-xs leading-relaxed text-muted">{label(item).desc}</p>
                 </div>
               </li>
             ))}
@@ -49,9 +54,10 @@ export default function Prizes() {
         <GlassCard className="p-7 sm:p-9">
           <Header
             icon={Store}
-            kicker="Sezione Merchant"
+            kicker={t.merchantsKicker}
             pool={formatXaut(PRIZES.merchants.pool)}
-            note={PRIZES.merchants.note}
+            poolLabel={t.poolLabel}
+            note={t.merchantsNote}
           />
           <ul className="mt-8 space-y-3">
             {PRIZES.merchants.items.map((item, i) => {
@@ -66,16 +72,16 @@ export default function Prizes() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <p className="text-sm font-semibold text-white">{item.place}</p>
+                      <p className="text-sm font-semibold text-white">{label(item).place}</p>
                       <p className="text-sm font-bold text-gold">{formatXaut(item.amount)}</p>
                     </div>
-                    <p className="mt-1 text-xs leading-relaxed text-muted">{item.desc}</p>
+                    <p className="mt-1 text-xs leading-relaxed text-muted">{label(item).desc}</p>
                     {item.place === 'Best Social Video' && (
                       <Link
-                        href="/best-social-video"
+                        href={localePath(locale, "/best-social-video")}
                         className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold underline underline-offset-2 hover:text-gold-warm"
                       >
-                        Regole, hashtag e idee per il video
+                        {t.videoLink}
                         <ArrowUpRight className="h-3.5 w-3.5" />
                       </Link>
                     )}
@@ -88,16 +94,13 @@ export default function Prizes() {
       </div>
 
       <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted/80">
-        Estrazione pubblica prevista il{' '}
-        {new Date(CONTEST.drawDate).toLocaleDateString('it-CH', { day: '2-digit', month: 'long', year: 'numeric' })}.
-        I premi sono erogati in Tether Gold (XAUT) sull&apos;indirizzo indicato in fase di giocata. Il
-        controvalore in CHF può variare in funzione del prezzo dell&apos;oro.
+        {t.note(formatDate(CONTEST.drawDate, locale))}
       </p>
     </section>
   );
 }
 
-function Header({ icon: Icon, kicker, pool, note }) {
+function Header({ icon: Icon, kicker, pool, note, poolLabel }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
@@ -109,7 +112,7 @@ function Header({ icon: Icon, kicker, pool, note }) {
       </div>
       <div className="shrink-0 text-right">
         <p className="text-3xl font-extrabold text-gold-gradient sm:text-4xl">{pool}</p>
-        <p className="text-[11px] uppercase tracking-wider text-muted">montepremi</p>
+        <p className="text-[11px] uppercase tracking-wider text-muted">{poolLabel}</p>
       </div>
     </div>
   );

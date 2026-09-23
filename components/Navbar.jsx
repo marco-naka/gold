@@ -2,12 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { Menu, X, ScrollText, ArrowRight } from 'lucide-react';
-import { NAV_LINKS } from '@/lib/constants';
+import { localePath } from '@/lib/i18n';
+import LanguageSwitch from './LanguageSwitch';
 import { NakaLogo, PlanBLogo, XautBadge } from './Brand';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 
-export default function Navbar({ onOpenRules }) {
+export default function Navbar({ t, locale, onOpenRules }) {
+  const links = [
+    { label: t.nav.howItWorks, href: '#come-funziona' },
+    { label: t.nav.prizes, href: '#montepremi' },
+    { label: t.nav.map, href: '#mappa' },
+    { label: t.nav.upload, href: '#partecipa' },
+  ];
+
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -36,14 +44,14 @@ export default function Navbar({ onOpenRules }) {
       )}
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <a href="#top" className="flex shrink-0 items-center gap-3" aria-label="NAKA - Home">
+        <a href={localePath(locale)} className="flex shrink-0 items-center gap-3" aria-label={t.nav.home}>
           <NakaLogo />
           <span className="hidden h-8 w-px bg-white/10 xl:block" />
           <XautBadge className="hidden xl:inline-flex" />
         </a>
 
         <div className="hidden items-center gap-1 lg:flex">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -58,14 +66,15 @@ export default function Navbar({ onOpenRules }) {
             className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
           >
             <ScrollText className="h-4 w-4" />
-            Regolamento
+            {t.nav.rules}
           </button>
+          <LanguageSwitch locale={locale} className="ml-1" />
         </div>
 
         <div className="flex items-center gap-3">
           <PlanBLogo className="hidden md:inline-flex" />
           <Button as="a" href="#partecipa" size="sm" className="hidden sm:inline-flex">
-            Partecipa Ora
+            {t.nav.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Button>
           <button
@@ -73,7 +82,7 @@ export default function Navbar({ onOpenRules }) {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-nav"
-            aria-label={open ? 'Chiudi menu' : 'Apri menu'}
+            aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
             className="rounded-lg border border-white/10 bg-white/5 p-2.5 text-white transition hover:border-gold/40 lg:hidden"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -90,7 +99,7 @@ export default function Navbar({ onOpenRules }) {
         )}
       >
         <div className="space-y-1 px-5 py-4">
-          {NAV_LINKS.map((link) => (
+          {links.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -109,10 +118,11 @@ export default function Navbar({ onOpenRules }) {
             className="flex w-full items-center gap-2 rounded-lg px-3 py-3 text-left text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
           >
             <ScrollText className="h-4 w-4" />
-            Regolamento
+            {t.nav.rules}
           </button>
+          <LanguageSwitch locale={locale} className="mt-2 w-full justify-center" />
           <Button as="a" href="#partecipa" onClick={() => setOpen(false)} className="mt-2 w-full">
-            Partecipa Ora
+            {t.nav.cta}
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>

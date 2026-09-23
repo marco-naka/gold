@@ -23,6 +23,7 @@ import { cn } from './ui/cn';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_RECEIPT_BYTES, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
+import { formatDate } from '@/lib/i18n';
 import { IS_DEMO } from '@/lib/deploy';
 
 const EMPTY = {
@@ -33,7 +34,7 @@ const EMPTY = {
   acceptRules: false,
 };
 
-export default function EntryForm({ onOpenRules }) {
+export default function EntryForm({ t, locale, onOpenRules }) {
   const [values, setValues] = useState(EMPTY);
   const [receipt, setReceipt] = useState(null);
   const [errors, setErrors] = useState({});
@@ -121,7 +122,7 @@ export default function EntryForm({ onOpenRules }) {
           return;
         }
         if (data.errors) setErrors(data.errors);
-        setServerError(data.message || 'Invio non riuscito. Riprova tra qualche istante.');
+        setServerError(data.message || t.genericError);
         setStatus('error');
         return;
       }
@@ -134,7 +135,7 @@ export default function EntryForm({ onOpenRules }) {
       setErrors({});
       if (fileInput.current) fileInput.current.value = '';
     } catch {
-      setServerError('Connessione non disponibile. Verifica la rete e riprova.');
+      setServerError(t.networkError);
       setStatus('error');
     }
   };
@@ -142,10 +143,7 @@ export default function EntryForm({ onOpenRules }) {
   return (
     <section id="partecipa" className="section-pad scroll-mt-28">
       <SectionTitle
-        eyebrow="Registra la giocata"
-        title="Carica Scontrino e TX ID"
-        subtitle="Inserisci il numero della transazione e la foto dello scontrino: servono entrambi per convalidare la giocata."
-      />
+        eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       {closed ? (
         <GlassCard hover={false} className="mx-auto mt-12 max-w-2xl p-8 text-center sm:p-10">
@@ -154,28 +152,20 @@ export default function EntryForm({ onOpenRules }) {
           </span>
           <h3 className="mt-5 text-xl font-bold">
             {closed.reason === 'demo'
-              ? 'Anteprima del sito'
+              ? t.closed.demoTitle
               : closed.reason === 'upcoming'
-                ? 'Le registrazioni non sono ancora aperte'
-                : 'Registrazioni chiuse'}
+                ? t.closed.upcomingTitle
+                : t.closed.closedTitle}
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
             {closed.reason === 'demo'
-              ? 'Stai guardando una versione dimostrativa: il modulo di partecipazione verrà attivato all\u2019apertura del concorso. Nessun dato viene raccolto.'
+              ? t.closed.demoText
               : closed.reason === 'upcoming'
-              ? `Potrai registrare le tue giocate dal ${closed.opensAt.toLocaleDateString('it-CH', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}. Nel frattempo scopri i negozi aderenti.`
-                : `Il termine per registrare le giocate è scaduto il ${closed.closesAt.toLocaleDateString('it-CH', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}. I vincitori vengono avvisati via email.`}
+                ? t.closed.upcomingText(formatDate(closed.opensAt, locale))
+                : t.closed.closedText(formatDate(closed.closesAt, locale))}
           </p>
           <Button as="a" href="#mappa" variant="secondary" className="mt-7">
-            Vedi i negozi aderenti
+            {t.closed.cta}
           </Button>
         </GlassCard>
       ) : (
@@ -183,8 +173,8 @@ export default function EntryForm({ onOpenRules }) {
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           {/* 1. Email */}
           <Field
-            label="La tua email"
-            hint="Ti contattiamo qui se vinci: è l’unico dato che ti serve per essere raggiungibile."
+            label={t.email}
+            hint={t.emailHint}
             icon={Mail}
             error={showError('email')}
             htmlFor="email"
@@ -195,7 +185,7 @@ export default function EntryForm({ onOpenRules }) {
               type="email"
               inputMode="email"
               autoComplete="email"
-              placeholder="nome@dominio.ch"
+              placeholder={t.emailPlaceholder}
               value={values.email}
               onChange={(e) => setField('email', e.target.value)}
               onBlur={handleBlur}
@@ -206,17 +196,16 @@ export default function EntryForm({ onOpenRules }) {
 
           {/* 2. Prova d'acquisto: numero transazione e/o foto scontrino */}
           <fieldset className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 transition">
-            <legend className="px-2 text-sm font-semibold text-white">Prova d&apos;acquisto</legend>
+            <legend className="px-2 text-sm font-semibold text-white">{t.proofLegend}</legend>
             <p className="text-xs text-muted">
-              Servono <span className="font-semibold text-white">entrambe</span>: il numero della
-              transazione per il riscontro automatico sul POS e la foto dello scontrino per la verifica
-              documentale.
+              {t.proofIntro[0]} <span className="font-semibold text-white">{t.proofIntro[1]}</span>
+              {t.proofIntro[2]}
             </p>
 
             <div className="mt-5 space-y-5">
               <Field
-                label="Numero transazione"
-                hint="Lo trovi sulla ricevuta del POS o nel tuo wallet."
+                label={t.txLabel}
+                hint={t.txHint}
                 icon={Hash}
                 error={showError('txId')}
                 htmlFor="txId"
@@ -226,7 +215,7 @@ export default function EntryForm({ onOpenRules }) {
                   name="txId"
                   type="text"
                   spellCheck={false}
-                  placeholder="es. 0x4f2a… · lnbc… · rif. ricevuta"
+                  placeholder={t.txPlaceholder}
                   value={values.txId}
                   onChange={(e) => setField('txId', e.target.value)}
                   onBlur={handleBlur}
@@ -238,7 +227,7 @@ export default function EntryForm({ onOpenRules }) {
               <div data-field-error={Boolean(showError('receipt'))}>
                 <span className="mb-2 flex items-center gap-2 text-sm font-medium text-white">
                   <Paperclip className="h-4 w-4 text-gold" />
-                  Foto dello scontrino
+                  {t.receiptLabel}
                 </span>
                 <input
                   ref={fileInput}
@@ -259,9 +248,9 @@ export default function EntryForm({ onOpenRules }) {
                     )}
                   >
                     <Upload className="h-6 w-6 text-gold" />
-                    <span className="text-sm font-medium text-white">Tocca per scattare o caricare</span>
+                    <span className="text-sm font-medium text-white">{t.receiptCta}</span>
                     <span className="text-xs text-muted">
-                      JPG, PNG, WEBP, HEIC o PDF — max {Math.round(MAX_RECEIPT_BYTES / 1024 / 1024)} MB
+                      {t.receiptFormats(Math.round(MAX_RECEIPT_BYTES / 1024 / 1024))}
                     </span>
                   </label>
                 ) : (
@@ -277,7 +266,7 @@ export default function EntryForm({ onOpenRules }) {
                         handleFile(null);
                         if (fileInput.current) fileInput.current.value = '';
                       }}
-                      aria-label="Rimuovi allegato"
+                      aria-label={t.receiptRemove}
                       className="rounded-lg border border-white/10 p-1.5 text-muted transition hover:border-red-500/50 hover:text-red-400"
                     >
                       <X className="h-4 w-4" />
@@ -294,10 +283,10 @@ export default function EntryForm({ onOpenRules }) {
           <Field
             label={
               <>
-                Negozio <span className="font-normal text-muted">(facoltativo)</span>
+                {t.merchantLabel} <span className="font-normal text-muted">{t.merchantOptional}</span>
               </>
             }
-            hint="Se lo indichi velocizzi la verifica. Scrivilo liberamente: i suggerimenti arrivano dalla mappa del circuito."
+            hint={t.merchantHint}
             icon={Store}
             error={showError('merchant')}
             htmlFor="merchant"
@@ -308,7 +297,7 @@ export default function EntryForm({ onOpenRules }) {
               type="text"
               list="merchant-options"
               autoComplete="off"
-              placeholder="Inizia a scrivere il nome del negozio…"
+              placeholder={t.merchantPlaceholder}
               value={values.merchant}
               onChange={(e) => setField('merchant', e.target.value)}
               onBlur={handleBlur}
@@ -331,7 +320,7 @@ export default function EntryForm({ onOpenRules }) {
               onBlur={handleBlur}
               error={showError('confirmAge')}
             >
-              Dichiaro di aver compiuto 18 anni e di conservare lo scontrino originale.
+              {t.confirmAge}
             </Checkbox>
             <Checkbox
               id="acceptRules"
@@ -340,13 +329,13 @@ export default function EntryForm({ onOpenRules }) {
               onBlur={handleBlur}
               error={showError('acceptRules')}
             >
-              Accetto il{' '}
+              {t.acceptRulesBefore}
               <button
                 type="button"
                 onClick={onOpenRules}
                 className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm"
               >
-                Regolamento Ufficiale e l&apos;Informativa Privacy (LPD/GDPR)
+                {t.acceptRulesLink}
               </button>
               .
             </Checkbox>
@@ -363,21 +352,17 @@ export default function EntryForm({ onOpenRules }) {
             {status === 'submitting' ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                Verifica in corso…
+                {t.submitting}
               </>
             ) : (
               <>
                 <ShieldCheck className="h-5 w-5" />
-                Invia e Partecipa
+                {t.submit}
               </>
             )}
           </Button>
 
-          <p className="text-center text-[11px] leading-relaxed text-muted/80">
-            Lo stesso numero di transazione può essere registrato una sola volta. Le giocate sono sottoposte
-            a controllo incrociato con i dati del POS NAKA. L&apos;indirizzo per ricevere il premio in XAUT
-            ti verrà richiesto via email solo in caso di vincita.
-          </p>
+          <p className="text-center text-[11px] leading-relaxed text-muted/80">{t.footnote}</p>
           {/* Honeypot: invisibile agli utenti, compilato dai bot. */}
           <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
             <label htmlFor="company">Azienda (non compilare)</label>
@@ -395,7 +380,7 @@ export default function EntryForm({ onOpenRules }) {
       </GlassCard>
       )}
 
-      <ConfirmationModal entry={result} onClose={() => setResult(null)} />
+      <ConfirmationModal entry={result} t={t.modal} locale={locale} onClose={() => setResult(null)} />
     </section>
   );
 }
@@ -452,7 +437,7 @@ function Checkbox({ id, checked, onChange, onBlur, error, children }) {
   );
 }
 
-function ConfirmationModal({ entry, onClose }) {
+function ConfirmationModal({ entry, t, locale, onClose }) {
   const [copied, setCopied] = useState(false);
   if (!entry) return null;
 
@@ -470,11 +455,11 @@ function ConfirmationModal({ entry, onClose }) {
     <Modal
       open={Boolean(entry)}
       onClose={onClose}
-      title="Giocata registrata!"
-      subtitle="Conserva lo scontrino originale fino alla comunicazione dei vincitori."
+      title={t.title}
+      subtitle={t.subtitle}
       footer={
         <Button onClick={onClose} className="w-full">
-          Ho capito
+          {t.close}
         </Button>
       }
     >
@@ -482,7 +467,7 @@ function ConfirmationModal({ entry, onClose }) {
         <span className="grid h-16 w-16 place-items-center rounded-full border border-gold/30 bg-gold/10 text-gold">
           <CheckCircle2 className="h-8 w-8" />
         </span>
-        <p className="mt-5 text-sm text-muted">Il tuo ID giocata è</p>
+        <p className="mt-5 text-sm text-muted">{t.idLabel}</p>
         <button
           type="button"
           onClick={copy}
@@ -491,30 +476,24 @@ function ConfirmationModal({ entry, onClose }) {
           {entry.id}
           <Copy className="h-4 w-4" />
         </button>
-        <span className="mt-2 h-4 text-xs text-gold/80">{copied ? 'Copiato negli appunti' : ''}</span>
+        <span className="mt-2 h-4 text-xs text-gold/80">{copied ? t.copied : ''}</span>
       </div>
 
       <dl className="mt-6 space-y-2">
-        <SummaryRow label="Email" value={entry.email} />
-        <SummaryRow label="Prova d'acquisto" value={entry.proof} />
-        {entry.txIdMasked && <SummaryRow label="Numero transazione" value={entry.txIdMasked} mono />}
-        {entry.merchant && <SummaryRow label="Negozio" value={entry.merchant} />}
-        <SummaryRow label="Registrata il" value={entry.createdAtLabel} />
-        <SummaryRow label="Stato" value="In verifica sul backend POS NAKA" />
+        <SummaryRow label={t.rowEmail} value={entry.email} />
+        <SummaryRow label={t.rowProof} value={entry.proof} />
+        {entry.txIdMasked && <SummaryRow label={t.rowTx} value={entry.txIdMasked} mono />}
+        {entry.merchant && <SummaryRow label={t.rowMerchant} value={entry.merchant} />}
+        <SummaryRow label={t.rowDate} value={entry.createdAtLabel} />
+        <SummaryRow label={t.rowStatus} value={t.statusValue} />
       </dl>
 
       <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-gold/30 bg-gold/[0.06] p-4 text-xs leading-relaxed text-muted">
         <Mail className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-        <span>
-          Abbiamo inviato la conferma a <span className="font-semibold text-white">{entry.email}</span> con il
-          riepilogo della giocata. Se non la trovi, controlla la posta indesiderata.
-        </span>
+        <span>{t.emailSent(entry.email)}</span>
       </p>
 
-      <p className="mt-3 text-xs leading-relaxed text-muted">
-        Riceverai una seconda email alla convalida. In caso di vincita ti chiederemo l&apos;indirizzo wallet su
-        cui accreditare il premio in XAUT: NAKA non chiede mai chiavi private o frasi di recupero.
-      </p>
+      <p className="mt-3 text-xs leading-relaxed text-muted">{t.nextSteps}</p>
     </Modal>
   );
 }

@@ -2,13 +2,6 @@
 
 import { useEffect, useState } from 'react';
 
-const UNITS = [
-  { key: 'days', label: 'Giorni' },
-  { key: 'hours', label: 'Ore' },
-  { key: 'minutes', label: 'Minuti' },
-  { key: 'seconds', label: 'Secondi' },
-];
-
 function diff(target) {
   const ms = Math.max(0, new Date(target).getTime() - Date.now());
   return {
@@ -21,10 +14,10 @@ function diff(target) {
 }
 
 /**
- * Countdown live verso l'inizio evento; una volta iniziato passa al conto alla rovescia
+ * Countdown live verso l'inizio dell'iniziativa; una volta partita passa al conto alla rovescia
  * sulla chiusura delle giocate. Il primo render è statico per evitare mismatch di idratazione.
  */
-export default function Countdown({ startsAt, endsAt }) {
+export default function Countdown({ startsAt, endsAt, t }) {
   const [state, setState] = useState(null);
 
   useEffect(() => {
@@ -39,21 +32,24 @@ export default function Countdown({ startsAt, endsAt }) {
   }, [startsAt, endsAt]);
 
   const ended = state && state.live && state.total === 0;
+  const units = [
+    { key: 'days', label: t.days },
+    { key: 'hours', label: t.hours },
+    { key: 'minutes', label: t.minutes },
+    { key: 'seconds', label: t.seconds },
+  ];
 
   return (
     <div className="w-full">
       <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-        {!state && 'Caricamento countdown…'}
-        {state && !state.live && 'Mancano al via dell’iniziativa'}
-        {state && state.live && !ended && 'Iniziativa in corso — tempo residuo per giocare'}
-        {ended && 'Concorso chiuso — estrazione in preparazione'}
+        {!state && t.loading}
+        {state && !state.live && t.toStart}
+        {state && state.live && !ended && t.running}
+        {ended && t.ended}
       </p>
       <div className="grid max-w-md grid-cols-4 gap-2 sm:gap-3" role="timer" aria-live="off">
-        {UNITS.map((unit) => (
-          <div
-            key={unit.key}
-            className="glass flex flex-col items-center px-2 py-3 sm:px-3 sm:py-4"
-          >
+        {units.map((unit) => (
+          <div key={unit.key} className="glass flex flex-col items-center px-2 py-3 sm:px-3 sm:py-4">
             <span className="text-gold-gradient text-2xl font-extrabold tabular-nums sm:text-3xl">
               {state ? String(state[unit.key]).padStart(2, '0') : '--'}
             </span>

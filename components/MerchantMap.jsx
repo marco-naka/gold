@@ -2,16 +2,16 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Search, MapPin, Navigation, X, CheckCircle2, Globe } from 'lucide-react';
+import { EVENT } from '@/lib/constants';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
+import { formatDate } from '@/lib/i18n';
 import {
-  CATEGORIES,
   MERCHANTS,
   MERCHANT_BOUNDS as BOUNDS,
   MERCHANT_SOURCE,
-  categoryLabel,
   mapsUrl,
 } from '@/lib/merchants';
 
@@ -25,7 +25,11 @@ const project = (m) => ({
   top: `${(1 - (m.lat - BOUNDS.minLat) / (BOUNDS.maxLat - BOUNDS.minLat || 1)) * 100}%`,
 });
 
-export default function MerchantMap() {
+export default function MerchantMap({ t, locale }) {
+  // Le categorie sono dati (id stabili), le etichette testo: stanno nel dizionario.
+  const CATEGORIES = Object.entries(t.categories).map(([id, label]) => ({ id, label }));
+  const categoryLabel = (id) => t.categories[id] ?? id;
+
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
   const [selected, setSelected] = useState(null);
@@ -63,15 +67,15 @@ export default function MerchantMap() {
             type="search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Cerca per nome o via…"
-            aria-label="Cerca merchant"
+            placeholder={t.searchPlaceholder}
+            aria-label={t.searchLabel}
             className="field pl-11 pr-10"
           />
           {query && (
             <button
               type="button"
               onClick={() => setQuery('')}
-              aria-label="Cancella ricerca"
+              aria-label={t.clearSearch}
               className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted transition hover:text-white"
             >
               <X className="h-4 w-4" />
@@ -116,7 +120,7 @@ export default function MerchantMap() {
             className="absolute -bottom-24 left-1/2 h-72 w-[130%] -translate-x-1/2 rounded-[50%] bg-gold/[0.07] blur-3xl"
           />
           <span className="absolute left-5 top-5 chip border-gold/30 bg-ink-deep/80 text-gold">
-            <MapPin className="h-3.5 w-3.5" /> Lugano centro
+            <MapPin className="h-3.5 w-3.5" /> {t.center}
           </span>
 
           <div className="absolute inset-0 p-10">
@@ -164,7 +168,7 @@ export default function MerchantMap() {
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  aria-label="Chiudi scheda merchant"
+                  aria-label={t.closeCard}
                   className="rounded-lg border border-white/10 p-1.5 text-muted transition hover:text-white"
                 >
                   <X className="h-3.5 w-3.5" />
@@ -172,7 +176,7 @@ export default function MerchantMap() {
               </div>
               <Button as="a" href={mapsUrl(selected)} target="_blank" rel="noopener noreferrer" size="sm" className="mt-3 w-full">
                 <Navigation className="h-4 w-4" />
-                Indicazioni Mappa
+                {t.directions}
               </Button>
             </div>
           )}
@@ -182,8 +186,8 @@ export default function MerchantMap() {
         <div>
           <p className="mb-4 text-sm text-muted" role="status" aria-live="polite">
             <span className="font-semibold text-white">{results.length}</span>{' '}
-            {results.length === 1 ? 'merchant trovato' : 'merchant trovati'}
-            {category !== 'all' && ` in "${categoryLabel(category)}"`}
+            {results.length === 1 ? t.resultsOne : t.resultsMany}
+            {category !== 'all' && t.inCategory(categoryLabel(category))}
           </p>
 
           <div className="max-h-[34rem] space-y-3 overflow-y-auto pr-1">
@@ -217,12 +221,12 @@ export default function MerchantMap() {
                     )}
                     title={
                       m.verified
-                        ? 'Adesione al concorso confermata da NAKA'
-                        : 'Accetta crypto sul circuito NAKA secondo la mappa della Città; adesione al concorso da confermare'
+                        ? t.badgeVerifiedTitle
+                        : t.badgeCircuitTitle
                     }
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
-                    {m.verified ? 'POS NAKA Attivo' : m.posActive ? 'Circuito NAKA' : 'Attivazione in corso'}
+                    {m.verified ? t.badgeVerified : m.posActive ? t.badgeCircuit : t.badgePending}
                   </span>
                   {m.assets.map((a) => (
                     <span key={a} className="chip">
@@ -242,7 +246,7 @@ export default function MerchantMap() {
                     className="flex-1 sm:flex-none"
                   >
                     <Navigation className="h-4 w-4 text-gold" />
-                    Indicazioni Mappa
+                    {t.directions}
                   </Button>
                   {m.website && (
                     <Button
@@ -255,7 +259,7 @@ export default function MerchantMap() {
                       className="flex-1 sm:flex-none"
                     >
                       <Globe className="h-4 w-4 text-gold" />
-                      Sito
+                      {t.website}
                     </Button>
                   )}
                 </div>
@@ -269,15 +273,15 @@ export default function MerchantMap() {
                 onClick={() => setVisible((v) => v + PAGE_SIZE)}
                 className="w-full"
               >
-                Mostra altri {Math.min(PAGE_SIZE, results.length - visible)} merchant
+                {t.showMore(Math.min(PAGE_SIZE, results.length - visible))}
               </Button>
             )}
 
             {!results.length && (
               <GlassCard hover={false} className="p-10 text-center">
                 <Search className="mx-auto h-8 w-8 text-muted" />
-                <p className="mt-4 text-sm font-medium text-white">Nessun merchant trovato</p>
-                <p className="mt-1 text-xs text-muted">Prova con un altro nome, via o categoria.</p>
+                <p className="mt-4 text-sm font-medium text-white">{t.emptyTitle}</p>
+                <p className="mt-1 text-xs text-muted">{t.emptyText}</p>
               </GlassCard>
             )}
           </div>
@@ -286,7 +290,7 @@ export default function MerchantMap() {
 
       {MERCHANT_SOURCE.url && (
         <p className="mt-6 text-center text-[11px] leading-relaxed text-muted/80">
-          Elenco derivato dalla{' '}
+          {t.sourcePrefix}
           <a
             href={MERCHANT_SOURCE.url}
             target="_blank"
@@ -295,9 +299,7 @@ export default function MerchantMap() {
           >
             {MERCHANT_SOURCE.label}
           </a>
-          {MERCHANT_SOURCE.importedAt &&
-            ` · aggiornato al ${new Date(MERCHANT_SOURCE.importedAt).toLocaleDateString('it-CH')}`}
-          . L’attivazione del POS NAKA per il concorso è confermata dal team NAKA.
+          {t.sourceSuffix(MERCHANT_SOURCE.importedAt ? formatDate(MERCHANT_SOURCE.importedAt, locale) : '')}
         </p>
       )}
     </section>

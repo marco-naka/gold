@@ -5,32 +5,14 @@ import Button from './ui/Button';
 import { OFFICIAL_GUIDE, WALLETS } from '@/lib/wallets';
 import { assetSentence } from '@/lib/constants';
 
-const STEPS = [
-  {
-    icon: CreditCard,
-    title: 'Paga in Crypto',
-    text: `Effettua un acquisto su POS NAKA presso un merchant aderente all’iniziativa, in ${assetSentence()}.`,
-  },
-  {
-    icon: FileCheck2,
-    title: 'Registra la Transazione',
-    text: 'Inserisci l’ID transazione (TX ID) e carica la foto dello scontrino/ricevuta POS nel modulo qui sotto. Il negozio è facoltativo.',
-  },
-  {
-    icon: Trophy,
-    title: 'Vinci Tether Gold (XAUT)',
-    text: 'Ricevi la conferma con il tuo ID giocata e partecipa all’estrazione dei premi in Oro Digitale.',
-  },
-];
+const ICONS = [CreditCard, FileCheck2, Trophy];
 
-export default function HowItWorks() {
+export default function HowItWorks({ t }) {
+  const steps = t.steps(assetSentence());
+
   return (
     <section id="come-funziona" className="section-pad">
-      <SectionTitle
-        eyebrow="Come funziona"
-        title="Tre step, meno di un minuto"
-        subtitle="Dal pagamento alla giocata valida senza registrazioni complesse né app da scaricare."
-      />
+      <SectionTitle eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       <ol className="relative mt-14 grid gap-6 md:grid-cols-3">
         {/* Linea di collegamento tra gli step (solo desktop) */}
@@ -38,20 +20,23 @@ export default function HowItWorks() {
           aria-hidden="true"
           className="pointer-events-none absolute left-0 right-0 top-16 hidden h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent md:block"
         />
-        {STEPS.map(({ icon: Icon, title, text }, i) => (
-          <li key={title} className="relative">
-            <GlassCard className="h-full p-7">
-              <div className="flex items-center justify-between">
-                <span className="grid h-12 w-12 place-items-center rounded-xl bg-gold-gradient text-ink-deep shadow-gold-sm">
-                  <Icon className="h-6 w-6" strokeWidth={2.2} />
-                </span>
-                <span className="text-5xl font-black leading-none text-white/[0.07]">0{i + 1}</span>
-              </div>
-              <h3 className="mt-6 text-xl font-bold">{title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-muted">{text}</p>
-            </GlassCard>
-          </li>
-        ))}
+        {steps.map((step, i) => {
+          const Icon = ICONS[i] ?? Trophy;
+          return (
+            <li key={step.title} className="relative">
+              <GlassCard className="h-full p-7">
+                <div className="flex items-center justify-between">
+                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-gold-gradient text-ink-deep shadow-gold-sm">
+                    <Icon className="h-6 w-6" strokeWidth={2.2} />
+                  </span>
+                  <span className="text-5xl font-black leading-none text-white/[0.07]">0{i + 1}</span>
+                </div>
+                <h3 className="mt-6 text-xl font-bold">{step.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted">{step.text}</p>
+              </GlassCard>
+            </li>
+          );
+        })}
       </ol>
 
       {/* Come si paga sui POS: si rimanda alla guida ufficiale del circuito invece di duplicarla. */}
@@ -61,14 +46,11 @@ export default function HowItWorks() {
             <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
               <BookOpen className="h-5 w-5" />
             </span>
-            <h3 className="mt-4 text-lg font-bold">Non hai mai pagato in crypto sui POS?</h3>
-            <p className="mt-2 text-sm leading-relaxed text-muted">
-              Il circuito Plan ₿ di Lugano ha già una guida ufficiale che spiega come funziona il
-              pagamento in negozio, quali asset sono accettati e come procurarsi BTC e USD₮ in città.
-            </p>
+            <h3 className="mt-4 text-lg font-bold">{t.guideTitle}</h3>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{t.guideText}</p>
             <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
               <Wallet className="h-3.5 w-3.5 text-gold" />
-              Wallet Lightning consigliati:
+              {t.guideWallets}
               {WALLETS.map((w, i) => (
                 <span key={w.name}>
                   <a
@@ -88,7 +70,7 @@ export default function HowItWorks() {
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
             <Button as="a" href={OFFICIAL_GUIDE.it} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4" />
-              Guida ufficiale Plan ₿
+              {t.guideCta}
             </Button>
             <Button
               as="a"
@@ -98,12 +80,11 @@ export default function HowItWorks() {
               variant="ghost"
               className="justify-center"
             >
-              Read it in English
+              {t.guideCtaEn}
             </Button>
           </div>
         </div>
       </GlassCard>
-
     </section>
   );
 }

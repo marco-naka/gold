@@ -134,6 +134,26 @@ rifiutata, lo scontrino già archiviato viene rimosso: niente file orfani.
 Resta da fare in produzione la verifica incrociata sul gateway POS NAKA, marcata `TODO produzione`
 nella route.
 
+## Lingue
+
+Italiano (`/`) e inglese (`/en`), stessa struttura per entrambe.
+
+```
+lib/i18n/it.js · en.js   tutti i testi, chiavi speculari
+lib/i18n/index.js        getDictionary, localePath, formatDate/DateTime
+app/(it)/ · app/(en)/    due root layout: l'attributo lang sta su <html>,
+                         che un layout annidato non può modificare
+```
+
+Numeri, date, premi e dati merchant restano in `lib/constants.js` e negli snapshot: i dizionari
+contengono **solo** testo. Le interpolazioni sono funzioni (`t.prizes.title(pool)`), quindi il
+dizionario non attraversa il confine server→client: i componenti ricevono il `locale` come stringa
+e risolvono il testo nel bundle client.
+
+Tre test di parità impediscono che una lingua resti indietro: stesse chiavi, stessi tipi, stesse
+lunghezze di lista. Il regolamento inglese dichiara che **in caso di discrepanza prevale
+l'italiano** — è una traduzione di cortesia, non un testo legale autonomo.
+
 ## Deploy su Render
 
 Il repository contiene `render.yaml` (blueprint): su Render → **New → Blueprint** si punta alla repo

@@ -4,47 +4,18 @@ import Button from './ui/Button';
 import SectionTitle from './ui/SectionTitle';
 import { assetSentence } from '@/lib/constants';
 
-const CARDS = [
-  {
-    icon: ShoppingBag,
-    kicker: 'Iniziativa Clienti',
-    title: 'Per chi Acquista',
-    points: [
-      `Paga in ${assetSentence()} sul POS NAKA`,
-      'Registra la transazione con TX ID o foto dello scontrino',
-      'Partecipi automaticamente all’estrazione in Oro Digitale',
-      'Nessun limite: ogni transazione valida = 1 giocata',
-      'Si somma al cashback del circuito cittadino MyLugano',
-    ],
-    cta: { label: 'Registra la tua giocata', href: '#partecipa' },
-    variant: 'primary',
-  },
-  {
-    icon: Store,
-    kicker: 'Iniziativa Merchant',
-    title: 'Per i Commercianti',
-    points: [
-      'Aumenta le vendite durante la settimana del Plan ₿ Forum',
-      'Premio Top Volume di transazioni crypto',
-      'Premio per il miglior video social promozionale',
-      'Estrazione riservata a tutti i merchant con almeno 1 transazione',
-    ],
-    cta: { label: 'Scopri come aderire', href: '#merchant' },
-    variant: 'secondary',
-  },
-];
+export default function DualInitiative({ t }) {
+  const cards = [
+    { ...t.users, icon: ShoppingBag, points: t.users.points(assetSentence()), href: '#partecipa', variant: 'primary' },
+    { ...t.merchants, icon: Store, points: t.merchants.points(), href: '#merchant', variant: 'secondary' },
+  ];
 
-export default function DualInitiative() {
   return (
     <section className="section-pad">
-      <SectionTitle
-        eyebrow="Doppia iniziativa"
-        title="Un concorso, due modi per vincere oro"
-        subtitle="Clienti e commercianti partecipano a due montepremi distinti in Tether Gold (XAUT)."
-      />
+      <SectionTitle eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
 
       <div className="mt-14 grid gap-6 lg:grid-cols-2">
-        {CARDS.map(({ icon: Icon, kicker, title, points, cta, variant }) => (
+        {cards.map(({ icon: Icon, kicker, title, points, cta, href, variant }) => (
           <GlassCard key={title} className="flex flex-col p-7 sm:p-9">
             <span className="grid h-12 w-12 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
               <Icon className="h-6 w-6" />
@@ -61,8 +32,8 @@ export default function DualInitiative() {
               ))}
             </ul>
 
-            <Button as="a" href={cta.href} variant={variant} className="mt-8 w-full sm:w-auto">
-              {cta.label}
+            <Button as="a" href={href} variant={variant} className="mt-8 w-full sm:w-auto">
+              {cta}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Button>
           </GlassCard>
