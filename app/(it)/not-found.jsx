@@ -3,7 +3,9 @@ import { MapPin, Home } from 'lucide-react';
 import { CONTEST } from '@/lib/constants';
 import { getDictionary } from '@/lib/i18n';
 
-const t = getDictionary('it').notFound;
+const dict = getDictionary('it');
+const t = dict.notFound;
+const contestTitle = dict.meta.contestTitle;
 
 export const metadata = { title: 'Pagina non trovata | NAKA' };
 
@@ -13,7 +15,7 @@ export default function NotFound() {
       <div className="glass w-full max-w-lg p-10 text-center">
         <p className="text-6xl font-black text-gold-gradient">404</p>
         <h1 className="mt-4 text-2xl font-bold">{t.title}</h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted">{t.text(CONTEST.title)}</p>
+        <p className="mt-3 text-sm leading-relaxed text-muted">{t.text(contestTitle)}</p>
         <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
           <Link
             href="/"

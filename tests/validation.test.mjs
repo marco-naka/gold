@@ -16,13 +16,22 @@ test('accetta una giocata completa', () => {
 });
 
 test('richiede entrambe le prove d’acquisto', () => {
-  assert.ok(validateEntry(valid, null).receipt, 'scontrino obbligatorio');
-  assert.ok(validateEntry({ ...valid, txId: '' }, jpg).txId, 'numero transazione obbligatorio');
+  assert.equal(validateEntry(valid, null).receipt, 'receipt_missing');
+  assert.equal(validateEntry({ ...valid, txId: '' }, jpg).txId, 'tx_missing');
 });
 
 test('rifiuta email non valide', () => {
   for (const email of ['', 'mario', 'mario@', 'mario@rossi']) {
-    assert.ok(validateEntry({ ...valid, email }, jpg).email, `doveva fallire: ${email}`);
+    assert.equal(validateEntry({ ...valid, email }, jpg).email, 'email_invalid', `doveva fallire: ${email}`);
+  }
+});
+
+test('restituisce codici, non messaggi: il testo dipende dalla lingua', () => {
+  const errors = validateEntry({ ...valid, email: '' }, null);
+  assert.equal(errors.email, 'email_invalid');
+  assert.equal(errors.receipt, 'receipt_missing');
+  for (const code of Object.values(errors)) {
+    assert.match(code, /^[a-z_]+$/, `"${code}" non è un codice`);
   }
 });
 
@@ -32,8 +41,8 @@ test('richiede entrambi i consensi', () => {
 });
 
 test('controlla formato e peso dell’allegato', () => {
-  assert.ok(validateEntry(valid, { ...jpg, type: 'text/plain' }).receipt);
-  assert.ok(validateEntry(valid, { ...jpg, size: MAX_RECEIPT_BYTES + 1 }).receipt);
+  assert.equal(validateEntry(valid, { ...jpg, type: 'text/plain' }).receipt, 'receipt_type');
+  assert.equal(validateEntry(valid, { ...jpg, size: MAX_RECEIPT_BYTES + 1 }).receipt, 'receipt_size');
 });
 
 test('il merchant è facoltativo ma limitato in lunghezza', () => {
@@ -52,6 +61,6 @@ test('il numero transazione accetta anche i riferimenti di ricevuta', () => {
 test('etichetta il tipo di riferimento', () => {
   assert.equal(txKind('0x' + 'b'.repeat(64)), 'blockchain');
   assert.equal(txKind('lnbc250n1p' + 'c'.repeat(60)), 'lightning');
-  assert.equal(txKind('POS-2026-778412'), 'ricevuta');
+  assert.equal(txKind('POS-2026-778412'), 'receipt');
   assert.equal(txKind(''), null);
 });

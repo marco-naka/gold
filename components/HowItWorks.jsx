@@ -7,8 +7,10 @@ import { assetSentence } from '@/lib/constants';
 
 const ICONS = [CreditCard, FileCheck2, Trophy];
 
-export default function HowItWorks({ t }) {
-  const steps = t.steps(assetSentence());
+export default function HowItWorks({ t, conj, locale = 'it' }) {
+  // La guida ufficiale esiste in IT e EN: si offre prima quella della lingua corrente.
+  const other = locale === 'en' ? 'it' : 'en';
+  const steps = t.steps(assetSentence(conj));
 
   return (
     <section id="come-funziona" className="section-pad">
@@ -68,19 +70,19 @@ export default function HowItWorks({ t }) {
           </div>
 
           <div className="flex shrink-0 flex-col gap-3 sm:flex-row lg:flex-col">
-            <Button as="a" href={OFFICIAL_GUIDE.it} target="_blank" rel="noopener noreferrer">
+            <Button as="a" href={OFFICIAL_GUIDE[locale] ?? OFFICIAL_GUIDE.it} target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4" />
               {t.guideCta}
             </Button>
             <Button
               as="a"
-              href={OFFICIAL_GUIDE.en}
+              href={OFFICIAL_GUIDE[other]}
               target="_blank"
               rel="noopener noreferrer"
               variant="ghost"
               className="justify-center"
             >
-              {t.guideCtaEn}
+              {t.guideCtaOther}
             </Button>
           </div>
         </div>

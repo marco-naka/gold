@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import it from '../lib/i18n/it.js';
 import en from '../lib/i18n/en.js';
 import { LOCALES, getDictionary, localePath } from '../lib/i18n/index.js';
+import { validateEntry } from '../lib/validation.js';
 
 /** Percorre l'oggetto restituendo tutte le chiavi annidate, con il tipo del valore. */
 function shape(obj, prefix = '') {
@@ -42,6 +43,21 @@ test('nessun testo inglese è rimasto in italiano nelle voci chiave', () => {
   assert.notEqual(en.nav.cta, it.nav.cta);
   assert.notEqual(en.hero.titleLead, it.hero.titleLead);
   assert.notEqual(en.form.submit, it.form.submit);
+});
+
+test('ogni codice di errore ha un messaggio in entrambe le lingue', () => {
+  // I codici si ricavano da validateEntry: un codice nuovo senza traduzione fa fallire il test.
+  const cases = [
+    [{ email: '', txId: '', merchant: 'x'.repeat(200), confirmAge: false, acceptRules: false }, null],
+    [{ email: 'a@b.ch', txId: '123' }, { name: 'r.txt', size: 10, type: 'text/plain' }],
+    [{ email: 'a@b.ch', txId: 'POS-123456' }, { name: 'r.jpg', size: 99e6, type: 'image/jpeg' }],
+  ];
+  const codes = [...new Set(cases.flatMap(([d, r]) => Object.values(validateEntry(d, r)))), 'tx_duplicate'];
+  const apiCodes = ['invalid_fields', 'duplicate_tx', 'rate_limited', 'storage_error', 'bad_request', 'demo'];
+  for (const dict of [it, en]) {
+    for (const c of codes) assert.ok(dict.form.errors[c], `manca il messaggio per ${c}`);
+    for (const c of apiCodes) assert.ok(dict.form.apiErrors[c], `manca il messaggio API per ${c}`);
+  }
 });
 
 test('i percorsi per lingua sono corretti', () => {

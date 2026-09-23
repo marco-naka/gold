@@ -90,7 +90,9 @@ export default function EntryForm({ t, locale, onOpenRules }) {
     setErrors(runValidation(values, file ?? null));
   };
 
-  const showError = (field) => (touched[field] || status === 'error') && errors[field];
+  /** Da codice a messaggio nella lingua della pagina; un codice ignoto non resta mai a schermo. */
+  const message = (code) => (code ? t.errors[code] ?? t.apiErrors.invalid_fields : null);
+  const showError = (field) => ((touched[field] || status === 'error') && message(errors[field])) || null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -111,6 +113,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
       Object.entries(values).forEach(([k, v]) => payload.append(k, String(v)));
       payload.append('company', honeypot); // honeypot: deve restare vuoto
       payload.append('startedAt', String(startedAt.current));
+      payload.append('locale', locale);
       if (receipt) payload.append('receipt', receipt);
 
       const res = await fetch('/api/entries', { method: 'POST', body: payload });
@@ -122,7 +125,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
           return;
         }
         if (data.errors) setErrors(data.errors);
-        setServerError(data.message || t.genericError);
+        setServerError(t.apiErrors[data.code] ?? data.message ?? t.genericError);
         setStatus('error');
         return;
       }
@@ -273,7 +276,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
                     </button>
                   </div>
                 )}
-                {showError('receipt') && <ErrorText>{errors.receipt}</ErrorText>}
+                {showError('receipt') && <ErrorText>{showError('receipt')}</ErrorText>}
               </div>
             </div>
 
@@ -365,7 +368,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
           <p className="text-center text-[11px] leading-relaxed text-muted/80">{t.footnote}</p>
           {/* Honeypot: invisibile agli utenti, compilato dai bot. */}
           <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
-            <label htmlFor="company">Azienda (non compilare)</label>
+            <label htmlFor="company">{t.honeypot}</label>
             <input
               id="company"
               name="company"
@@ -380,7 +383,13 @@ export default function EntryForm({ t, locale, onOpenRules }) {
       </GlassCard>
       )}
 
-      <ConfirmationModal entry={result} t={t.modal} locale={locale} onClose={() => setResult(null)} />
+      <ConfirmationModal
+        entry={result}
+        t={t.modal}
+        proofLabel={result ? t.proof[result.proof] ?? result.proof : ''}
+        locale={locale}
+        onClose={() => setResult(null)}
+      />
     </section>
   );
 }
@@ -437,7 +446,7 @@ function Checkbox({ id, checked, onChange, onBlur, error, children }) {
   );
 }
 
-function ConfirmationModal({ entry, t, locale, onClose }) {
+function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
   const [copied, setCopied] = useState(false);
   if (!entry) return null;
 
@@ -481,7 +490,7 @@ function ConfirmationModal({ entry, t, locale, onClose }) {
 
       <dl className="mt-6 space-y-2">
         <SummaryRow label={t.rowEmail} value={entry.email} />
-        <SummaryRow label={t.rowProof} value={entry.proof} />
+        <SummaryRow label={t.rowProof} value={proofLabel} />
         {entry.txIdMasked && <SummaryRow label={t.rowTx} value={entry.txIdMasked} mono />}
         {entry.merchant && <SummaryRow label={t.rowMerchant} value={entry.merchant} />}
         <SummaryRow label={t.rowDate} value={entry.createdAtLabel} />

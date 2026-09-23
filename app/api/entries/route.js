@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_MERCHANT_LENGTH, normalizeTx, txKind, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
+import { intlLocale } from '@/lib/i18n';
 import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
 import { deleteReceipt, storeReceipt } from '@/lib/server/receipts';
@@ -41,11 +42,7 @@ export async function POST(request) {
   // 0a. Ambiente dimostrativo: si rifiuta la giocata invece di accettarla e perderla.
   if (IS_DEMO) {
     return NextResponse.json(
-      {
-        message:
-          'Questa è un\u2019anteprima del sito: le registrazioni non sono ancora attive. Nessun dato viene salvato.',
-        demo: true,
-      },
+      { code: 'demo', demo: true },
       { status: 503 }
     );
   }
@@ -54,13 +51,7 @@ export async function POST(request) {
   const window = submissionWindow();
   if (!window.open) {
     return NextResponse.json(
-      {
-        message:
-          window.reason === 'upcoming'
-            ? `Le registrazioni aprono il ${window.opensAt.toLocaleDateString('it-CH')}.`
-            : 'Il concorso è chiuso: non è più possibile registrare giocate.',
-        closed: true,
-      },
+      { code: window.reason === 'upcoming' ? 'closed_upcoming' : 'closed_ended', closed: true },
       { status: 403 }
     );
   }
@@ -69,13 +60,14 @@ export async function POST(request) {
   try {
     form = await request.formData();
   } catch {
-    return NextResponse.json({ message: 'Richiesta non valida.' }, { status: 400 });
+    return NextResponse.json({ code: 'bad_request' }, { status: 400 });
   }
 
   const data = {
     email: String(form.get('email') ?? '').trim(),
     txId: String(form.get('txId') ?? '').trim(),
     merchant: String(form.get('merchant') ?? '').trim().slice(0, MAX_MERCHANT_LENGTH + 1),
+    locale: String(form.get('locale') ?? 'it') === 'en' ? 'en' : 'it',
     confirmAge: form.get('confirmAge') === 'true',
     acceptRules: form.get('acceptRules') === 'true',
   };
@@ -100,7 +92,7 @@ export async function POST(request) {
   const errors = validateEntry(data, receipt);
   if (Object.keys(errors).length) {
     return NextResponse.json(
-      { message: 'Alcuni campi non sono validi: controlla il modulo.', errors },
+      { code: 'invalid_fields', errors },
       { status: 422 }
     );
   }
@@ -109,7 +101,7 @@ export async function POST(request) {
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
   if (isRateLimited(`${ip}|${data.email.toLowerCase()}`)) {
     return NextResponse.json(
-      { message: 'Troppe registrazioni ravvicinate. Riprova tra qualche minuto.' },
+      { code: 'rate_limited' },
       { status: 429 }
     );
   }
@@ -129,7 +121,7 @@ export async function POST(request) {
     stored = await storeReceipt(hasFile ? file : null, id);
   } catch {
     return NextResponse.json(
-      { message: 'Non siamo riusciti a salvare lo scontrino. Riprova tra qualche istante.' },
+      { code: 'storage_error' },
       { status: 500 }
     );
   }
@@ -137,17 +129,18 @@ export async function POST(request) {
   const entry = {
     id,
     email: data.email,
+    locale: data.locale,
     merchant: merchant?.name ?? null,
     merchantId: merchant?.id ?? null,
     merchantKnown: merchant?.known ?? null,
-    proof: 'Numero transazione + scontrino',
+    proof: 'tx_and_receipt', // codice: il testo lo risolve il client
     txNormalized: tx,
     txIdMasked: mask(data.txId, 10, 6),
     txKind: txKind(data.txId),
     receipt: stored,
     status: 'pending_verification',
     createdAt: createdAt.toISOString(),
-    createdAtLabel: createdAt.toLocaleString('it-CH', { dateStyle: 'medium', timeStyle: 'short' }),
+    createdAtLabel: createdAt.toLocaleString(intlLocale(data.locale), { dateStyle: 'medium', timeStyle: 'short' }),
   };
 
   // 5. Unicità del numero di transazione, verificata e applicata nella stessa transazione di scrittura.
@@ -156,10 +149,7 @@ export async function POST(request) {
     // La giocata non è stata accettata: niente scontrini orfani sullo storage.
     await deleteReceipt(stored).catch(() => {});
     return NextResponse.json(
-      {
-        message: 'Questa transazione risulta già registrata.',
-        errors: { txId: 'Numero transazione già utilizzato per una giocata precedente.' },
-      },
+      { code: 'duplicate_tx', errors: { txId: 'tx_duplicate' } },
       { status: 409 }
     );
   }

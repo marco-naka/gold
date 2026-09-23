@@ -18,7 +18,7 @@ const listPrizes = (tier, t) =>
 export default function RulesModal({ t, locale, open, onClose }) {
   const d = t.rules;
   const articles = d.articles({
-    contest: CONTEST.title,
+    contest: t.meta.contestTitle,
     organizer: CONTEST.organizer,
     event: EVENT.name,
     city: EVENT.city,
@@ -40,7 +40,7 @@ export default function RulesModal({ t, locale, open, onClose }) {
       onClose={onClose}
       size="lg"
       title={d.title}
-      subtitle={d.subtitle(CONTEST.title, EVENT.name, EVENT.city)}
+      subtitle={d.subtitle(t.meta.contestTitle, EVENT.name, EVENT.city)}
       closeLabel={t.modal.close}
       footer={
         <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">

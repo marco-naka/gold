@@ -4,9 +4,9 @@ import Button from './ui/Button';
 import SectionTitle from './ui/SectionTitle';
 import { assetSentence } from '@/lib/constants';
 
-export default function DualInitiative({ t }) {
+export default function DualInitiative({ t, conj }) {
   const cards = [
-    { ...t.users, icon: ShoppingBag, points: t.users.points(assetSentence()), href: '#partecipa', variant: 'primary' },
+    { ...t.users, icon: ShoppingBag, points: t.users.points(assetSentence(conj)), href: '#partecipa', variant: 'primary' },
     { ...t.merchants, icon: Store, points: t.merchants.points(), href: '#merchant', variant: 'secondary' },
   ];
 

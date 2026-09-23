@@ -48,7 +48,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
           <div>
             <NakaLogo />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-              {d.tagline(CONTEST.title, CONTEST.organizer, EVENT.name, EVENT.city)}
+              {d.tagline(t.meta.contestTitle, CONTEST.organizer, EVENT.name, EVENT.city)}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-2">
               <XautBadge />

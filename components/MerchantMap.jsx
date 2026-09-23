@@ -54,9 +54,9 @@ export default function MerchantMap({ t, locale }) {
   return (
     <section id="mappa" className="section-pad">
       <SectionTitle
-        eyebrow="Mappa merchant"
-        title="Dove spendere crypto a Lugano"
-        subtitle="Tutti gli esercenti aderenti con POS NAKA attivo durante la settimana del Plan ₿ Forum 2026."
+        eyebrow={t.eyebrow}
+        title={t.title}
+        subtitle={t.subtitle(EVENT.name)}
       />
 
       {/* Ricerca + filtri */}
