@@ -23,6 +23,7 @@ import { cn } from './ui/cn';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_RECEIPT_BYTES, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
+import { IS_DEMO } from '@/lib/deploy';
 
 const EMPTY = {
   email: '',
@@ -50,6 +51,10 @@ export default function EntryForm({ onOpenRules }) {
   // che diventerebbe sbagliato con il passare delle ore (pagina statica + cache).
   useEffect(() => {
     startedAt.current = Date.now();
+    if (IS_DEMO) {
+      setClosed({ reason: 'demo' });
+      return;
+    }
     const win = submissionWindow();
     if (!win.open) setClosed(win);
   }, []);
@@ -151,20 +156,26 @@ export default function EntryForm({ onOpenRules }) {
             <CalendarClock className="h-7 w-7" />
           </span>
           <h3 className="mt-5 text-xl font-bold">
-            {closed.reason === 'upcoming' ? 'Le registrazioni non sono ancora aperte' : 'Registrazioni chiuse'}
+            {closed.reason === 'demo'
+              ? 'Anteprima del sito'
+              : closed.reason === 'upcoming'
+                ? 'Le registrazioni non sono ancora aperte'
+                : 'Registrazioni chiuse'}
           </h3>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">
-            {closed.reason === 'upcoming'
+            {closed.reason === 'demo'
+              ? 'Stai guardando una versione dimostrativa: il modulo di partecipazione verrà attivato all\u2019apertura del concorso. Nessun dato viene raccolto.'
+              : closed.reason === 'upcoming'
               ? `Potrai registrare le tue giocate dal ${closed.opensAt.toLocaleDateString('it-CH', {
                   day: 'numeric',
                   month: 'long',
                   year: 'numeric',
                 })}. Nel frattempo scopri i negozi aderenti.`
-              : `Il termine per registrare le giocate è scaduto il ${closed.closesAt.toLocaleDateString('it-CH', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}. I vincitori vengono avvisati via email.`}
+                : `Il termine per registrare le giocate è scaduto il ${closed.closesAt.toLocaleDateString('it-CH', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}. I vincitori vengono avvisati via email.`}
           </p>
           <Button as="a" href="#mappa" variant="secondary" className="mt-7">
             Vedi i negozi aderenti

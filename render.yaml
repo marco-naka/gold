@@ -1,32 +1,44 @@
 # Blueprint Render — https://render.com/docs/blueprint-spec
 #
-# Il disco persistente è la parte essenziale: giocate, scontrini ed email vivono su file.
-# Senza disco (piano free) il servizio riparte con i dati azzerati a ogni deploy o riavvio.
+# PROFILO ATTUALE: demo (gratuito, senza disco persistente)
+# Il sito è completamente navigabile ma NON accetta giocate: il form mostra lo stato
+# "anteprima" e l'API risponde 503. Nessun dato viene scritto, quindi il filesystem
+# effimero del piano free non può causare perdite silenziose.
+#
+# PER ANDARE IN PRODUZIONE (prima dell'apertura del concorso, 19 ottobre):
+#   1. plan: free                 -> plan: starter
+#   2. togliere il commento al blocco `disk:`
+#   3. DEPLOY_PROFILE: demo       -> production
+#   4. aggiungere la variabile DATA_DIR = /var/data
+# Senza disco e con profilo production il health check risponde 503 e il deploy risulta
+# degradato: è voluto, meglio un allarme che giocate perse.
 services:
   - type: web
     name: naka-paga-in-crypto
     runtime: node
     region: frankfurt # il più vicino alla Svizzera tra quelli disponibili
-    plan: starter # i dischi richiedono almeno il piano Starter
+    plan: free
     branch: main
     buildCommand: npm ci && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     autoDeploy: true
 
-    disk:
-      name: data
-      mountPath: /var/data
-      sizeGB: 5 # scontrini: ~1 MB per giocata, 5 GB coprono ampiamente l'evento
+    # disk:
+    #   name: data
+    #   mountPath: /var/data
+    #   sizeGB: 5 # scontrini ~1 MB l'uno: 5 GB coprono ampiamente l'evento
 
     envVars:
       - key: NODE_VERSION
         value: 22.11.0
-      - key: DATA_DIR
-        value: /var/data # deve coincidere con mountPath
+      - key: NEXT_PUBLIC_DEPLOY_PROFILE
+        value: demo # -> production quando c'è il disco
+      # - key: DATA_DIR
+      #   value: /var/data # deve coincidere con disk.mountPath
       - key: NEXT_PUBLIC_SITE_URL
-        sync: false # impostare a mano: URL pubblico definitivo
+        sync: false # URL pubblico definitivo
       - key: MAIL_PROVIDER_API_KEY
-        sync: false # chiave del provider email (Resend o compatibile)
+        sync: false # chiave provider email (serve solo in production)
       - key: MAIL_FROM
         sync: false # es. "NAKA <contest@naka.com>"

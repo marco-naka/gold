@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { submissionWindow } from '@/lib/contest';
+import { DEPLOY_PROFILE, IS_DEMO } from '@/lib/deploy';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -26,14 +27,16 @@ export async function GET() {
   }
 
   const window = submissionWindow();
-  const healthy = storage === 'ok';
+  // In demo il disco non serve: non si scrive nulla, quindi non è un guasto.
+  const healthy = IS_DEMO || storage === 'ok';
 
   return NextResponse.json(
     {
       status: healthy ? 'ok' : 'degraded',
+      profile: DEPLOY_PROFILE,
       storage,
       dataDir: DATA_DIR,
-      submissions: window.open ? 'aperte' : window.reason,
+      submissions: IS_DEMO ? 'disattivate (anteprima)' : window.open ? 'aperte' : window.reason,
       mailer: process.env.MAIL_PROVIDER_API_KEY ? 'provider configurato' : 'outbox locale',
       time: new Date().toISOString(),
     },

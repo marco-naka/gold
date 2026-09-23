@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_MERCHANT_LENGTH, normalizeTx, txKind, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
+import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
 import { deleteReceipt, storeReceipt } from '@/lib/server/receipts';
 import { sendEntryReceived } from '@/lib/server/mailer';
@@ -37,7 +38,19 @@ function matchMerchant(input) {
 }
 
 export async function POST(request) {
-  // 0. Finestra temporale: fuori dal periodo di gara non si registra nulla.
+  // 0a. Ambiente dimostrativo: si rifiuta la giocata invece di accettarla e perderla.
+  if (IS_DEMO) {
+    return NextResponse.json(
+      {
+        message:
+          'Questa è un\u2019anteprima del sito: le registrazioni non sono ancora attive. Nessun dato viene salvato.',
+        demo: true,
+      },
+      { status: 503 }
+    );
+  }
+
+  // 0b. Finestra temporale: fuori dal periodo di gara non si registra nulla.
   const window = submissionWindow();
   if (!window.open) {
     return NextResponse.json(
