@@ -134,6 +134,23 @@ rifiutata, lo scontrino già archiviato viene rimosso: niente file orfani.
 Resta da fare in produzione la verifica incrociata sul gateway POS NAKA, marcata `TODO produzione`
 nella route.
 
+## Parametri di campagna
+
+`lib/constants.js` è l'unica fonte per date, premi, canali e contatti:
+
+| | |
+|---|---|
+| Apertura | lunedì 19 ottobre 2026, **08:00** |
+| Chiusura | sabato 24 ottobre 2026, **16:00** (+24h di tolleranza per registrare) |
+| Contenuti social | entro venerdì 23 ottobre |
+| Hashtag | `#PayCryptoWinGold` `#LuganoPlanB` `#Naka` |
+| Piattaforme | Instagram, Facebook, TikTok, LinkedIn (su LinkedIn si può taggare la pagina NAKA) |
+| Annuncio ufficiale | [LinkedIn NAKA](https://www.linkedin.com/company/nakafinances/) |
+| Assistenza merchant | `assistenza@naka.com` · telefono **da configurare** in `CONTEST.merchantSupportPhone` |
+
+Il telefono è volutamente vuoto: la riga compare solo quando è valorizzato, così non si pubblica
+un recapito inventato.
+
 ## Lingue
 
 Italiano (`/`) e inglese (`/en`), stessa struttura per entrambe.

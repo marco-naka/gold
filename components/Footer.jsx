@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Mail, ArrowUp, ExternalLink } from 'lucide-react';
 import { NakaLogo, PlanBLogo, XautBadge } from './Brand';
-import { CONTEST, EVENT } from '@/lib/constants';
+import { CONTEST, EVENT, OFFICIAL_CHANNELS } from '@/lib/constants';
 import { OFFICIAL_GUIDE } from '@/lib/wallets';
 import { getDictionary, localePath } from '@/lib/i18n';
 
@@ -75,6 +75,17 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                 <Link href={localePath(locale, "/best-social-video")} className="text-sm text-muted transition hover:text-gold">
                   {d.bestVideo}
                 </Link>
+              </li>
+              <li>
+                <a
+                  href={OFFICIAL_CHANNELS.linkedin.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-gold"
+                >
+                  {d.linkedin}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
               </li>
               <li>
                 <a

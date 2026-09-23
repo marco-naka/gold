@@ -68,11 +68,11 @@ export default function Navbar({ t, locale, onOpenRules }) {
             <ScrollText className="h-4 w-4" />
             {t.nav.rules}
           </button>
-          <LanguageSwitch locale={locale} className="ml-1" />
         </div>
 
         <div className="flex items-center gap-3">
           <PlanBLogo className="hidden md:inline-flex" />
+          <LanguageSwitch locale={locale} />
           <Button as="a" href="#partecipa" size="sm" className="hidden sm:inline-flex">
             {t.nav.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
@@ -120,7 +120,6 @@ export default function Navbar({ t, locale, onOpenRules }) {
             <ScrollText className="h-4 w-4" />
             {t.nav.rules}
           </button>
-          <LanguageSwitch locale={locale} className="mt-2 w-full justify-center" />
           <Button as="a" href="#partecipa" onClick={() => setOpen(false)} className="mt-2 w-full">
             {t.nav.cta}
             <ArrowRight className="h-4 w-4" />

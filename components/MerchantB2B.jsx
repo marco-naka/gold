@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Mail, Zap, TrendingUp, Trophy, Video } from 'lucide-react';
+import { Mail, Zap, TrendingUp, Trophy, BookOpen } from 'lucide-react';
 import Button from './ui/Button';
 import GlassCard from './ui/GlassCard';
 import { MAILTO_MERCHANT, PRIZES, formatXaut } from '@/lib/constants';
@@ -42,9 +42,9 @@ export default function MerchantB2B({ t, locale }) {
                 <Mail className="h-5 w-5" />
                 {t.cta}
               </Button>
-              <Button as={Link} href={localePath(locale, "/best-social-video")} variant="secondary" size="lg">
-                <Video className="h-5 w-5" />
-                {t.ctaVideo}
+              <Button as={Link} href={`${localePath(locale, "/best-social-video")}#commercianti`} variant="secondary" size="lg">
+                <BookOpen className="h-5 w-5" />
+                {t.ctaGuide}
               </Button>
             </div>
           </div>

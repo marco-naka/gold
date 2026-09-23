@@ -1,6 +1,13 @@
 import Link from 'next/link';
 import {
   ArrowLeft,
+  Linkedin,
+  Phone,
+  Star,
+  QrCode,
+  Store,
+  FileText,
+  Image as ImageIcon,
   Video,
   Hash,
   AtSign,
@@ -20,7 +27,7 @@ import SectionTitle from './ui/SectionTitle';
 import { NakaLogo, PlanBLogo } from './Brand';
 import Footer from './Footer';
 import LanguageSwitch from './LanguageSwitch';
-import { CONTEST, EVENT, PRIZES, SOCIAL_CONTEST, formatXaut } from '@/lib/constants';
+import { CONTEST, EVENT, OFFICIAL_CHANNELS, PRIZES, SOCIAL_CONTEST, formatXaut } from '@/lib/constants';
 import { formatDate, getDictionary, localePath } from '@/lib/i18n';
 
 const STEP_ICONS = [Video, Hash, AtSign, Mail];
@@ -108,6 +115,40 @@ export default function BestSocialVideo({ locale }) {
             </dl>
           </GlassCard>
         </div>
+
+        {/* Che cosa si può pubblicare: non solo video */}
+        <section className="mt-14">
+          <SectionTitle align="left" title={t.contentTitle} subtitle={t.contentSubtitle} />
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {t.contentTypes.map((type, i) => {
+              const Icon = [Video, FileText, ImageIcon][i] ?? Video;
+              return (
+                <GlassCard key={type.title} className="p-6">
+                  <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+                    <Icon className="h-5 w-5" />
+                  </span>
+                  <h3 className="mt-4 text-lg font-bold">{type.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted">{type.desc}</p>
+                </GlassCard>
+              );
+            })}
+          </div>
+
+          <GlassCard hover={false} className="mt-4 p-6">
+            <h3 className="text-sm font-semibold text-white">{t.platformsTitle}</h3>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {SOCIAL_CONTEST.platforms.map((platform) => (
+                <span key={platform} className="chip">
+                  {platform}
+                </span>
+              ))}
+            </div>
+            <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-muted">
+              <Linkedin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
+              {t.platformsNote}
+            </p>
+          </GlassCard>
+        </section>
 
         {/* Hashtag obbligatori */}
         <GlassCard hover={false} className="mt-14 p-7 sm:p-9">
@@ -265,6 +306,116 @@ export default function BestSocialVideo({ locale }) {
               {t.rightsLinkAfter}
             </p>
           </div>
+        </GlassCard>
+
+        {/* Guida completa per il commerciante: è la pagina a cui punta il QR del materiale */}
+        <section id="commercianti" className="mt-16 scroll-mt-24">
+          <SectionTitle
+            align="left"
+            eyebrow={t.merchantGuide.eyebrow}
+            title={t.merchantGuide.title}
+            subtitle={t.merchantGuide.subtitle}
+          />
+          <div className="mt-8 space-y-4">
+            {t.merchantGuide.steps.map((step) => (
+              <GlassCard key={step.title} className="p-6 sm:p-7">
+                <h3 className="text-base font-bold text-white sm:text-lg">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted">{step.text}</p>
+              </GlassCard>
+            ))}
+          </div>
+
+          <GlassCard hover={false} className="mt-4 flex flex-col gap-4 p-6 sm:flex-row sm:items-center">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+              <QrCode className="h-6 w-6" />
+            </span>
+            <div>
+              <h3 className="text-sm font-semibold text-white">{t.merchantGuide.qrTitle}</h3>
+              <p className="mt-1 text-xs leading-relaxed text-muted">{t.merchantGuide.qrText}</p>
+            </div>
+          </GlassCard>
+        </section>
+
+        {/* Assistenza dedicata + recensione */}
+        <section className="mt-16 grid gap-6 lg:grid-cols-2">
+          <GlassCard hover={false} className="p-7">
+            <h2 className="flex items-center gap-2 text-lg font-bold">
+              <Store className="h-5 w-5 text-gold" />
+              {t.support.title}
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted">{t.support.text}</p>
+            <dl className="mt-5 space-y-3">
+              <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <Mail className="h-4 w-4 shrink-0 text-gold" />
+                <div className="min-w-0">
+                  <dt className="text-xs text-muted">{t.support.emailLabel}</dt>
+                  <dd className="truncate text-sm font-semibold">
+                    <a
+                      href={`mailto:${CONTEST.merchantSupportEmail}`}
+                      className="text-white underline-offset-2 hover:text-gold hover:underline"
+                    >
+                      {CONTEST.merchantSupportEmail}
+                    </a>
+                  </dd>
+                </div>
+              </div>
+              {/* La riga compare solo quando il numero è configurato: meglio nessun recapito che uno sbagliato */}
+              {CONTEST.merchantSupportPhone && (
+                <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                  <Phone className="h-4 w-4 shrink-0 text-gold" />
+                  <div className="min-w-0">
+                    <dt className="text-xs text-muted">{t.support.phoneLabel}</dt>
+                    <dd className="truncate text-sm font-semibold">
+                      <a
+                        href={`tel:${CONTEST.merchantSupportPhone.replace(/\s/g, '')}`}
+                        className="text-white underline-offset-2 hover:text-gold hover:underline"
+                      >
+                        {CONTEST.merchantSupportPhone}
+                      </a>
+                    </dd>
+                  </div>
+                </div>
+              )}
+            </dl>
+          </GlassCard>
+
+          <GlassCard hover={false} className="flex flex-col p-7">
+            <h2 className="flex items-center gap-2 text-lg font-bold">
+              <Star className="h-5 w-5 text-gold" />
+              {t.support.reviewTitle}
+            </h2>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{t.support.reviewText}</p>
+            <Button
+              as="a"
+              href={CONTEST.googleReviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="secondary"
+              className="mt-5 w-full sm:w-auto"
+            >
+              <Star className="h-4 w-4" />
+              {t.support.reviewCta}
+            </Button>
+          </GlassCard>
+        </section>
+
+        {/* Annuncio ufficiale su LinkedIn */}
+        <GlassCard hover={false} className="mt-6 flex flex-col gap-4 p-7 sm:flex-row sm:items-center sm:justify-between">
+          <p className="flex items-start gap-3 text-sm leading-relaxed text-muted">
+            <Linkedin className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
+            {t.announcement.text}
+          </p>
+          <Button
+            as="a"
+            href={OFFICIAL_CHANNELS.linkedin.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            variant="ghost"
+            className="shrink-0"
+          >
+            <Linkedin className="h-4 w-4 text-gold" />
+            {t.announcement.cta}
+          </Button>
         </GlassCard>
 
         {/* CTA finale */}
