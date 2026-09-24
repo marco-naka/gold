@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Menu, X, ScrollText, ArrowRight } from 'lucide-react';
 import { localePath } from '@/lib/i18n';
 import LanguageSwitch from './LanguageSwitch';
-import { NakaLogo, PlanBLogo, XautBadge } from './Brand';
+import { NakaLogo, PlanBLogo, PoweredBadge } from './Brand';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 
@@ -47,7 +47,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
         <a href={localePath(locale)} className="flex shrink-0 items-center gap-3" aria-label={t.nav.home}>
           <NakaLogo />
           <span className="hidden h-8 w-px bg-white/10 xl:block" />
-          <XautBadge className="hidden xl:inline-flex" />
+          <PoweredBadge className="hidden xl:inline-flex" />
         </a>
 
         <div className="hidden items-center gap-1 lg:flex">

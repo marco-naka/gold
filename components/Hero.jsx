@@ -2,7 +2,7 @@ import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays } from 'lucide-re
 import Countdown from './Countdown';
 import LiveStats from './LiveStats';
 import Button from './ui/Button';
-import { XautBadge } from './Brand';
+import { PoweredBadge } from './Brand';
 import { CONTEST, EVENT, PAYMENT_ASSETS, PRIZES, TOTAL_POOL, formatXaut } from '@/lib/constants';
 import { MERCHANTS } from '@/lib/merchants';
 
@@ -30,7 +30,7 @@ export default function Hero({ t, locale }) {
         <div className="grid items-center gap-14 lg:grid-cols-[1.1fr_.9fr]">
           <div className="animate-fade-up">
             <div className="flex flex-wrap items-center gap-2">
-              <XautBadge />
+              <PoweredBadge />
               <span className="chip">
                 <MapPin className="h-3.5 w-3.5 text-gold" />
                 {EVENT.venue}

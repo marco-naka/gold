@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Mail, ArrowUp, ExternalLink } from 'lucide-react';
-import { NakaLogo, PlanBLogo, XautBadge } from './Brand';
+import { NakaLogo, PlanBLogo, PoweredBadge } from './Brand';
 import { CONTEST, EVENT, OFFICIAL_CHANNELS } from '@/lib/constants';
 import { OFFICIAL_GUIDE } from '@/lib/wallets';
 import { getDictionary, localePath } from '@/lib/i18n';
@@ -51,7 +51,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
               {d.tagline(t.meta.contestTitle, CONTEST.organizer, EVENT.name, EVENT.city)}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-2">
-              <XautBadge />
+              <PoweredBadge />
               <PlanBLogo />
             </div>
           </div>

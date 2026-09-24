@@ -29,14 +29,11 @@ export function PlanBLogo({ className = '' }) {
   );
 }
 
-export function XautBadge({ className = '' }) {
+export function PoweredBadge({ className = '' }) {
   return (
-    <span
-      className={`chip border-gold/30 bg-gold/10 text-gold ${className}`}
-      title="Premi erogati in Tether Gold (XAUT)"
-    >
+    <span className={`chip border-gold/30 bg-gold/10 text-gold ${className}`} title="NAKA">
       <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
-      Powered by Tether Gold (XAUT)
+      Powered by NAKA
     </span>
   );
 }
