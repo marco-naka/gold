@@ -123,7 +123,22 @@ export default async function Winners({ locale }) {
           </section>
         )}
 
-        <section className="mt-16">
+        {/* La versione per chi non sa cosa sia un hash: viene prima della procedura tecnica. */}
+        <GlassCard hover={false} className="mt-16 p-7 sm:p-9">
+          <h2 className="flex items-center gap-2 text-lg font-bold">
+            <ShieldCheck className="h-5 w-5 text-gold" />
+            {t.simpleTitle}
+          </h2>
+          <div className="mt-4 space-y-3">
+            {t.simple.map((p) => (
+              <p key={p} className="text-sm leading-relaxed text-muted">
+                {p}
+              </p>
+            ))}
+          </div>
+        </GlassCard>
+
+        <section className="mt-12">
           <SectionTitle align="left" eyebrow={<span className="inline-flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" />{t.howTitle}</span>} title={t.howTitle} subtitle={t.howIntro} />
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {t.steps.map((step, i) => (

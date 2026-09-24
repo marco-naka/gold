@@ -242,19 +242,27 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
                     {t.txHelp.toggle}
                   </summary>
                   <div className="mt-3 flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
-                    <svg width="86" height="108" viewBox="0 0 86 108" aria-hidden="true" className="shrink-0">
-                      <rect x="3" y="3" width="80" height="102" rx="4" fill="#FAFAF7" />
-                      <text x="43" y="20" textAnchor="middle" fontSize="7" fontWeight="700" fill="#52525B">
+<svg width="96" height="126" viewBox="0 0 96 126" aria-hidden="true" className="shrink-0">
+                      <rect x="3" y="3" width="90" height="120" rx="3" fill="#FAFAF7" />
+                      <text x="48" y="19" textAnchor="middle" fontSize="11" fontWeight="800" fill="#16161B" letterSpacing="1">
                         {t.txHelp.receiptLabel}
                       </text>
-                      <rect x="12" y="28" width="62" height="3" rx="1.5" fill="#D9D9D2" />
-                      <rect x="12" y="36" width="44" height="3" rx="1.5" fill="#D9D9D2" />
-                      <rect x="12" y="48" width="62" height="5" rx="2" fill="#B4B4AC" />
-                      <rect x="10" y="62" width="66" height="16" rx="3" fill="#FFF3C4" stroke="#F3BA2F" strokeWidth="1.5" />
-                      <rect x="15" y="67" width="34" height="3" rx="1.5" fill="#8A6A00" />
-                      <rect x="15" y="73" width="46" height="3" rx="1.5" fill="#16161B" />
-                      <rect x="12" y="86" width="62" height="3" rx="1.5" fill="#D9D9D2" />
-                      <rect x="12" y="94" width="30" height="3" rx="1.5" fill="#D9D9D2" />
+                      <rect x="24" y="24" width="48" height="2.5" rx="1.25" fill="#C6C6BE" />
+                      <rect x="14" y="36" width="30" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="60" y="36" width="22" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="14" y="44" width="26" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="64" y="44" width="18" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="14" y="52" width="22" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="58" y="52" width="24" height="2.5" rx="1.25" fill="#B4B4AC" />
+                      <rect x="10" y="60" width="76" height="26" rx="3" fill="#FFF3C4" stroke="#F3BA2F" strokeWidth="1.5" />
+                      <text x="14" y="70" fontSize="5.5" fontWeight="800" fill="#8A6A00">N° TRANSAZIONE</text>
+                      <rect x="14" y="74" width="68" height="3" rx="1.5" fill="#16161B" />
+                      <rect x="42" y="80" width="40" height="3" rx="1.5" fill="#16161B" />
+                      <rect x="14" y="94" width="28" height="2.5" rx="1.25" fill="#C6C6BE" />
+                      <rect x="56" y="94" width="26" height="2.5" rx="1.25" fill="#C6C6BE" />
+                      <rect x="14" y="104" width="24" height="3.5" rx="1.75" fill="#8A8A82" />
+                      <rect x="58" y="104" width="24" height="3.5" rx="1.75" fill="#8A8A82" />
+                      <rect x="30" y="115" width="36" height="2.5" rx="1.25" fill="#C6C6BE" />
                     </svg>
                     <p className="text-xs leading-relaxed text-muted">{t.txHelp.text}</p>
                   </div>
