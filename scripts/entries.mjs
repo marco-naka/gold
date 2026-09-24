@@ -124,7 +124,7 @@ async function purge(rest) {
 
 async function exportCsv() {
   const entries = await listEntries();
-  const cols = ['id', 'status', 'email', 'merchant', 'merchantId', 'merchantKnown', 'txIdMasked', 'txKind', 'source', 'locale', 'createdAt'];
+  const cols = ['id', 'status', 'email', 'merchant', 'merchantId', 'merchantKnown', 'txSuffix', 'amountCents', 'txKind', 'source', 'locale', 'createdAt'];
   out(cols.join(','));
   for (const e of entries) {
     out(cols.map((c) => `"${String(e[c] ?? '').replace(/"/g, '""')}"`).join(','));

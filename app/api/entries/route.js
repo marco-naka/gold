@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
-import { MAX_MERCHANT_LENGTH, normalizeTx, txKind, validateEntry } from '@/lib/validation';
+import { MAX_MERCHANT_LENGTH, parseAmount, txKind, txSuffix, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
 import { normalizeSource } from '@/lib/server/stats';
 import { intlLocale } from '@/lib/i18n';
@@ -67,6 +67,7 @@ export async function POST(request) {
   const data = {
     email: String(form.get('email') ?? '').trim(),
     txId: String(form.get('txId') ?? '').trim(),
+    amount: String(form.get('amount') ?? '').trim(),
     merchant: String(form.get('merchant') ?? '').trim().slice(0, MAX_MERCHANT_LENGTH + 1),
     locale: String(form.get('locale') ?? 'it') === 'en' ? 'en' : 'it',
     source: normalizeSource(form.get('source')),
@@ -113,7 +114,11 @@ export async function POST(request) {
   //    if (!settlement) -> resta pending, verifica manuale sullo scontrino archiviato
   //    if (settlement.timestamp fuori dal periodo di gara) -> 422
 
-  const tx = normalizeTx(data.txId);
+  // Chiave di unicità: ultime 6 cifre + importo. Le sole 6 cifre collidono troppo spesso e
+  // finirebbero per rifiutare come duplicate le giocate di clienti diversi ma onesti.
+  const cents = parseAmount(data.amount);
+  const suffix = txSuffix(data.txId);
+  const tx = `${suffix}|${cents}`;
   const merchant = matchMerchant(data.merchant);
   const createdAt = new Date();
   const id = `NK-${createdAt.getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
@@ -138,7 +143,9 @@ export async function POST(request) {
     merchantKnown: merchant?.known ?? null,
     proof: 'tx_and_receipt', // codice: il testo lo risolve il client
     txNormalized: tx,
-    txIdMasked: mask(data.txId, 10, 6),
+    txSuffix: suffix,
+    amountCents: cents,
+    txIdMasked: suffix.toUpperCase(),
     txKind: txKind(data.txId),
     receipt: stored,
     status: 'pending_verification',

@@ -53,10 +53,15 @@ Tre campi: **email**, **prova d'acquisto** (numero transazione *oppure* foto sco
 facoltativo** (testo libero con suggerimenti `<datalist>` dai merchant della mappa; un nome fuori
 elenco è accettato e marcato `merchantKnown: false` per la verifica manuale).
 
-Il numero di transazione è validato in modo permissivo (≥6 caratteri alfanumerici): sul POS può
-essere un hash, una invoice Lightning o il riferimento stampato sulla ricevuta. `txKind` etichetta
-automaticamente il tipo (`blockchain` / `lightning` / `ricevuta`) per il triage a valle; l'autenticità
-la stabilisce il riscontro sul backend NAKA, non il regex.
+Del numero di transazione si chiedono le **ultime 6 cifre**: sulla ricevuta NAKA è lungo 32
+caratteri e spezzato su due righe, e copiarlo per intero da uno scontrino termico è il modo più
+veloce per far abbandonare il form. Chi preferisce incolla il numero intero: il confronto usa
+comunque il suffisso.
+
+Le 6 cifre da sole però collidono — su 2.000 giocate c'è l'11% di probabilità che due finiscano
+uguali, e un cliente onesto si vedrebbe rifiutare la giocata come duplicata. La chiave di unicità è
+quindi **suffisso + importo**, che porta quella probabilità sotto lo 0,1%: l'importo è già stampato
+sulla ricevuta, si copia in un attimo e serve anche al riscontro del premio Top Volume.
 
 **L'indirizzo wallet non è più chiesto in fase di giocata**: viene richiesto via email ai soli
 vincitori. Regolamento (art. 4, 7, 8) e FAQ sono allineati a questo flusso.
