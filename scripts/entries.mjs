@@ -14,6 +14,7 @@
  *   node scripts/entries.mjs export   > giocate.csv
  */
 import { listEntries, updateEntry } from '../lib/server/store.js';
+import { sourceReport } from '../lib/server/stats.js';
 
 const STATUS = {
   pending_verification: 'in verifica',
@@ -44,6 +45,17 @@ async function stats() {
   if (unknown) out(`⚠ ${unknown} giocate con negozio non riconosciuto: da controllare a mano`);
   const noMerchant = entries.filter((e) => !e.merchant).length;
   if (noMerchant) out(`  ${noMerchant} giocate senza negozio indicato (campo facoltativo)`);
+
+  // Quale materiale ha portato giocate: è la domanda a cui si deve rispondere a campagna finita.
+  const report = await sourceReport();
+  if (report.length) {
+    out('\nConversione per sorgente');
+    out(`  ${'sorgente'.padEnd(20)} ${'aperture'.padStart(8)} ${'giocate'.padStart(8)} ${'tasso'.padStart(7)}`);
+    for (const r of report) {
+      const rate = r.rate === null ? '—' : `${Math.round(r.rate * 100)}%`;
+      out(`  ${r.source.padEnd(20)} ${String(r.visits).padStart(8)} ${String(r.entries).padStart(8)} ${rate.padStart(7)}`);
+    }
+  }
 }
 
 async function list(rest) {
@@ -85,7 +97,7 @@ async function validateAll(rest) {
 
 async function exportCsv() {
   const entries = await listEntries();
-  const cols = ['id', 'status', 'email', 'merchant', 'merchantId', 'merchantKnown', 'txIdMasked', 'txKind', 'createdAt'];
+  const cols = ['id', 'status', 'email', 'merchant', 'merchantId', 'merchantKnown', 'txIdMasked', 'txKind', 'source', 'locale', 'createdAt'];
   out(cols.join(','));
   for (const e of entries) {
     out(cols.map((c) => `"${String(e[c] ?? '').replace(/"/g, '""')}"`).join(','));

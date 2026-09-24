@@ -2,20 +2,24 @@ import { SITE_URL } from '@/lib/site';
 
 export default function sitemap() {
   const lastModified = new Date();
-  const pages = ['', '/best-social-content'];
+  // /p è la pagina del QR: utile ma non da indicizzare, quindi resta fuori dalla sitemap.
+  const pages = ['', '/best-social-content', { it: '/vincitori', en: '/winners' }];
   // Ogni pagina è dichiarata nelle due lingue con i rispettivi alternate hreflang.
   return pages.flatMap((page) =>
     ['it', 'en'].map((locale) => {
-      const path = locale === 'it' ? page : `/en${page}`;
+      const slug = typeof page === 'string' ? page : page[locale];
+      const itSlug = typeof page === 'string' ? page : page.it;
+      const enSlug = typeof page === 'string' ? page : page.en;
+      const path = locale === 'it' ? slug : `/en${enSlug}`;
       return {
         url: `${SITE_URL}${path}`,
         lastModified,
-        changeFrequency: page ? 'monthly' : 'weekly',
-        priority: page ? 0.7 : 1,
+        changeFrequency: slug ? 'monthly' : 'weekly',
+        priority: slug ? 0.7 : 1,
         alternates: {
           languages: {
-            it: `${SITE_URL}${page}`,
-            en: `${SITE_URL}/en${page}`,
+            it: `${SITE_URL}${itSlug}`,
+            en: `${SITE_URL}/en${enSlug}`,
           },
         },
       };

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Mail,
   Store,
@@ -20,7 +20,6 @@ import GlassCard from './ui/GlassCard';
 import Modal from './ui/Modal';
 import SectionTitle from './ui/SectionTitle';
 import { cn } from './ui/cn';
-import { MERCHANTS } from '@/lib/merchants';
 import { MAX_RECEIPT_BYTES, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
 import { formatDate } from '@/lib/i18n';
@@ -34,7 +33,7 @@ const EMPTY = {
   acceptRules: false,
 };
 
-export default function EntryForm({ t, locale, onOpenRules }) {
+export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
   const [values, setValues] = useState(EMPTY);
   const [receipt, setReceipt] = useState(null);
   const [errors, setErrors] = useState({});
@@ -47,29 +46,41 @@ export default function EntryForm({ t, locale, onOpenRules }) {
   // Marca temporale di apertura del form: serve al controllo anti-bot lato server.
   const startedAt = useRef(0);
   const [honeypot, setHoneypot] = useState('');
+  // Etichetta della sorgente (?s= sui QR stampati): serve a sapere quale materiale converte.
+  const source = useRef('');
 
   // La finestra di invio si calcola dopo il mount: il server non deve prerenderizzare uno stato
   // che diventerebbe sbagliato con il passare delle ore (pagina statica + cache).
   useEffect(() => {
     startedAt.current = Date.now();
+    source.current = new URLSearchParams(window.location.search).get('s') ?? '';
     if (IS_DEMO) return;
     const win = submissionWindow();
     if (!win.open) setClosed(win);
   }, []);
 
-  // Suggerimenti per il campo facoltativo: nomi dei merchant della mappa, inseribili anche a mano.
-  const merchantNames = useMemo(
-    () => [...new Set(MERCHANTS.filter((m) => m.posActive).map((m) => m.name))].sort((a, b) => a.localeCompare(b, 'it')),
-    []
-  );
+  // I suggerimenti del negozio arrivano da /api/merchants mentre si scrive: così la pagina
+  // di partecipazione non scarica lo snapshot completo dei merchant per un campo facoltativo.
+  const [merchantSuggestions, setMerchantSuggestions] = useState([]);
 
-  // Si rendono solo i suggerimenti pertinenti: 327 <option> nell'HTML pesavano ~15 KB
-  // e su mobile rallentavano la prima interazione con il campo.
-  const merchantSuggestions = useMemo(() => {
-    const q = values.merchant.trim().toLowerCase();
-    if (q.length < 2) return [];
-    return merchantNames.filter((name) => name.toLowerCase().includes(q)).slice(0, 8);
-  }, [merchantNames, values.merchant]);
+  useEffect(() => {
+    const q = values.merchant.trim();
+    if (q.length < 2) {
+      setMerchantSuggestions([]);
+      return undefined;
+    }
+    const controller = new AbortController();
+    const id = setTimeout(() => {
+      fetch(`/api/merchants?q=${encodeURIComponent(q)}`, { signal: controller.signal })
+        .then((r) => r.json())
+        .then((d) => setMerchantSuggestions(d.names ?? []))
+        .catch(() => {});
+    }, 180);
+    return () => {
+      clearTimeout(id);
+      controller.abort();
+    };
+  }, [values.merchant]);
 
   const runValidation = (next = values, nextReceipt = receipt) =>
     validateEntry(next, nextReceipt ? { name: nextReceipt.name, size: nextReceipt.size, type: nextReceipt.type } : null);
@@ -114,6 +125,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
       payload.append('company', honeypot); // honeypot: deve restare vuoto
       payload.append('startedAt', String(startedAt.current));
       payload.append('locale', locale);
+      payload.append('source', source.current);
       if (receipt) payload.append('receipt', receipt);
 
       const res = await fetch('/api/entries', { method: 'POST', body: payload });
@@ -144,12 +156,11 @@ export default function EntryForm({ t, locale, onOpenRules }) {
   };
 
   return (
-    <section id="partecipa" className="section-pad scroll-mt-28">
-      <SectionTitle
-        eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />
+    <section id="partecipa" className={compact ? 'scroll-mt-4' : 'section-pad scroll-mt-28'}>
+      {!compact && <SectionTitle eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle} />}
 
       {closed ? (
-        <GlassCard hover={false} className="mx-auto mt-12 max-w-2xl p-8 text-center sm:p-10">
+        <GlassCard hover={false} className={`mx-auto max-w-2xl p-8 text-center sm:p-10 ${compact ? 'mt-6' : 'mt-12'}`}>
           <span className="mx-auto grid h-14 w-14 place-items-center rounded-full border border-gold/30 bg-gold/10 text-gold">
             <CalendarClock className="h-7 w-7" />
           </span>
@@ -172,7 +183,7 @@ export default function EntryForm({ t, locale, onOpenRules }) {
           </Button>
         </GlassCard>
       ) : (
-      <GlassCard hover={false} className="mx-auto mt-12 max-w-2xl p-6 sm:p-10">
+      <GlassCard hover={false} className={`mx-auto max-w-2xl p-6 sm:p-10 ${compact ? 'mt-6' : 'mt-12'}`}>
         <form onSubmit={handleSubmit} noValidate className="space-y-6">
           {/* 1. Email */}
           <Field

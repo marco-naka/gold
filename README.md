@@ -201,6 +201,29 @@ check lo segnala restituendo 503.
 I comandi di back-office ed estrazione si eseguono dalla **Shell** del servizio Render, dove il
 disco è montato.
 
+## Pagine e funnel
+
+| Percorso | A chi serve |
+|---|---|
+| `/` · `/en` | Landing completa: chi arriva da LinkedIn o dalla locandina |
+| `/p` · `/en/p` | **Pagina del QR**: solo il form, 24 KB contro i 230 della home. Chi inquadra il codice è alla cassa con trenta secondi: 43 parole prima del campo email invece di 648 |
+| `/vincitori` · `/en/winners` | Risultato dell'estrazione e spiegazione della procedura verificabile (prima del sorteggio mostra solo quest'ultima) |
+| `/best-social-content` | Premio social e guida commercianti |
+
+I suggerimenti del negozio arrivano da `/api/merchants?q=` mentre si scrive: lo snapshot da 123 KB
+non entra più nel bundle del form.
+
+## Misurazione senza cookie
+
+I QR stampati portano un parametro sorgente (`?s=volantino-cliente`, `locandina`, `vetrina`,
+`volantino-merchant`, `linkedin`). `/api/track` conta le aperture per etichetta in `.data/visits.json`
+e la sorgente viene salvata sulla giocata: `npm run entries stats` mostra la conversione per
+materiale. Nessun cookie, nessun IP, nessun identificatore — niente da far consentire sotto LPD.
+Le etichette fuori elenco vengono scartate.
+
+`/api/stats` alimenta il contatore pubblico in pagina (giocate registrate, premi, negozi): prova
+sociale e trasparenza sulle probabilità nello stesso posto.
+
 ## Back-office giocate
 
 ```bash

@@ -1,5 +1,6 @@
 import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays } from 'lucide-react';
 import Countdown from './Countdown';
+import LiveStats from './LiveStats';
 import Button from './ui/Button';
 import { XautBadge } from './Brand';
 import { CONTEST, EVENT, PAYMENT_ASSETS, PRIZES, TOTAL_POOL, formatXaut } from '@/lib/constants';
@@ -51,6 +52,8 @@ export default function Hero({ t, locale }) {
             <div className="mt-9">
               <Countdown startsAt={CONTEST.validFrom} endsAt={CONTEST.validTo} t={t.countdown} />
             </div>
+
+            <LiveStats t={t.stats} className="mt-6 justify-start" />
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
               <Button as="a" href="#partecipa" size="lg" className="animate-pulse-gold">

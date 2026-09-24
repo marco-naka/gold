@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_MERCHANT_LENGTH, normalizeTx, txKind, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
+import { normalizeSource } from '@/lib/server/stats';
 import { intlLocale } from '@/lib/i18n';
 import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
@@ -68,6 +69,7 @@ export async function POST(request) {
     txId: String(form.get('txId') ?? '').trim(),
     merchant: String(form.get('merchant') ?? '').trim().slice(0, MAX_MERCHANT_LENGTH + 1),
     locale: String(form.get('locale') ?? 'it') === 'en' ? 'en' : 'it',
+    source: normalizeSource(form.get('source')),
     confirmAge: form.get('confirmAge') === 'true',
     acceptRules: form.get('acceptRules') === 'true',
   };
@@ -130,6 +132,7 @@ export async function POST(request) {
     id,
     email: data.email,
     locale: data.locale,
+    source: data.source,
     merchant: merchant?.name ?? null,
     merchantId: merchant?.id ?? null,
     merchantKnown: merchant?.known ?? null,
