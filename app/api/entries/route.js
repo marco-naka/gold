@@ -145,6 +145,7 @@ export async function POST(request) {
     txNormalized: tx,
     txSuffix: suffix,
     amountCents: cents,
+    amountLabel: `CHF ${(cents / 100).toFixed(2)}`,
     txIdMasked: suffix.toUpperCase(),
     txKind: txKind(data.txId),
     receipt: stored,

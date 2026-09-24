@@ -575,6 +575,7 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
         <SummaryRow label={t.rowEmail} value={entry.email} />
         <SummaryRow label={t.rowProof} value={proofLabel} />
         {entry.txIdMasked && <SummaryRow label={t.rowTx} value={entry.txIdMasked} mono />}
+        {entry.amountLabel && <SummaryRow label={t.rowAmount} value={entry.amountLabel} mono />}
         {entry.merchant && <SummaryRow label={t.rowMerchant} value={entry.merchant} />}
         <SummaryRow label={t.rowDate} value={entry.createdAtLabel} />
         <SummaryRow label={t.rowStatus} value={t.statusValue} />
