@@ -13,8 +13,11 @@
  *   node scripts/entries.mjs reject   NK-2026-ABC123 --reason "transazione non trovata"
  *   node scripts/entries.mjs export   > giocate.csv
  */
-import { listEntries, updateEntry } from '../lib/server/store.js';
+import { listEntries, purgePersonalData, updateEntry } from '../lib/server/store.js';
 import { sourceReport } from '../lib/server/stats.js';
+import { rm } from 'node:fs/promises';
+import { join } from 'node:path';
+import { CONTEST } from '../lib/constants.js';
 
 const STATUS = {
   pending_verification: 'in verifica',
@@ -95,6 +98,30 @@ async function validateAll(rest) {
   out(`✓ ${entries.length} giocate convalidate`);
 }
 
+/**
+ * Chiusura del concorso: via email, scontrini e numeri di transazione.
+ * Restano ID, stato, sorgente e data, che non identificano nessuno e servono al rendiconto
+ * e alla verificabilità dell'estrazione già pubblicata.
+ */
+async function purge(rest) {
+  const entries = await listEntries();
+  const withData = entries.filter((e) => e.email);
+  const until = new Date(CONTEST.onlineUntil);
+
+  if (!rest.includes('--yes')) {
+    out(`Cancellazione dati personali di ${withData.length} giocate (email, scontrini, numeri di transazione).`);
+    out(`Data prevista dalla privacy policy: ${until.toLocaleDateString('it-CH')}`);
+    if (Date.now() < until.getTime()) out('⚠ La data non è ancora arrivata: procedi solo se sai perché.');
+    return out('Conferma con --yes. Operazione irreversibile.');
+  }
+
+  const dir = process.env.DATA_DIR || join(process.cwd(), '.data');
+  await rm(join(dir, 'receipts'), { recursive: true, force: true });
+  const res = await purgePersonalData();
+  out(`✓ Scontrini eliminati e ${res.count} giocate anonimizzate`);
+  out('  Conservati: ID giocata, stato, sorgente, data. Nessun dato personale.');
+}
+
 async function exportCsv() {
   const entries = await listEntries();
   const cols = ['id', 'status', 'email', 'merchant', 'merchantId', 'merchantKnown', 'txIdMasked', 'txKind', 'source', 'locale', 'createdAt'];
@@ -113,12 +140,13 @@ const commands = {
   reject: () => setStatus(rest[0], 'rejected', { rejectionReason: flag(rest, 'reason') ?? null }),
   'validate-all': () => validateAll(rest),
   export: exportCsv,
+  purge: () => purge(rest),
 };
 
 const fn = commands[command];
 if (!fn) {
   process.stderr.write(
-    'Uso: stats | list [--status <stato>] | show <id> | validate <id> | reject <id> --reason <testo> | validate-all --yes | export\n'
+    'Uso: stats | list [--status <stato>] | show <id> | validate <id> | reject <id> --reason <testo> | validate-all --yes | export | purge --yes\n'
   );
   process.exit(1);
 }

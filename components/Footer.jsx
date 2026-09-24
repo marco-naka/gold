@@ -116,7 +116,9 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                 <RulesLink onOpenRules={onOpenRules} locale={locale}>{d.rules}</RulesLink>
               </li>
               <li>
-                <RulesLink onOpenRules={onOpenRules} locale={locale}>{d.privacy}</RulesLink>
+                <Link href={localePath(locale, '/privacy')} className="text-sm text-muted transition hover:text-gold">
+                  {d.privacy}
+                </Link>
               </li>
               <li>
                 <a

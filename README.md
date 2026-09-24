@@ -213,6 +213,31 @@ disco è montato.
 I suggerimenti del negozio arrivano da `/api/merchants?q=` mentre si scrive: lo snapshot da 123 KB
 non entra più nel bundle del form.
 
+## Privacy, cookie e ciclo di vita
+
+Il sito **non installa cookie** e non carica risorse di terze parti: i font sono ospitati in
+`public/fonts`, quindi navigando l'IP del visitatore non raggiunge Google. È la ragione per cui
+non c'è alcun banner da mostrare — non perché sia stato dimenticato.
+
+`components/ConsentBanner.jsx` esiste ed è pronto, ma si accende **solo** se viene configurata
+`NEXT_PUBLIC_ANALYTICS_ID`: nel momento in cui si introduce uno strumento con cookie, compare la
+richiesta di consenso preventiva senza altro lavoro.
+
+Informativa completa su `/privacy` (e `/en/privacy`), collegata dal footer.
+
+### Conservazione
+
+| | |
+|---|---|
+| Raccolta giocate | fino al 25 ottobre 2026 (chiusura + 24h) |
+| Estrazione | 6 novembre 2026 |
+| Elenco vincitori online | fino al **6 dicembre 2026** (`CONTEST.onlineUntil`), con i soli ID |
+| Cancellazione dati personali | entro la stessa data, con `npm run entries purge -- --yes` |
+
+Il purge elimina scontrini, email e numeri di transazione e lascia ID, esito, sorgente e data:
+dati che non identificano nessuno e che tengono verificabile l'estrazione già pubblicata. Il comando
+avvisa se viene lanciato prima della data prevista.
+
 ## Misurazione senza cookie
 
 I QR stampati portano un parametro sorgente (`?s=volantino-cliente`, `locandina`, `vetrina`,

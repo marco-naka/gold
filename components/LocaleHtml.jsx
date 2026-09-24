@@ -1,19 +1,15 @@
+import ConsentBanner from './ConsentBanner';
+import { getDictionary, localePath } from '@/lib/i18n';
+
 /**
  * Scheletro del documento, condiviso dai due root layout.
  * Esistono due layout separati (route group per lingua) perché l'attributo `lang` sta su <html>
  * e un layout annidato non può modificarlo.
  */
 export default function LocaleHtml({ locale, skipLink, children }) {
+  const t = getDictionary(locale);
   return (
     <html lang={locale}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body>
         <a
           href="#partecipa"
@@ -22,6 +18,7 @@ export default function LocaleHtml({ locale, skipLink, children }) {
           {skipLink}
         </a>
         {children}
+        <ConsentBanner t={t.consent} privacyHref={localePath(locale, '/privacy')} />
       </body>
     </html>
   );

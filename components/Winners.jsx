@@ -116,6 +116,9 @@ export default async function Winners({ locale }) {
               </div>
 
               <p className="mt-6 text-xs leading-relaxed text-muted">{t.contacted}</p>
+              <p className="mt-2 text-xs leading-relaxed text-muted">
+                {t.publishedUntil(formatDate(CONTEST.onlineUntil, locale))}
+              </p>
             </GlassCard>
           </section>
         )}

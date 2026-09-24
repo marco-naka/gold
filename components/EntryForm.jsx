@@ -236,6 +236,29 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
                   className={cn('field font-mono text-xs', showError('txId') && 'field-error')}
                   aria-invalid={Boolean(showError('txId'))}
                 />
+                {/* Il campo che fa abbandonare: chi non ha mai pagato in crypto non sa dove guardare. */}
+                <details className="mt-2 group">
+                  <summary className="cursor-pointer list-none text-xs font-semibold text-gold underline-offset-2 hover:underline">
+                    {t.txHelp.toggle}
+                  </summary>
+                  <div className="mt-3 flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-4">
+                    <svg width="86" height="108" viewBox="0 0 86 108" aria-hidden="true" className="shrink-0">
+                      <rect x="3" y="3" width="80" height="102" rx="4" fill="#FAFAF7" />
+                      <text x="43" y="20" textAnchor="middle" fontSize="7" fontWeight="700" fill="#52525B">
+                        {t.txHelp.receiptLabel}
+                      </text>
+                      <rect x="12" y="28" width="62" height="3" rx="1.5" fill="#D9D9D2" />
+                      <rect x="12" y="36" width="44" height="3" rx="1.5" fill="#D9D9D2" />
+                      <rect x="12" y="48" width="62" height="5" rx="2" fill="#B4B4AC" />
+                      <rect x="10" y="62" width="66" height="16" rx="3" fill="#FFF3C4" stroke="#F3BA2F" strokeWidth="1.5" />
+                      <rect x="15" y="67" width="34" height="3" rx="1.5" fill="#8A6A00" />
+                      <rect x="15" y="73" width="46" height="3" rx="1.5" fill="#16161B" />
+                      <rect x="12" y="86" width="62" height="3" rx="1.5" fill="#D9D9D2" />
+                      <rect x="12" y="94" width="30" height="3" rx="1.5" fill="#D9D9D2" />
+                    </svg>
+                    <p className="text-xs leading-relaxed text-muted">{t.txHelp.text}</p>
+                  </div>
+                </details>
               </Field>
 
               <div data-field-error={Boolean(showError('receipt'))}>
@@ -377,6 +400,21 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
           </Button>
 
           <p className="text-center text-[11px] leading-relaxed text-muted/80">{t.footnote}</p>
+
+          <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/[0.02] p-4">
+            <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+            <p className="text-[11px] leading-relaxed text-muted">
+              <span className="font-semibold text-white">{t.trust.title}.</span> {t.trust.text('NAKA')}{' '}
+              <a
+                href="https://naka.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gold underline underline-offset-2"
+              >
+                {t.trust.link}
+              </a>
+            </p>
+          </div>
           {/* Honeypot: invisibile agli utenti, compilato dai bot. */}
           <div aria-hidden="true" className="absolute left-[-9999px] top-auto h-px w-px overflow-hidden">
             <label htmlFor="company">{t.honeypot}</label>

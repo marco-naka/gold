@@ -2,12 +2,16 @@ import Link from 'next/link';
 import { Mail, Zap, TrendingUp, Trophy, BookOpen } from 'lucide-react';
 import Button from './ui/Button';
 import GlassCard from './ui/GlassCard';
-import { MAILTO_MERCHANT, PRIZES, formatXaut } from '@/lib/constants';
+import { CONTEST, MAILTO_MERCHANT, PRIZES, formatXaut } from '@/lib/constants';
 import { localePath } from '@/lib/i18n';
 
 
 
 export default function MerchantB2B({ t, locale }) {
+  // Chi vede la vetrofania del vicino ma non ha ricevuto l'invito non deve restare a mani vuote.
+  const joinMailto = `mailto:${CONTEST.merchantEmail}?subject=${encodeURIComponent(
+    t.merchantJoin.subject
+  )}&body=${encodeURIComponent(t.merchantJoin.body.join('\n'))}`;
   const icons = [Zap, TrendingUp, Trophy];
   const perks = t.perks(formatXaut(PRIZES.merchants.pool)).map((text, i) => ({ icon: icons[i] ?? Zap, text }));
 
@@ -47,6 +51,13 @@ export default function MerchantB2B({ t, locale }) {
                 {t.ctaGuide}
               </Button>
             </div>
+
+            <p className="mt-5 text-sm text-muted">
+              {t.merchantJoin.question}{' '}
+              <a href={joinMailto} className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm">
+                {t.merchantJoin.cta}
+              </a>
+            </p>
           </div>
 
           <div className="rounded-2xl border border-white/10 bg-ink-deep/60 p-6">
