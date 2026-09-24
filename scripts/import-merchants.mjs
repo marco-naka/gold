@@ -16,7 +16,9 @@ import { writeFile } from 'node:fs/promises';
 
 const ENDPOINT = 'https://planb.lugano.ch/wp-json/bfx-crypto-map/v1/merchants?env=production';
 
-// Comuni del comprensorio di Lugano ammessi al concorso.
+// Comuni del comprensorio ammessi al concorso. Paradiso resta in elenco perché il filtro sia
+// già pronto, ma sulla crypto map cittadina non c'è alcun esercente di Paradiso che accetti
+// BTC o USDt: finché NAKA non fornisce i suoi, la comunicazione parla solo di Lugano.
 const CITIES = [
   'lugano', 'paradiso', 'massagno', 'viganello', 'pregassona', 'breganzona',
   'castagnola', 'cassarate', 'besso', 'molino nuovo', 'pazzallo', 'barbengo',

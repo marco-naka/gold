@@ -78,9 +78,9 @@ incorporata in `my.lugano.ch/pagare-in-lvga-lugano`), filtra il comprensorio di 
 accetta solo LVGA, mappa la tassonomia sulle 4 categorie del concorso (`UST` → `USDT`) e scrive lo
 snapshot statico `lib/merchants.data.json`.
 
-⚠️ Nella crypto map cittadina **Paradiso ha un solo esercente** (Funicolare San Salvatore) e accetta
-**solo LVGA**, quindi resta fuori dall'elenco. Se NAKA ha POS attivi a Paradiso non presenti su
-quella mappa, vanno forniti a parte: oggi la pagina promette un territorio che i dati non coprono.
+ℹ️ **Paradiso**: sulla crypto map cittadina c'è un solo esercente (Funicolare San Salvatore) e
+accetta solo LVGA, quindi non entra nell'elenco. I merchant di Paradiso arriveranno da NAKA a parte;
+fino ad allora la comunicazione parla solo di Lugano. Il filtro dell'import li accetta già.
 
 Ultimo import: **336 merchant**, di cui **328 con rail NAKA** (food 107 · servizi 130 · shopping 92 ·
 hotel 7).
@@ -150,7 +150,7 @@ nella route.
 | | |
 |---|---|
 | **Forum** (sede ed evento) | 23–24 ottobre 2026, Palazzo dei Congressi · [biglietti](https://planb.lugano.ch/planb-forum/#tickets) |
-| **Iniziativa** (territorio) | Lugano e Paradiso, negozi con POS NAKA |
+| **Iniziativa** (territorio) | Lugano, negozi con POS NAKA |
 | Apertura | lunedì 19 ottobre 2026, **08:00** |
 | Chiusura registrazioni | sabato 24 ottobre 2026, **16:00** |
 | Contenuti social | entro venerdì 23 ottobre |
