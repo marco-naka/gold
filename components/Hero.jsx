@@ -1,4 +1,4 @@
-import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays } from 'lucide-react';
+import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays, Ticket } from 'lucide-react';
 import Countdown from './Countdown';
 import LiveStats from './LiveStats';
 import Button from './ui/Button';
@@ -8,6 +8,11 @@ import { MERCHANTS } from '@/lib/merchants';
 
 export default function Hero({ t, locale }) {
   const d = t.hero;
+  // "23–24 ottobre 2026": le due date del forum, distinte dalla settimana dell'iniziativa.
+  const forumDates = `${new Date(EVENT.startsAt).getDate()}–${new Date(EVENT.endsAt).toLocaleDateString(
+    locale === 'en' ? 'en-CH' : 'it-CH',
+    { day: 'numeric', month: 'long', year: 'numeric' }
+  )}`;
   const stats = [
     { icon: Store, value: String(MERCHANTS.filter((m) => m.posActive).length), label: d.statMerchants },
     { icon: Zap, value: String(PAYMENT_ASSETS.length), label: d.statAssets(PAYMENT_ASSETS.map((a) => a.short).join(', ')) },
@@ -33,7 +38,7 @@ export default function Hero({ t, locale }) {
               <PoweredBadge />
               <span className="chip">
                 <MapPin className="h-3.5 w-3.5 text-gold" />
-                {EVENT.venue}
+                {d.area}
               </span>
               <span className="chip">
                 <CalendarDays className="h-3.5 w-3.5 text-gold" />
@@ -64,6 +69,24 @@ export default function Hero({ t, locale }) {
                 <MapPin className="h-5 w-5" />
                 {d.ctaMap}
               </Button>
+            </div>
+
+            <div className="mt-9 flex flex-col gap-3 rounded-xl border border-white/10 bg-white/[0.03] p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-white">
+                  {d.forumStrip(EVENT.name, forumDates, EVENT.venue)}
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{d.forumNote}</p>
+              </div>
+              <a
+                href={EVENT.ticketsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-gold/40 bg-gold/10 px-3 py-2 text-xs font-semibold text-gold transition hover:bg-gold/15"
+              >
+                <Ticket className="h-3.5 w-3.5" />
+                {d.forumTickets}
+              </a>
             </div>
 
             <dl className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
