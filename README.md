@@ -113,7 +113,7 @@ citarlo esplicitamente.
 | API | unicità del numero di transazione (409 sui duplicati) |
 | API | rate limit 10 giocate/ora per IP+email (429) |
 | API | mascheramento del numero transazione nella risposta; la chiave dello scontrino non esce mai dal server |
-| API | finestra temporale: fuori dal periodo di gara (+24h di tolleranza) si risponde 403 |
+| API | finestra temporale: fuori dal periodo di gara (+30 min di tolleranza) si risponde 403 |
 | API | honeypot invisibile + tempo minimo di compilazione (3s), con risposta fittizia per non istruire i bot |
 
 ### Livello dati (`lib/server/`)
@@ -141,8 +141,9 @@ nella route.
 | | |
 |---|---|
 | Apertura | lunedì 19 ottobre 2026, **08:00** |
-| Chiusura | sabato 24 ottobre 2026, **16:00** (+24h di tolleranza per registrare) |
+| Chiusura | sabato 24 ottobre 2026, **16:00** (+30 min per registrare una giocata già effettuata) |
 | Contenuti social | entro venerdì 23 ottobre |
+| Estrazione | sabato 24 ottobre, **18:00** — stesso giorno della chiusura |
 | Hashtag | `#PayCryptoWinGold` `#LuganoPlanB` `#Naka` |
 | Piattaforme | Instagram, Facebook, TikTok, LinkedIn (su LinkedIn si può taggare la pagina NAKA) |
 | Annuncio ufficiale | [LinkedIn NAKA](https://www.linkedin.com/company/nakafinances/) |
@@ -229,9 +230,9 @@ Informativa completa su `/privacy` (e `/en/privacy`), collegata dal footer.
 
 | | |
 |---|---|
-| Raccolta giocate | fino al 25 ottobre 2026 (chiusura + 24h) |
-| Estrazione | 6 novembre 2026 |
-| Elenco vincitori online | fino al **6 dicembre 2026** (`CONTEST.onlineUntil`), con i soli ID |
+| Raccolta giocate | fino al 24 ottobre 2026, 16:30 |
+| Estrazione | 24 ottobre 2026, 18:00 |
+| Elenco vincitori online | fino al **24 novembre 2026** (`CONTEST.onlineUntil`), con i soli ID |
 | Cancellazione dati personali | entro la stessa data, con `npm run entries purge -- --yes` |
 
 Il purge elimina scontrini, email e numeri di transazione e lascia ID, esito, sorgente e data:
