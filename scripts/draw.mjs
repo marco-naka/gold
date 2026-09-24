@@ -74,7 +74,7 @@ async function commit({ includeAll }) {
       file: FILES.merchants,
     },
     seedSource:
-      'Hash del primo blocco Bitcoin minato dopo la data e ora annunciate pubblicamente prima di questo commit.',
+      'Hash del primo blocco Bitcoin minato dopo la chiusura delle giocate, annunciata pubblicamente prima di questo commit.',
     note: 'Pubblicare questo file PRIMA che il blocco-seme esista. Da qui in poi gli elenchi non cambiano.',
   };
 
@@ -87,7 +87,7 @@ async function commit({ includeAll }) {
     `✓ Commit creato\n` +
       `  clienti : ${commitment.users.count} giocate — ${commitment.users.listHash}\n` +
       `  merchant: ${commitment.merchants.count} esercenti — ${commitment.merchants.listHash}\n\n` +
-      `  Pubblica ORA le impronte e l’altezza del blocco-seme.\n`
+      `  Pubblica ORA le impronte. Il seme è l’hash del primo blocco Bitcoin dopo la chiusura.\n`
   );
   return commitment;
 }
