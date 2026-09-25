@@ -102,6 +102,16 @@ snapshot statico `lib/merchants.data.json`.
 accetta solo LVGA, quindi non entra nell'elenco. I merchant di Paradiso arriveranno da NAKA a parte;
 fino ad allora la comunicazione parla solo di Lugano. Il filtro dell'import li accetta già.
 
+```bash
+npm run import:logos
+```
+
+Scarica i loghi, li riduce a 128 px e li converte in WebP dentro `public/img/merchants/`:
+**136 loghi per 360 KB complessivi**, 3 KB l'uno. Gli originali stanno su un bucket S3 di terze
+parti e vanno da 4 KB a oltre mezzo megabyte — usarli via URL avrebbe rimesso una richiesta
+esterna per ogni scheda. Chi non ha logo mostra l'iniziale del nome; il riquadro ha fondo chiaro
+perché molti loghi sono scuri o trasparenti e su nero sparirebbero.
+
 Dalla sorgente si prendono anche **telefono** (125 esercenti, normalizzato in formato
 internazionale così `tel:` funziona da un telefono estero) e il **tipo di link**: il campo
 `website` a volte contiene un profilo Instagram, e il pulsante lo dice invece di chiamarlo "Sito".

@@ -141,12 +141,30 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
         {shown.map((m) => (
           <GlassCard key={m.id} className="flex flex-col p-5">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div className="min-w-0">
+              <div className="flex min-w-0 gap-3">
+                {/* Fondo chiaro dietro il logo: molti sono scuri o trasparenti e su nero sparirebbero */}
+                <span className="grid h-11 w-11 shrink-0 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/90">
+                  {m.logo ? (
+                    <img
+                      src={m.logo}
+                      alt=""
+                      width={44}
+                      height={44}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-contain p-1"
+                    />
+                  ) : (
+                    <span className="text-base font-extrabold text-ink-deep">{m.name.trim()[0]}</span>
+                  )}
+                </span>
+                <div className="min-w-0">
                 <h3 className="text-base font-bold text-white">{m.name}</h3>
                 <p className="mt-1 flex items-start gap-1.5 text-xs text-muted">
                   <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
                   {m.address}
                 </p>
+                </div>
               </div>
               {m.distance != null && (
                 <span className="chip border-gold/30 bg-gold/10 text-gold">{t.distance(m.distance)}</span>
