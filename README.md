@@ -102,6 +102,14 @@ snapshot statico `lib/merchants.data.json`.
 accetta solo LVGA, quindi non entra nell'elenco. I merchant di Paradiso arriveranno da NAKA a parte;
 fino ad allora la comunicazione parla solo di Lugano. Il filtro dell'import li accetta già.
 
+Dalla sorgente si prendono anche **telefono** (125 esercenti, normalizzato in formato
+internazionale così `tel:` funziona da un telefono estero) e il **tipo di link**: il campo
+`website` a volte contiene un profilo Instagram, e il pulsante lo dice invece di chiamarlo "Sito".
+
+Non ci sono invece **orari di apertura** né descrizioni: la sorgente ha i campi ma sono vuoti.
+Chi vuole sapere se un negozio è aperto lo scopre aprendo "Indicazioni", che porta alla scheda
+Google del locale.
+
 Ultimo import: **336 merchant**, di cui **328 con rail NAKA** (food 107 · servizi 130 · shopping 92 ·
 hotel 7).
 

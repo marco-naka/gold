@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Search, MapPin, Navigation, X, CheckCircle2, Globe, LocateFixed, ExternalLink } from 'lucide-react';
+import { Search, MapPin, Navigation, X, CheckCircle2, Globe, Instagram, Phone, LocateFixed } from 'lucide-react';
 import { EVENT } from '@/lib/constants';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
@@ -189,6 +189,19 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                 <Navigation className="h-4 w-4 text-gold" />
                 {t.directions}
               </Button>
+              {/* Due dati che la mappa cittadina ha e che non stavamo mostrando */}
+              {m.phone && (
+                <Button
+                  as="a"
+                  href={`tel:${m.phone}`}
+                  variant="ghost"
+                  size="sm"
+                  className="flex-1 sm:flex-none"
+                >
+                  <Phone className="h-4 w-4 text-gold" />
+                  {t.call}
+                </Button>
+              )}
               {m.website && (
                 <Button
                   as="a"
@@ -199,8 +212,12 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                   size="sm"
                   className="flex-1 sm:flex-none"
                 >
-                  <Globe className="h-4 w-4 text-gold" />
-                  {t.website}
+                  {m.websiteKind === 'instagram' ? (
+                    <Instagram className="h-4 w-4 text-gold" />
+                  ) : (
+                    <Globe className="h-4 w-4 text-gold" />
+                  )}
+                  {t.linkKinds[m.websiteKind] ?? t.website}
                 </Button>
               )}
             </div>

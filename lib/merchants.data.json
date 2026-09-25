@@ -2,7 +2,7 @@
   "source": "Crypto Map – Città di Lugano / Plan ₿ Lugano",
   "sourceUrl": "https://planb.lugano.ch/crypto-map/",
   "endpoint": "https://planb.lugano.ch/wp-json/bfx-crypto-map/v1/merchants?env=production",
-  "importedAt": "2026-09-23T11:16:21.339Z",
+  "importedAt": "2026-09-25T06:39:07.485Z",
   "count": 336,
   "merchants": [
     {
@@ -17,6 +17,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://instagram.com/11ts_lugano?igshid=YmMyMTA2M2Y=",
+      "websiteKind": "instagram",
+      "phone": null,
       "lat": 46.005314,
       "lng": 8.953802
     },
@@ -32,6 +34,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/12.zero.4/",
+      "websiteKind": "instagram",
+      "phone": "+41912224052",
       "lat": 46.005274,
       "lng": 8.94869
     },
@@ -47,6 +51,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.011922,
       "lng": 8.953978
     },
@@ -62,6 +68,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.006893,
       "lng": 8.942078
     },
@@ -77,6 +85,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.agricolachiera.ch/",
+      "websiteKind": "website",
+      "phone": "+41919104250",
       "lat": 46.007785,
       "lng": 8.953563
     },
@@ -92,6 +102,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://agualugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003179,
       "lng": 8.951313
     },
@@ -107,6 +119,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.fclugano.com/lail-arena-experience-center-vi-accogliera-da-martedi-3-giugno-2025/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004394,
       "lng": 8.950006
     },
@@ -122,6 +136,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/p/DVT_kJYCHHZ/",
+      "websiteKind": "instagram",
+      "phone": "+41765650409",
       "lat": 46.007285,
       "lng": 8.953904
     },
@@ -137,6 +153,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.alla-fermata.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005763,
       "lng": 8.951053
     },
@@ -152,6 +170,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.alpinesmiles.ch/",
+      "websiteKind": "website",
+      "phone": "+41919702424",
       "lat": 46.008765,
       "lng": 8.969404
     },
@@ -167,6 +187,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.alteaatelier.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011869,
       "lng": 8.952816
     },
@@ -182,6 +204,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://amhubinteriors.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.983114,
       "lng": 8.930734
     },
@@ -197,6 +221,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.amabike.ch/",
+      "websiteKind": "website",
+      "phone": "+41765341185",
       "lat": 46.011345,
       "lng": 8.936017
     },
@@ -212,6 +238,8 @@
       "posActive": false,
       "verified": false,
       "website": "https://amazingames.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011827,
       "lng": 8.957191
     },
@@ -227,6 +255,8 @@
       "posActive": true,
       "verified": false,
       "website": "http://anticaosteriadelporto.ch/",
+      "websiteKind": "website",
+      "phone": "+41919714200",
       "lat": 46.003394,
       "lng": 8.961711
     },
@@ -242,6 +272,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://antoniolishop.ch",
+      "websiteKind": "website",
+      "phone": "+41919238882",
       "lat": 46.000577,
       "lng": 8.949533
     },
@@ -257,6 +289,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ristoranteargentino.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004101,
       "lng": 8.95157
     },
@@ -272,6 +306,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://artestetica.ch/",
+      "websiteKind": "website",
+      "phone": "+41919214030",
       "lat": 46.011827,
       "lng": 8.954051
     },
@@ -287,6 +323,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ashri.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005239,
       "lng": 8.954032
     },
@@ -302,6 +340,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.aubergelugano.ch/?fbclid=IwAR3KIoH1RR0EcrRSYSLiTONfWv0Zm3B0gTLOwvjHXYkns2cxAYk-gkvZGVw",
+      "websiteKind": "website",
+      "phone": "+41919442020",
       "lat": 46.005917,
       "lng": 8.953906
     },
@@ -317,6 +357,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.autentiko.it/menu-lugano/",
+      "websiteKind": "website",
+      "phone": "+41919211048",
       "lat": 46.003816,
       "lng": 8.954824
     },
@@ -332,6 +374,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.avinfo.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.019387,
       "lng": 8.965037
     },
@@ -347,6 +391,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004117,
       "lng": 8.951998
     },
@@ -362,6 +408,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919212097",
       "lat": 46.011412,
       "lng": 8.954826
     },
@@ -377,6 +425,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.006734,
       "lng": 8.941904
     },
@@ -392,6 +442,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003921,
       "lng": 8.952244
     },
@@ -407,6 +459,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/bar.lando/",
+      "websiteKind": "instagram",
+      "phone": "+41919231798",
       "lat": 46.012303,
       "lng": 8.956802
     },
@@ -422,6 +476,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.01205,
       "lng": 8.954725
     },
@@ -437,6 +493,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -452,6 +510,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://barsempione.ch/",
+      "websiteKind": "website",
+      "phone": "+41919235003",
       "lat": 46.005336,
       "lng": 8.950617
     },
@@ -467,6 +527,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919714172",
       "lat": 46.008924,
       "lng": 8.963723
     },
@@ -482,6 +544,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41779712770",
       "lat": 46.015328,
       "lng": 8.955538
     },
@@ -497,6 +561,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.010269,
       "lng": 8.95314
     },
@@ -512,6 +578,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.backtobasik.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.017115,
       "lng": 8.957275
     },
@@ -527,6 +595,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.014983,
       "lng": 8.962304
     },
@@ -542,6 +612,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://beautyroomlugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.997132,
       "lng": 8.943181
     },
@@ -557,6 +629,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004001,
       "lng": 8.954295
     },
@@ -572,6 +646,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.benesseremusaj.ch/",
+      "websiteKind": "website",
+      "phone": "+41767422376",
       "lat": 46.007421,
       "lng": 8.961032
     },
@@ -587,6 +663,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.bijoux-io.ch",
+      "websiteKind": "website",
+      "phone": "+41919220360",
       "lat": 46.005671,
       "lng": 8.951507
     },
@@ -602,6 +680,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://boatcenterlugano.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.999871,
       "lng": 8.949828
     },
@@ -617,6 +697,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://bodyworklugano.ch/",
+      "websiteKind": "website",
+      "phone": "+41767077547",
       "lat": 46.01682,
       "lng": 8.950644
     },
@@ -632,6 +714,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://boitedor.ch/",
+      "websiteKind": "website",
+      "phone": "+41919213141",
       "lat": 46.001619,
       "lng": 8.949369
     },
@@ -647,6 +731,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.011604,
       "lng": 8.962847
     },
@@ -662,6 +748,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/naaf_lugano/",
+      "websiteKind": "instagram",
+      "phone": "+41919231608",
       "lat": 46.00505,
       "lng": 8.949258
     },
@@ -677,6 +765,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.boutiqueperlaschiena.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005902,
       "lng": 8.959286
     },
@@ -692,6 +782,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005054,
       "lng": 8.949269
     },
@@ -707,6 +799,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004913,
       "lng": 8.949391
     },
@@ -722,6 +816,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.007312,
       "lng": 8.952576
     },
@@ -737,6 +833,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/_stepslugan_/",
+      "websiteKind": "instagram",
+      "phone": "+41796869487",
       "lat": 46.005331,
       "lng": 8.949328
     },
@@ -752,6 +850,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919227737",
       "lat": 46.008733,
       "lng": 8.954181
     },
@@ -767,6 +867,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://caffemilanolugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004567,
       "lng": 8.949185
     },
@@ -782,6 +884,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://it.tripadvisor.ch/Restaurant_Review-g188095-d7211733-Reviews-Caffe_Roma-Lugano_Canton_of_Ticino_Swiss_Alps.html",
+      "websiteKind": "website",
+      "phone": "+41919213844",
       "lat": 46.005305,
       "lng": 8.953529
     },
@@ -797,6 +901,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://casinolugano.ch/ristorante/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004149,
       "lng": 8.955121
     },
@@ -812,6 +918,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.cct.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00602,
       "lng": 8.960395
     },
@@ -827,6 +935,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.centrostampa.ch/",
+      "websiteKind": "website",
+      "phone": "+41916056222",
       "lat": 46.016401,
       "lng": 8.956287
     },
@@ -842,6 +952,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ceresaottica.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005314,
       "lng": 8.953802
     },
@@ -857,6 +969,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.010916,
       "lng": 8.955635
     },
@@ -872,6 +986,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004093,
       "lng": 8.950179
     },
@@ -887,6 +1003,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.chiliadv.ch/",
+      "websiteKind": "website",
+      "phone": "+41767421288",
       "lat": 46.012789,
       "lng": 8.954993
     },
@@ -902,6 +1020,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://my-brandable.com/shop/entry-and-lottery-tecket-christmas-gift-market-event-3-december-2025/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006991,
       "lng": 8.969631
     },
@@ -917,6 +1037,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://cigarmust.com/it/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003554,
       "lng": 8.951054
     },
@@ -932,6 +1054,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://cigarmust.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003931,
       "lng": 8.949555
     },
@@ -947,6 +1071,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.jfcinema.ch/",
+      "websiteKind": "website",
+      "phone": "+41919229653",
       "lat": 46.004894,
       "lng": 8.953721
     },
@@ -962,6 +1088,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.jfcinema.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.012517,
       "lng": 8.94383
     },
@@ -977,6 +1105,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://circular-lugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.012444,
       "lng": 8.946464
     },
@@ -992,6 +1122,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.classcafe.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006365,
       "lng": 8.951265
     },
@@ -1007,6 +1139,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.019142,
       "lng": 8.957121
     },
@@ -1022,6 +1156,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1037,6 +1173,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004205,
       "lng": 8.950451
     },
@@ -1052,6 +1190,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.colorx.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.023282,
       "lng": 8.968939
     },
@@ -1067,6 +1207,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.coltelleriamaturi.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005812,
       "lng": 8.951328
     },
@@ -1082,6 +1224,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.conservatorio.ch/it",
+      "websiteKind": "website",
+      "phone": "+41919603040",
       "lat": 46.006256,
       "lng": 8.939922
     },
@@ -1097,6 +1241,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://convivio-lugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004495,
       "lng": 8.953078
     },
@@ -1112,6 +1258,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://cyberconnect.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.010161,
       "lng": 8.937398
     },
@@ -1127,6 +1275,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919229567",
       "lat": 46.00767,
       "lng": 8.952222
     },
@@ -1142,6 +1292,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://d4b.ch/it/",
+      "websiteKind": "website",
+      "phone": "+41912520704",
       "lat": 46.009909,
       "lng": 8.932859
     },
@@ -1157,6 +1309,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 45.998193,
       "lng": 8.943329
     },
@@ -1172,6 +1326,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003916,
       "lng": 8.9517
     },
@@ -1187,6 +1343,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://danceinyouressence.com/index.html",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003457,
       "lng": 8.940715
     },
@@ -1202,6 +1360,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005028,
       "lng": 8.949757
     },
@@ -1217,6 +1377,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://deskfood.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011151,
       "lng": 8.954405
     },
@@ -1232,6 +1394,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.dhalia-beauty.ch/",
+      "websiteKind": "website",
+      "phone": "+41795402188",
       "lat": 46.006467,
       "lng": 8.957457
     },
@@ -1247,6 +1411,8 @@
       "posActive": false,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41794760513",
       "lat": 46.003074,
       "lng": 8.949994
     },
@@ -1262,6 +1428,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.00491,
       "lng": 8.949322
     },
@@ -1277,6 +1445,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://diloslugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007889,
       "lng": 8.959012
     },
@@ -1292,6 +1462,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.doctorphone.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007306,
       "lng": 8.955519
     },
@@ -1307,6 +1479,8 @@
       "posActive": false,
       "verified": false,
       "website": "https://www.dolcevitashop.ch",
+      "websiteKind": "website",
+      "phone": "+41912104029",
       "lat": 45.994538,
       "lng": 8.942797
     },
@@ -1322,6 +1496,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://dondeartgallery.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.000277,
       "lng": 8.94904
     },
@@ -1337,6 +1513,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://lucaballestra.ch/",
+      "websiteKind": "website",
+      "phone": "+41786707182",
       "lat": 46.005477,
       "lng": 8.953235
     },
@@ -1352,6 +1530,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://e-6900.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.013363,
       "lng": 8.954798
     },
@@ -1367,6 +1547,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.013035,
       "lng": 8.954754
     },
@@ -1382,6 +1564,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.011277,
       "lng": 8.956384
     },
@@ -1397,6 +1581,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://edimen.ch/",
+      "websiteKind": "website",
+      "phone": "+41919702436",
       "lat": 46.009777,
       "lng": 8.947193
     },
@@ -1412,6 +1598,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.016748,
       "lng": 8.964349
     },
@@ -1427,6 +1615,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://elisircoiffure.ch/",
+      "websiteKind": "website",
+      "phone": "+41919227770",
       "lat": 46.01097,
       "lng": 8.954746
     },
@@ -1442,6 +1632,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.elitecaffe.com/",
+      "websiteKind": "website",
+      "phone": "+41762227655",
       "lat": 46.012517,
       "lng": 8.956536
     },
@@ -1457,6 +1649,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://elitelashesswiss.ch/",
+      "websiteKind": "website",
+      "phone": "+41768244272",
       "lat": 46.003798,
       "lng": 8.949944
     },
@@ -1472,6 +1666,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ermitagelugano.ch/",
+      "websiteKind": "website",
+      "phone": "+41764553326",
       "lat": 46.007828,
       "lng": 8.95541
     },
@@ -1487,6 +1683,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://erressebeautyandspa.ch/",
+      "websiteKind": "website",
+      "phone": "+41919210466",
       "lat": 46.008653,
       "lng": 8.954276
     },
@@ -1502,6 +1700,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://europeancar.ch/",
+      "websiteKind": "website",
+      "phone": "+41912105850",
       "lat": 46.007084,
       "lng": 8.960368
     },
@@ -1517,6 +1717,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://evellynbeauty.com/",
+      "websiteKind": "website",
+      "phone": "+41765693223",
       "lat": 46.012392,
       "lng": 8.956561
     },
@@ -1532,6 +1734,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://exelwatches.com/",
+      "websiteKind": "website",
+      "phone": "+41792439887",
       "lat": 46.006814,
       "lng": 8.949798
     },
@@ -1547,6 +1751,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://yourstylebarber.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011475,
       "lng": 8.956455
     },
@@ -1562,6 +1768,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.farmaciachimica.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007615,
       "lng": 8.958873
     },
@@ -1577,6 +1785,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.001542,
       "lng": 8.949653
     },
@@ -1592,6 +1802,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.farmaciasalus.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004251,
       "lng": 8.952424
     },
@@ -1607,6 +1819,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.011769,
       "lng": 8.966496
     },
@@ -1622,6 +1836,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://fclugano.com/biglietti/",
+      "websiteKind": "website",
+      "phone": "+41919228672",
       "lat": 46.024132,
       "lng": 8.960491
     },
@@ -1637,6 +1853,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.023931,
       "lng": 8.960263
     },
@@ -1652,6 +1870,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://shop.fclugano.com/?utm_source=fclugano.com&utm_medium=menu",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.023931,
       "lng": 8.960263
     },
@@ -1667,6 +1887,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://floraticino.ch/",
+      "websiteKind": "website",
+      "phone": "+41919682232",
       "lat": 46.020701,
       "lng": 8.957716
     },
@@ -1682,6 +1904,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://florart-lugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005498,
       "lng": 8.944186
     },
@@ -1697,6 +1921,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.009369,
       "lng": 8.958838
     },
@@ -1712,6 +1938,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://fullyburgers.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006249,
       "lng": 8.951769
     },
@@ -1727,6 +1955,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1742,6 +1972,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1757,6 +1989,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1772,6 +2006,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1787,6 +2023,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -1802,6 +2040,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004208,
       "lng": 8.95044
     },
@@ -1817,6 +2057,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41764408511",
       "lat": 46.003362,
       "lng": 8.950381
     },
@@ -1832,6 +2074,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.galleriadoppiav.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005603,
       "lng": 8.942837
     },
@@ -1847,6 +2091,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.cibodivino.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00272,
       "lng": 8.950038
     },
@@ -1862,6 +2108,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004606,
       "lng": 8.949613
     },
@@ -1877,6 +2125,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/ceraunavolta_gelateria_lugano?igsh=MWo3MXdrcGJobG50Mw==",
+      "websiteKind": "instagram",
+      "phone": "+41766158020",
       "lat": 46.008906,
       "lng": 8.951337
     },
@@ -1892,6 +2142,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.fh1881.ch/",
+      "websiteKind": "website",
+      "phone": "+41918359962",
       "lat": 46.003527,
       "lng": 8.95056
     },
@@ -1907,6 +2159,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.fortunyjewels.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.000849,
       "lng": 8.949052
     },
@@ -1922,6 +2176,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.preziosi.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005712,
       "lng": 8.955752
     },
@@ -1937,6 +2193,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919249065",
       "lat": 46.002629,
       "lng": 8.949671
     },
@@ -1952,6 +2210,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://gisschoollugano.ch/it/",
+      "websiteKind": "website",
+      "phone": "+41916015000",
       "lat": 45.983656,
       "lng": 8.932444
     },
@@ -1967,6 +2227,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.008965,
       "lng": 8.962929
     },
@@ -1982,6 +2244,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.globocar.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.983538,
       "lng": 8.931781
     },
@@ -1997,6 +2261,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://grande-caffe-bistrot.digitalone.site/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004845,
       "lng": 8.953516
     },
@@ -2012,6 +2278,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.groovyconcept.com",
+      "websiteKind": "website",
+      "phone": "+41910000000",
       "lat": 46.004894,
       "lng": 8.952977
     },
@@ -2027,6 +2295,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004211,
       "lng": 8.950298
     },
@@ -2042,6 +2312,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003937,
       "lng": 8.950431
     },
@@ -2057,6 +2329,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.009228,
       "lng": 8.95422
     },
@@ -2072,6 +2346,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.healthpark.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.008077,
       "lng": 8.954681
     },
@@ -2087,6 +2363,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://hlifeclinic.ch/",
+      "websiteKind": "website",
+      "phone": "+41912301036",
       "lat": 46.027258,
       "lng": 8.968887
     },
@@ -2102,6 +2380,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://helvetiacom.ch/",
+      "websiteKind": "website",
+      "phone": "+41848500500",
       "lat": 46.008188,
       "lng": 8.958039
     },
@@ -2117,6 +2397,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://historianlugano.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005575,
       "lng": 8.953764
     },
@@ -2132,6 +2414,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://acquarello.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004599,
       "lng": 8.949325
     },
@@ -2147,6 +2431,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://colorado.ch/",
+      "websiteKind": "website",
+      "phone": "+41919941631",
       "lat": 45.998503,
       "lng": 8.944326
     },
@@ -2162,6 +2448,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://hoteldelfinolugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.993661,
       "lng": 8.942112
     },
@@ -2177,6 +2465,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004295,
       "lng": 8.950176
     },
@@ -2192,6 +2482,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.pestalozzi-lugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005769,
       "lng": 8.955034
     },
@@ -2207,6 +2499,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.hotelzurigo.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006121,
       "lng": 8.953372
     },
@@ -2222,6 +2516,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ifa-suisse.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.013634,
       "lng": 8.954872
     },
@@ -2237,6 +2533,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005791,
       "lng": 8.957203
     },
@@ -2252,6 +2550,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ilfermento.ch/it",
+      "websiteKind": "website",
+      "phone": "+41919234545",
       "lat": 46.003876,
       "lng": 8.954098
     },
@@ -2267,6 +2567,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.otticomichel.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006146,
       "lng": 8.951227
     },
@@ -2282,6 +2584,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://imago-artgallery.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00171,
       "lng": 8.94943
     },
@@ -2297,6 +2601,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://innovacomix.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004867,
       "lng": 8.956551
     },
@@ -2312,6 +2618,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.zappasport.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00585,
       "lng": 8.950551
     },
@@ -2327,6 +2635,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.sanders.it/analisi-gratuita/?utm_medium=cpc&utm_source=google&utm_content=search_na_brand_prospect_na_vvkc59aa3ef9e9e6330183c&utm_campaign=sanders_tricologico_analisi_lead_brand&gad=1&gclid=Cj0KCQjwwvilBhCFARIsADvYi7K4bxf5t_ukwUGCB-nkv1Hv58L4t2zheq9MSaeAMpNv6ELNgxz6q38aAoGWEALw_wcB",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00655,
       "lng": 8.951784
     },
@@ -2342,6 +2652,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.julianajewelry.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.000838,
       "lng": 8.949063
     },
@@ -2357,6 +2669,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.006707,
       "lng": 8.949804
     },
@@ -2372,6 +2686,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.kmoto.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007959,
       "lng": 8.959914
     },
@@ -2387,6 +2703,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.orlospeedy.ch",
+      "websiteKind": "website",
+      "phone": "+41767838359",
       "lat": 46.005901,
       "lng": 8.950294
     },
@@ -2402,6 +2720,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/kavin_barber_shop/",
+      "websiteKind": "instagram",
+      "phone": null,
       "lat": 46.014085,
       "lng": 8.956418
     },
@@ -2417,6 +2737,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.kinetic-center.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.008198,
       "lng": 8.950831
     },
@@ -2432,6 +2754,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.011769,
       "lng": 8.966496
     },
@@ -2447,6 +2771,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003367,
       "lng": 8.950527
     },
@@ -2462,6 +2788,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://kohakinho.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004655,
       "lng": 8.952944
     },
@@ -2477,6 +2805,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.007652,
       "lng": 8.953273
     },
@@ -2492,6 +2822,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.015837,
       "lng": 8.97033
     },
@@ -2507,6 +2839,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004854,
       "lng": 8.949501
     },
@@ -2522,6 +2856,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41797651381",
       "lat": 46.006179,
       "lng": 8.958279
     },
@@ -2537,6 +2873,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.008626,
       "lng": 8.951865
     },
@@ -2552,6 +2890,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lacucinadialice.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.002163,
       "lng": 8.950041
     },
@@ -2567,6 +2907,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ladispensa.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004655,
       "lng": 8.952944
     },
@@ -2582,6 +2924,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.fioreria.ch/",
+      "websiteKind": "website",
+      "phone": "+41919212131",
       "lat": 46.009254,
       "lng": 8.967741
     },
@@ -2597,6 +2941,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://kloche.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007553,
       "lng": 8.954122
     },
@@ -2612,6 +2958,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lasignoradeglianelli.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004854,
       "lng": 8.949501
     },
@@ -2627,6 +2975,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://luganolac.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.999431,
       "lng": 8.947884
     },
@@ -2642,6 +2992,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lalacaffe.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.020643,
       "lng": 8.96525
     },
@@ -2657,6 +3009,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lavanderiamary.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006893,
       "lng": 8.942078
     },
@@ -2672,6 +3026,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/lefty_lugano/?hl=it",
+      "websiteKind": "instagram",
+      "phone": "+41912298300",
       "lat": 46.005677,
       "lng": 8.954445
     },
@@ -2687,6 +3043,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://leplaw.co.uk/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.008978,
       "lng": 8.955771
     },
@@ -2702,6 +3060,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41762365833",
       "lat": 46.005441,
       "lng": 8.953099
     },
@@ -2717,6 +3077,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.libreriadietrolangolo.ch/",
+      "websiteKind": "website",
+      "phone": "+41919214229",
       "lat": 46.005146,
       "lng": 8.949895
     },
@@ -2732,6 +3094,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://pizzerialievitomadre.ch/",
+      "websiteKind": "website",
+      "phone": "+41765483071",
       "lat": 46.025269,
       "lng": 8.976556
     },
@@ -2747,6 +3111,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lineasana.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006562,
       "lng": 8.951796
     },
@@ -2762,6 +3128,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.locandacastagnola.ch/it",
+      "websiteKind": "website",
+      "phone": "+41912263515",
       "lat": 46.001328,
       "lng": 8.97745
     },
@@ -2777,6 +3145,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.love-estetica-lugano.info",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.001335,
       "lng": 8.947884
     },
@@ -2792,6 +3162,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://loveisinthe-hair.com/?fbclid=IwAR3nTuhTVS6By5kR3BE7hWwJ_NXhGUblJ_YmBlElDzjZReEWoX_oTDZb5Ew",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006184,
       "lng": 8.966552
     },
@@ -2807,6 +3179,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lubrano-elettrodomestici.ch/",
+      "websiteKind": "website",
+      "phone": "+41912234576",
       "lat": 46.015996,
       "lng": 8.956521
     },
@@ -2822,6 +3196,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://lugadrive.ch/?gclid=Cj0KCQjwwvilBhCFARIsADvYi7LYBi7emJYG8PnrrnLTytfqY1ka-snBOJ9liw4xGA7mNKKXYqZRE70aAshwEALw_wcB",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.020805,
       "lng": 8.975589
     },
@@ -2837,6 +3213,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://planb.network/it",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004188,
       "lng": 8.949825
     },
@@ -2852,6 +3230,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.luganotopwatches.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.001595,
       "lng": 8.949412
     },
@@ -2867,6 +3247,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004689,
       "lng": 8.949578
     },
@@ -2882,6 +3264,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://luther-artink-tattoo.business.site/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.05251,
       "lng": 8.988127
     },
@@ -2897,6 +3281,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://luganobarbershop.ch/",
+      "websiteKind": "website",
+      "phone": "+41764691110",
       "lat": 46.005666,
       "lng": 8.954708
     },
@@ -2912,6 +3298,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.00492,
       "lng": 8.950062
     },
@@ -2927,6 +3315,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41762206146",
       "lat": 46.003986,
       "lng": 8.949793
     },
@@ -2942,6 +3332,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://maison-clinic.com/",
+      "websiteKind": "website",
+      "phone": "+41796511711",
       "lat": 46.007581,
       "lng": 8.949796
     },
@@ -2957,6 +3349,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41786339476",
       "lat": 46.015345,
       "lng": 8.955872
     },
@@ -2972,6 +3366,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://lisasommella.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.008899,
       "lng": 8.965931
     },
@@ -2987,6 +3383,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.marcolucchettiartgallery.ch",
+      "websiteKind": "website",
+      "phone": "+41768051960",
       "lat": 46.004566,
       "lng": 8.949599
     },
@@ -3002,6 +3400,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005932,
       "lng": 8.95129
     },
@@ -3017,6 +3417,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004783,
       "lng": 8.953366
     },
@@ -3032,6 +3434,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://maruskariva.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005101,
       "lng": 8.94889
     },
@@ -3047,6 +3451,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004177,
       "lng": 8.953336
     },
@@ -3062,6 +3468,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://matrixvr.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.032068,
       "lng": 8.974423
     },
@@ -3077,6 +3485,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.mauriconcept.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004539,
       "lng": 8.952082
     },
@@ -3092,6 +3502,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://mcdonalds.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003835,
       "lng": 8.953872
     },
@@ -3107,6 +3519,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://mem-fashion.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005269,
       "lng": 8.953121
     },
@@ -3122,6 +3536,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004158,
       "lng": 8.952093
     },
@@ -3137,6 +3553,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41763032436",
       "lat": 46.007285,
       "lng": 8.953904
     },
@@ -3152,6 +3570,8 @@
       "posActive": false,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004601,
       "lng": 8.953325
     },
@@ -3167,6 +3587,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.misterx-thegentlemensbarbershopandbeautycenter.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005556,
       "lng": 8.946915
     },
@@ -3182,6 +3604,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919677060",
       "lat": 46.002391,
       "lng": 8.938252
     },
@@ -3197,6 +3621,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://monsterhouse.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006837,
       "lng": 8.95675
     },
@@ -3212,6 +3638,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004793,
       "lng": 8.953259
     },
@@ -3227,6 +3655,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://lugano.moogi.ch/",
+      "websiteKind": "website",
+      "phone": "+41912293629",
       "lat": 46.012009,
       "lng": 8.957001
     },
@@ -3242,6 +3672,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://lugano.moogi.ch/",
+      "websiteKind": "website",
+      "phone": "+41789341442",
       "lat": 46.005797,
       "lng": 8.960772
     },
@@ -3257,6 +3689,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://mrvino.ch/it/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.010909,
       "lng": 8.955326
     },
@@ -3272,6 +3706,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.musicdoor.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004109,
       "lng": 8.950806
     },
@@ -3287,6 +3723,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://mustispizzakebab.ch/",
+      "websiteKind": "website",
+      "phone": "+41768426900",
       "lat": 46.010877,
       "lng": 8.954273
     },
@@ -3302,6 +3740,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ncclugano.ch/",
+      "websiteKind": "website",
+      "phone": "+41765265092",
       "lat": 46.022723,
       "lng": 8.974509
     },
@@ -3317,6 +3757,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://negiofood.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005495,
       "lng": 8.954771
     },
@@ -3332,6 +3774,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.newlimousine.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.980874,
       "lng": 8.940344
     },
@@ -3347,6 +3791,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://newmotorslugano.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.019136,
       "lng": 8.960339
     },
@@ -3362,6 +3808,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919238808",
       "lat": 46.007954,
       "lng": 8.950772
     },
@@ -3377,6 +3825,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41581220300",
       "lat": 46.010939,
       "lng": 8.935757
     },
@@ -3392,6 +3842,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.oakberry.com/en-CH",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006314,
       "lng": 8.951208
     },
@@ -3407,6 +3859,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ortotecnica.ch/",
+      "websiteKind": "website",
+      "phone": "+41919226929",
       "lat": 46.006164,
       "lng": 8.960428
     },
@@ -3422,6 +3876,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005948,
       "lng": 8.950811
     },
@@ -3437,6 +3893,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.instagram.com/osteria_pazzallo?igsh=MTlpb2FqMXBxMG91cQ%3D%3D",
+      "websiteKind": "instagram",
+      "phone": "+41912257555",
       "lat": 45.984755,
       "lng": 8.943034
     },
@@ -3452,6 +3910,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.otticagoette.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00405,
       "lng": 8.950421
     },
@@ -3467,6 +3927,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://otticaticinese.ch/",
+      "websiteKind": "website",
+      "phone": "+41919403030",
       "lat": 46.023919,
       "lng": 8.967362
     },
@@ -3482,6 +3944,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.otticavicari.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007652,
       "lng": 8.953273
     },
@@ -3497,6 +3961,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.otticavisio.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003931,
       "lng": 8.949555
     },
@@ -3512,6 +3978,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.otticomichellugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006302,
       "lng": 8.952167
     },
@@ -3527,6 +3995,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.p356.ch/",
+      "websiteKind": "website",
+      "phone": "+41919663561",
       "lat": 46.036831,
       "lng": 8.973213
     },
@@ -3542,6 +4012,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005102,
       "lng": 8.953756
     },
@@ -3557,6 +4029,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 45.98075,
       "lng": 8.928762
     },
@@ -3572,6 +4046,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://pashaskebab.ch/",
+      "websiteKind": "website",
+      "phone": "+41912710471",
       "lat": 46.01047,
       "lng": 8.963431
     },
@@ -3587,6 +4063,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.biomondo.ch/it/business/balmelli-patrick-971?srsltid=AfmBOopF6OV5130ZA9wA02MEcxssomf0fNal-Jd9sFSNttvxDR83ck80",
+      "websiteKind": "website",
+      "phone": "+41792300858",
       "lat": 46.06787,
       "lng": 9.015235
     },
@@ -3602,6 +4080,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41786617545",
       "lat": 46.002188,
       "lng": 8.950374
     },
@@ -3617,6 +4097,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.phonextra.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.010905,
       "lng": 8.955635
     },
@@ -3632,6 +4114,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.piivalue.ch/bio-link/",
+      "websiteKind": "website",
+      "phone": "+41765396900",
       "lat": 46.012031,
       "lng": 8.958174
     },
@@ -3647,6 +4131,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://planb.lugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.009684,
       "lng": 8.95405
     },
@@ -3662,6 +4148,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://podoticino.ch/",
+      "websiteKind": "website",
+      "phone": "+41765170224",
       "lat": 46.005806,
       "lng": 8.944076
     },
@@ -3677,6 +4165,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005883,
       "lng": 8.952314
     },
@@ -3692,6 +4182,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003035,
       "lng": 8.96204
     },
@@ -3707,6 +4199,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://pow.space/",
+      "websiteKind": "website",
+      "phone": "+41919104410",
       "lat": 46.003855,
       "lng": 8.949915
     },
@@ -3722,6 +4216,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003855,
       "lng": 8.949915
     },
@@ -3737,6 +4233,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.prcleaning.ch/",
+      "websiteKind": "website",
+      "phone": "+41912248824",
       "lat": 46.02677,
       "lng": 8.969516
     },
@@ -3752,6 +4250,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://primaclasselugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005511,
       "lng": 8.950927
     },
@@ -3767,6 +4267,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003889,
       "lng": 8.949772
     },
@@ -3782,6 +4284,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.purest.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.010054,
       "lng": 8.959906
     },
@@ -3797,6 +4301,8 @@
       "posActive": false,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005333,
       "lng": 8.953803
     },
@@ -3812,6 +4318,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.repairstore.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011715,
       "lng": 8.954722
     },
@@ -3827,6 +4335,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.fclugano.com/stadio/ristorante-bianconero/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.024449,
       "lng": 8.960327
     },
@@ -3842,6 +4352,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005111,
       "lng": 8.950042
     },
@@ -3857,6 +4369,8 @@
       "posActive": true,
       "verified": false,
       "website": "http://ristoranteorient.ch/",
+      "websiteKind": "website",
+      "phone": "+41919210066",
       "lat": 46.008463,
       "lng": 8.956067
     },
@@ -3872,6 +4386,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919234364",
       "lat": 46.005932,
       "lng": 8.95129
     },
@@ -3887,6 +4403,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://federale1855.ch/",
+      "websiteKind": "website",
+      "phone": "+41916011292",
       "lat": 46.004024,
       "lng": 8.951142
     },
@@ -3902,6 +4420,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.gabbani.com/home/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004779,
       "lng": 8.949864
     },
@@ -3917,6 +4437,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005919,
       "lng": 8.959558
     },
@@ -3932,6 +4454,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ristorantemary.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003379,
       "lng": 8.950853
     },
@@ -3947,6 +4471,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919677063",
       "lat": 46.002406,
       "lng": 8.938327
     },
@@ -3962,6 +4488,8 @@
       "posActive": true,
       "verified": false,
       "website": "http://www.brevalugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00618,
       "lng": 8.966275
     },
@@ -3977,6 +4505,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.dominolugano.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.993424,
       "lng": 8.945955
     },
@@ -3992,6 +4522,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://ristorantefresco.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.008719,
       "lng": 8.957365
     },
@@ -4007,6 +4539,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ristorantestadiolugano.ch",
+      "websiteKind": "website",
+      "phone": "+41919711361",
       "lat": 46.021337,
       "lng": 8.958218
     },
@@ -4022,6 +4556,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.seven.ch/restaurants/seven-lugano-restaurant",
+      "websiteKind": "website",
+      "phone": "+41912907777",
       "lat": 46.003964,
       "lng": 8.955107
     },
@@ -4037,6 +4573,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.tango-ti.ch",
+      "websiteKind": "website",
+      "phone": "+41919222701",
       "lat": 46.004002,
       "lng": 8.951687
     },
@@ -4052,6 +4590,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.ticinorolfing.com/",
+      "websiteKind": "website",
+      "phone": "+41766505115",
       "lat": 46.005908,
       "lng": 8.954608
     },
@@ -4067,6 +4607,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41791301177",
       "lat": 46.007386,
       "lng": 8.968342
     },
@@ -4082,6 +4624,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://rosequezada.my.canva.site/sito-web-rq-sito-web",
+      "websiteKind": "website",
+      "phone": "+41794329807",
       "lat": 46.01074,
       "lng": 8.951941
     },
@@ -4097,6 +4641,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://rosequezada.my.canva.site/sito-web-rq-sito-web",
+      "websiteKind": "website",
+      "phone": "+41794329807",
       "lat": 46.01074,
       "lng": 8.951941
     },
@@ -4112,6 +4658,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919211283",
       "lat": 46.008439,
       "lng": 8.955619
     },
@@ -4127,6 +4675,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.008462,
       "lng": 8.964477
     },
@@ -4142,6 +4692,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://amailtuostilepf.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005883,
       "lng": 8.943407
     },
@@ -4157,6 +4709,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41788078194",
       "lat": 45.996409,
       "lng": 8.943929
     },
@@ -4172,6 +4726,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.006122,
       "lng": 8.955071
     },
@@ -4187,6 +4743,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005136,
       "lng": 8.949513
     },
@@ -4202,6 +4760,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004212,
       "lng": 8.950748
     },
@@ -4217,6 +4777,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://sasscafe.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004014,
       "lng": 8.951031
     },
@@ -4232,6 +4794,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.sciclubsassogrande.ch/sagra-della-costina",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.070514,
       "lng": 9.007229
     },
@@ -4247,6 +4811,8 @@
       "posActive": false,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.003046,
       "lng": 8.96204
     },
@@ -4262,6 +4828,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://studidentistici.ch/#LUGANO",
+      "websiteKind": "website",
+      "phone": "+41919233422",
       "lat": 46.006462,
       "lng": 8.958256
     },
@@ -4277,6 +4845,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.serenamaisto.com/",
+      "websiteKind": "website",
+      "phone": "+41796586498",
       "lat": 46.007804,
       "lng": 8.96017
     },
@@ -4292,6 +4862,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://sh21.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.003758,
       "lng": 8.951784
     },
@@ -4307,6 +4879,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.002242,
       "lng": 8.949575
     },
@@ -4322,6 +4896,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 45.997643,
       "lng": 8.94371
     },
@@ -4337,6 +4913,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.004969,
       "lng": 8.952708
     },
@@ -4352,6 +4930,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.shoppa.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00644,
       "lng": 8.965552
     },
@@ -4367,6 +4947,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.marchitattoo.com/",
+      "websiteKind": "website",
+      "phone": "+41782581917",
       "lat": 46.006974,
       "lng": 8.956793
     },
@@ -4382,6 +4964,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://smileinstitute.ch/",
+      "websiteKind": "website",
+      "phone": "+41919234515",
       "lat": 46.006599,
       "lng": 8.953667
     },
@@ -4397,6 +4981,8 @@
       "posActive": true,
       "verified": false,
       "website": "www.gabbani.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 45.995755,
       "lng": 8.947121
     },
@@ -4412,6 +4998,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://sonego.ch/",
+      "websiteKind": "website",
+      "phone": "+41919211396",
       "lat": 46.006041,
       "lng": 8.950864
     },
@@ -4427,6 +5015,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41917446456",
       "lat": 46.005332,
       "lng": 8.942279
     },
@@ -4442,6 +5032,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.00438,
       "lng": 8.951958
     },
@@ -4457,6 +5049,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://stage12.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005519,
       "lng": 8.954462
     },
@@ -4472,6 +5066,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.staglio.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006837,
       "lng": 8.955828
     },
@@ -4487,6 +5083,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.studioantonini.info/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.010931,
       "lng": 8.954392
     },
@@ -4502,6 +5100,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.lurra.ch/",
+      "websiteKind": "website",
+      "phone": "+41779643862",
       "lat": 46.006551,
       "lng": 8.95517
     },
@@ -4517,6 +5117,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.studiolaterale.ch/",
+      "websiteKind": "website",
+      "phone": "+41787434149",
       "lat": 46.007306,
       "lng": 8.94172
     },
@@ -4532,6 +5134,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41762842558",
       "lat": 46.00837,
       "lng": 8.966232
     },
@@ -4547,6 +5151,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41919713434",
       "lat": 46.012544,
       "lng": 8.968086
     },
@@ -4562,6 +5168,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.dariogiunchi.ch/",
+      "websiteKind": "website",
+      "phone": "+41919724822",
       "lat": 46.013504,
       "lng": 8.955185
     },
@@ -4577,6 +5185,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.swissfreeshop.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.011475,
       "lng": 8.956455
     },
@@ -4592,6 +5202,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.swissxpat.ch/",
+      "websiteKind": "website",
+      "phone": "+41767069829",
       "lat": 46.009879,
       "lng": 8.95406
     },
@@ -4607,6 +5219,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://taleda.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004629,
       "lng": 8.950695
     },
@@ -4622,6 +5236,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.tastybiteslugano.ch/",
+      "websiteKind": "website",
+      "phone": "+41919231428",
       "lat": 46.006607,
       "lng": 8.957915
     },
@@ -4637,6 +5253,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005334,
       "lng": 8.951463
     },
@@ -4652,6 +5270,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41795090177",
       "lat": 46.003671,
       "lng": 8.951916
     },
@@ -4667,6 +5287,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41763910202",
       "lat": 46.004102,
       "lng": 8.947414
     },
@@ -4682,6 +5304,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://taxilugano24nostop.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.016903,
       "lng": 8.959305
     },
@@ -4697,6 +5321,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://techlugano.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.006079,
       "lng": 8.953925
     },
@@ -4712,6 +5338,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.teddyspiel.ch/?srsltid=AfmBOoppTUZ5I4Hcb_gz1tBHg0T5Nhb-TfWwhgsv7eWAjrdDs2togbXY",
+      "websiteKind": "website",
+      "phone": "+41912290161",
       "lat": 46.005261,
       "lng": 8.95356
     },
@@ -4727,6 +5355,8 @@
       "posActive": false,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.007605,
       "lng": 8.957488
     },
@@ -4742,6 +5372,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41764927303",
       "lat": 46.00585,
       "lng": 8.951517
     },
@@ -4757,6 +5389,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.thestorelugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.005105,
       "lng": 8.952298
     },
@@ -4772,6 +5406,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.tomatis-ticino.com/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007425,
       "lng": 8.966935
     },
@@ -4787,6 +5423,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.006915,
       "lng": 8.96028
     },
@@ -4802,6 +5440,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.triticumbakery.com/",
+      "websiteKind": "website",
+      "phone": "+41782693363",
       "lat": 46.011005,
       "lng": 8.954189
     },
@@ -4817,6 +5457,8 @@
       "posActive": false,
       "verified": false,
       "website": "https://tuinamassagebysido.net/it/massaggi-a-lugano/",
+      "websiteKind": "website",
+      "phone": "+41764702368",
       "lat": 46.00433,
       "lng": 8.942272
     },
@@ -4832,6 +5474,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://tuttiservizi.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00515,
       "lng": 8.952115
     },
@@ -4847,6 +5491,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.005839,
       "lng": 8.943737
     },
@@ -4862,6 +5508,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": "+41782436352",
       "lat": 46.007409,
       "lng": 8.953884
     },
@@ -4877,6 +5525,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.vibotech.ch/",
+      "websiteKind": "website",
+      "phone": "+41919237788",
       "lat": 46.009806,
       "lng": 8.949706
     },
@@ -4892,6 +5542,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://bco-food-beverage.digitalone.site/",
+      "websiteKind": "website",
+      "phone": "+41919213124",
       "lat": 46.011006,
       "lng": 8.954733
     },
@@ -4907,6 +5559,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://vittilugano.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00533,
       "lng": 8.951617
     },
@@ -4922,6 +5576,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://vivibreganzona.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007887,
       "lng": 8.929319
     },
@@ -4937,6 +5593,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.voltechsagl.ch/",
+      "websiteKind": "website",
+      "phone": "+41912101317",
       "lat": 46.010903,
       "lng": 8.956062
     },
@@ -4952,6 +5610,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://womensmovimento.ch/it/",
+      "websiteKind": "website",
+      "phone": "+41786944279",
       "lat": 46.013231,
       "lng": 8.9331
     },
@@ -4967,6 +5627,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://yes-swiss.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.00416,
       "lng": 8.954767
     },
@@ -4982,6 +5644,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://yoyo-tennis.ch",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.007298,
       "lng": 8.9615
     },
@@ -4997,6 +5661,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://z-bike.ch/",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.015899,
       "lng": 8.958772
     },
@@ -5012,6 +5678,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://www.zezerobeautyculture.com",
+      "websiteKind": "website",
+      "phone": null,
       "lat": 46.004588,
       "lng": 8.954654
     },
@@ -5027,6 +5695,8 @@
       "posActive": true,
       "verified": false,
       "website": "https://zigozago.ch/",
+      "websiteKind": "website",
+      "phone": "+41789347012",
       "lat": 46.05132,
       "lng": 8.988593
     },
@@ -5042,6 +5712,8 @@
       "posActive": true,
       "verified": false,
       "website": null,
+      "websiteKind": null,
+      "phone": null,
       "lat": 46.00356,
       "lng": 8.949737
     }

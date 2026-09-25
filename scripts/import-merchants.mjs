@@ -98,6 +98,31 @@ function parseAssets(list = []) {
 
 const acceptsNaka = (list = []) => list.some((a) => norm(a).toUpperCase().includes('NAKA'));
 
+/**
+ * Telefono in formato internazionale. La sorgente li ha in tre forme diverse (+41…, 091…,
+ * numeri con spazi); si normalizza per poter fare `tel:` da un telefono estero, cioè da
+ * quello di un visitatore del forum.
+ */
+function normalizePhone(raw) {
+  const digits = norm(raw).replace(/[^\d+]/g, '');
+  if (!digits) return null;
+  if (digits.startsWith('+')) return digits.length >= 11 ? digits : null;
+  if (digits.startsWith('00')) return `+${digits.slice(2)}`;
+  if (digits.startsWith('0')) return digits.length === 10 ? `+41${digits.slice(1)}` : null;
+  return digits.length === 9 ? `+41${digits}` : null;
+}
+
+/** Il campo `website` a volte contiene un profilo social: l'etichetta del pulsante deve dirlo. */
+function linkKind(url) {
+  const u = norm(url).toLowerCase();
+  if (!u) return null;
+  if (u.includes('instagram.')) return 'instagram';
+  if (u.includes('facebook.')) return 'facebook';
+  if (u.includes('tiktok.')) return 'tiktok';
+  if (u.includes('linkedin.')) return 'linkedin';
+  return 'website';
+}
+
 async function main() {
   process.stdout.write(`↓ Scarico ${ENDPOINT}\n`);
   const res = await fetch(ENDPOINT, { method: 'POST', headers: { Accept: 'application/json' } });
@@ -137,6 +162,8 @@ async function main() {
         posActive: acceptsNaka(m.accepted_cryptos),
         verified: false,
         website: norm(m.website) || null,
+        websiteKind: linkKind(m.website),
+        phone: normalizePhone(m.phone),
         lat: Number(m.lat.toFixed(6)),
         lng: Number(m.lng.toFixed(6)),
       };
