@@ -11,19 +11,46 @@ import { formatDate } from '@/lib/i18n';
 import {
   MERCHANTS,
   MERCHANT_BOUNDS as BOUNDS,
+  MERCHANT_LANDMARKS,
   MERCHANT_SOURCE,
   mapsUrl,
 } from '@/lib/merchants';
 
 const PAGE_SIZE = 12;
-// Oltre questa soglia la mappa stilizzata diventa illeggibile: si mostrano i primi N pin.
-const MAX_PINS = 140;
+// Lato della cella di raggruppamento, in percentuale del riquadro. A 700 px sono circa 38 px:
+// abbastanza da non far sovrapporre due punti, abbastanza poco da non fondere vie diverse.
+const CELL = 5.5;
 
-// Proiezione lineare dei pin sul bounding box reale dei merchant importati.
-const project = (m) => ({
-  left: `${((m.lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng || 1)) * 100}%`,
-  top: `${(1 - (m.lat - BOUNDS.minLat) / (BOUNDS.maxLat - BOUNDS.minLat || 1)) * 100}%`,
-});
+/** Coordinate in percentuale del riquadro. Chi cade fuori viene accostato al bordo. */
+function project(point) {
+  const x = ((point.lng - BOUNDS.minLng) / (BOUNDS.maxLng - BOUNDS.minLng || 1)) * 100;
+  const y = (1 - (point.lat - BOUNDS.minLat) / (BOUNDS.maxLat - BOUNDS.minLat || 1)) * 100;
+  const outside = x < 0 || x > 100 || y < 0 || y > 100;
+  return { x: Math.min(97, Math.max(3, x)), y: Math.min(97, Math.max(3, y)), outside };
+}
+
+/**
+ * Raggruppa i negozi vicini in un unico punto.
+ *
+ * Senza raggruppamento i 336 esercenti producono quasi cinquemila coppie di pin sovrapposti:
+ * il centro città diventa una macchia in cui non si distingue nulla e non si può toccare niente.
+ */
+function clusterize(list) {
+  const cells = new Map();
+  for (const merchant of list) {
+    const p = project(merchant);
+    const key = `${Math.floor(p.x / CELL)}:${Math.floor(p.y / CELL)}`;
+    const cell = cells.get(key) ?? { key, x: 0, y: 0, outside: false, items: [] };
+    cell.items.push(merchant);
+    cell.x += p.x;
+    cell.y += p.y;
+    cell.outside = cell.outside || p.outside;
+    cells.set(key, cell);
+  }
+  return [...cells.values()]
+    .map((c) => ({ ...c, x: c.x / c.items.length, y: c.y / c.items.length }))
+    .sort((a, b) => a.items.length - b.items.length);
+}
 
 export default function MerchantMap({ t, locale }) {
   // Le categorie sono dati (id stabili), le etichette testo: stanno nel dizionario.
@@ -33,6 +60,7 @@ export default function MerchantMap({ t, locale }) {
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
   const [selected, setSelected] = useState(null);
+  const [zone, setZone] = useState(null);
   const [visible, setVisible] = useState(PAGE_SIZE);
 
   const results = useMemo(() => {
@@ -44,12 +72,23 @@ export default function MerchantMap({ t, locale }) {
     });
   }, [query, category]);
 
+  // I punti si raggruppano sui risultati filtrati: la mappa segue sempre ricerca e categoria.
+  const clusters = useMemo(() => clusterize(results), [results]);
+
+  // Toccare un punto della mappa filtra l'elenco su quei negozi, e viceversa.
+  const zoneItems = useMemo(
+    () => (zone ? (clusters.find((c) => c.key === zone)?.items ?? []) : null),
+    [clusters, zone]
+  );
+  const listed = zoneItems ?? results;
+
   // Ogni cambio di filtro riparte dalla prima pagina di risultati.
   useEffect(() => {
     setVisible(PAGE_SIZE);
+    setZone(null);
   }, [query, category]);
 
-  const shown = results.slice(0, visible);
+  const shown = listed.slice(0, visible);
 
   return (
     <section id="mappa" className="section-pad">
@@ -123,40 +162,58 @@ export default function MerchantMap({ t, locale }) {
             <MapPin className="h-3.5 w-3.5" /> {t.center}
           </span>
 
+          {/* Riferimenti ricavati dagli indirizzi: danno l'orientamento che una griglia vuota non dà */}
           <div className="absolute inset-0 p-10">
             <div className="relative h-full w-full">
-              {results.slice(0, MAX_PINS).map((m) => {
-                const pos = project(m);
-                const isActive = selected?.id === m.id;
+              {MERCHANT_LANDMARKS.map((landmark) => {
+                const p = project(landmark);
+                if (p.outside) return null;
+                return (
+                  <span
+                    key={landmark.name}
+                    aria-hidden="true"
+                    style={{ left: `${p.x}%`, top: `${p.y}%` }}
+                    className="pointer-events-none absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-[10px] font-semibold uppercase tracking-wider text-white/25"
+                  >
+                    {landmark.name}
+                  </span>
+                );
+              })}
+
+              {clusters.map((cluster) => {
+                const count = cluster.items.length;
+                const isActive = zone === cluster.key;
+                const holdsSelected = selected && cluster.items.some((m) => m.id === selected.id);
+                // Il diametro cresce con la radice del numero: l'area resta proporzionale ai negozi
+                const size = Math.min(52, 22 + Math.sqrt(count) * 7);
                 return (
                   <button
-                    key={m.id}
+                    key={cluster.key}
                     type="button"
-                    style={pos}
-                    onClick={() => setSelected(isActive ? null : m)}
-                    aria-label={`${m.name}, ${m.address}`}
+                    style={{ left: `${cluster.x}%`, top: `${cluster.y}%`, width: size, height: size }}
+                    onClick={() => {
+                      setZone(isActive ? null : cluster.key);
+                      setSelected(null);
+                    }}
+                    aria-label={count === 1 ? cluster.items[0].name : t.zoneCount(count)}
                     className={cn(
-                      'absolute -translate-x-1/2 -translate-y-1/2 rounded-full p-1 transition-transform',
-                      isActive ? 'z-20 scale-125' : 'z-10 hover:scale-110'
+                      'absolute -translate-x-1/2 -translate-y-1/2 rounded-full border text-[11px] font-bold transition',
+                      'grid place-items-center',
+                      isActive || holdsSelected
+                        ? 'z-20 border-white/70 bg-gold-gradient text-ink-deep shadow-gold'
+                        : 'z-10 border-gold/50 bg-gold/25 text-white backdrop-blur-sm hover:border-gold hover:bg-gold/40'
                     )}
                   >
-                    <span
-                      className={cn(
-                        'grid h-8 w-8 place-items-center rounded-full border text-ink-deep shadow-gold-sm transition',
-                        isActive
-                          ? 'border-white/60 bg-gold-gradient'
-                          : m.posActive
-                            ? 'border-gold/50 bg-gold/80'
-                            : 'border-white/20 bg-white/20 text-white'
-                      )}
-                    >
-                      <MapPin className="h-4 w-4" strokeWidth={2.4} />
-                    </span>
+                    {count === 1 ? <MapPin className="h-4 w-4" strokeWidth={2.4} /> : count}
                   </button>
                 );
               })}
             </div>
           </div>
+
+          <p className="pointer-events-none absolute inset-x-5 bottom-5 text-center text-[11px] leading-relaxed text-white/40">
+            {t.mapLegend}
+          </p>
 
           {selected && (
             <div className="absolute inset-x-4 bottom-4 z-30 animate-scale-in rounded-2xl border border-gold/30 bg-ink-deep/95 p-4 backdrop-blur-xl">
@@ -184,9 +241,23 @@ export default function MerchantMap({ t, locale }) {
 
         {/* Directory */}
         <div>
+          {zone && (
+            <div className="mb-3 flex items-center justify-between gap-3 rounded-xl border border-gold/30 bg-gold/10 px-4 py-2.5">
+              <span className="text-sm font-semibold text-gold">{t.zoneTitle}</span>
+              <button
+                type="button"
+                onClick={() => setZone(null)}
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted transition hover:text-white"
+              >
+                <X className="h-3.5 w-3.5" />
+                {t.zoneClear}
+              </button>
+            </div>
+          )}
+
           <p className="mb-4 text-sm text-muted" role="status" aria-live="polite">
-            <span className="font-semibold text-white">{results.length}</span>{' '}
-            {results.length === 1 ? t.resultsOne : t.resultsMany}
+            <span className="font-semibold text-white">{listed.length}</span>{' '}
+            {listed.length === 1 ? t.resultsOne : t.resultsMany}
             {category !== 'all' && t.inCategory(categoryLabel(category))}
           </p>
 
@@ -207,6 +278,7 @@ export default function MerchantMap({ t, locale }) {
                     </p>
                   </div>
                   <span className="chip">{categoryLabel(m.category)}</span>
+                  {project(m).outside && <span className="chip border-white/10">{t.outsideCore}</span>}
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2">
@@ -266,18 +338,18 @@ export default function MerchantMap({ t, locale }) {
               </GlassCard>
             ))}
 
-            {visible < results.length && (
+            {visible < listed.length && (
               <Button
                 type="button"
                 variant="ghost"
                 onClick={() => setVisible((v) => v + PAGE_SIZE)}
                 className="w-full"
               >
-                {t.showMore(Math.min(PAGE_SIZE, results.length - visible))}
+                {t.showMore(Math.min(PAGE_SIZE, listed.length - visible))}
               </Button>
             )}
 
-            {!results.length && (
+            {!listed.length && (
               <GlassCard hover={false} className="p-10 text-center">
                 <Search className="mx-auto h-8 w-8 text-muted" />
                 <p className="mt-4 text-sm font-medium text-white">{t.emptyTitle}</p>
