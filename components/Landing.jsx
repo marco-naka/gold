@@ -7,7 +7,7 @@ import DualInitiative from './DualInitiative';
 import HowItWorks from './HowItWorks';
 import Prizes from './Prizes';
 import EntryForm from './EntryForm';
-import MerchantMap from './MerchantMap';
+import MerchantDirectory from './MerchantDirectory';
 import MerchantB2B from './MerchantB2B';
 import Faq from './Faq';
 import RulesModal from './RulesModal';
@@ -35,7 +35,7 @@ export default function Landing({ locale }) {
         <HowItWorks t={t.how} conj={t.meta.assetsConjunction} locale={locale} />
         <Prizes t={t.prizes} locale={locale} />
         <EntryForm t={t.form} locale={locale} onOpenRules={openRules} />
-        <MerchantMap t={t.map} locale={locale} />
+        <MerchantDirectory t={t.map} locale={locale} />
         <MerchantB2B t={t.b2b} locale={locale} />
         <Faq t={t.faq} />
       </main>

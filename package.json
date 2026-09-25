@@ -11,7 +11,8 @@
     "import:merchants": "node scripts/import-merchants.mjs",
     "test": "node --test \"tests/**/*.test.mjs\"",
     "draw": "node scripts/draw.mjs",
-    "entries": "node scripts/entries.mjs"
+    "entries": "node scripts/entries.mjs",
+    "export:kml": "node scripts/export-kml.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.454.0",

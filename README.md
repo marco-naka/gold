@@ -66,6 +66,26 @@ sulla ricevuta, si copia in un attimo e serve anche al riscontro del premio Top 
 **L'indirizzo wallet non è più chiesto in fase di giocata**: viene richiesto via email ai soli
 vincitori. Regolamento (art. 4, 7, 8) e FAQ sono allineati a questo flusso.
 
+## Elenco negozi, non mappa
+
+Al posto della mappa schematica c'è l'elenco con ricerca, filtri per categoria e **ordinamento
+per vicinanza**: la geolocalizzazione del browser resta nel dispositivo, non viene inviata né a
+noi né a terzi, e ogni scheda mostra la distanza reale ("180 m da te").
+
+La mappa disegnata è stata rimossa: pin dorati su una griglia senza strade né lago sembravano
+informazione senza esserlo — con 336 esercenti diventava una macchia in cui non si distingueva
+nulla. Chi apre la pagina in centro ha una domanda sola, "quale negozio ho a due passi", e si
+risponde con la distanza e le indicazioni.
+
+```bash
+npm run export:kml > negozi.kml
+```
+
+Genera il file da importare una volta su **Google My Maps**: si ottiene una mappa vera, con
+strade e ricerca, ospitata da Google. Sul sito resta un pulsante che la apre, così la richiesta a
+Google parte solo se l'utente decide di andarci e la pagina resta senza terze parti.
+Il file pronto è `negozi-lugano.kml` (336 esercenti).
+
 ## Import merchant dalla Crypto Map di Lugano
 
 ```bash
