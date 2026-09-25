@@ -1,14 +1,44 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!--
+    Marchio dell'iniziativa: moneta d'oro lucido con il fulmine in rilievo.
+    L'oro è il premio (XAUT), il fulmine è la rete Lightning con cui si paga sui POS.
+    Il volume è tutto nei gradienti: due bande chiare e una scura sul bisello danno il
+    metallo, la copia scura sotto il fulmine lo stacca dalla faccia. Niente filtri né
+    testo: le sfocature pesano e una scritta a 16 px diventa una macchia.
+    Le coordinate sono già in scala: nessun transform, così anche Satori lo disegna
+    nell'anteprima social.
+  -->
   <defs>
-    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#F3BA2F"/>
-      <stop offset="50%" stop-color="#FFD700"/>
-      <stop offset="100%" stop-color="#F3BA2F"/>
+    <linearGradient id="bezel" x1="9" y1="5" x2="55" y2="59" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFDF2"/><stop offset=".12" stop-color="#FFE577"/>
+      <stop offset=".3" stop-color="#D8A015"/><stop offset=".46" stop-color="#8A6104"/>
+      <stop offset=".6" stop-color="#C3900E"/><stop offset=".78" stop-color="#FFEFA6"/>
+      <stop offset=".92" stop-color="#E4B123"/><stop offset="1" stop-color="#A97A08"/>
+    </linearGradient>
+    <linearGradient id="face" x1="15" y1="11" x2="49" y2="55" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF0A0"/><stop offset=".28" stop-color="#FFD531"/>
+      <stop offset=".6" stop-color="#E5A714"/><stop offset=".82" stop-color="#BE820A"/>
+      <stop offset="1" stop-color="#F0C64A"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="25" y1="16" x2="41" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFCEA"/><stop offset=".38" stop-color="#FFDB4E"/>
+      <stop offset=".78" stop-color="#D99C0E"/><stop offset="1" stop-color="#F2C43E"/>
+    </linearGradient>
+    <linearGradient id="glintA" x1="15" y1="7" x2="29" y2="25" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="glintB" x1="47" y1="57" x2="38" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <rect width="64" height="64" rx="14" fill="#0F0F12"/>
-  <circle cx="32" cy="32" r="18" fill="url(#g)"/>
-  <circle cx="32" cy="32" r="12.5" fill="#0F0F12"/>
-  <text x="32" y="37" font-family="Helvetica,Arial,sans-serif" font-size="11" font-weight="700"
-        text-anchor="middle" fill="url(#g)">XAU</text>
+  <circle cx="32" cy="32" r="30.4" fill="#7A5703"/>
+  <circle cx="32" cy="32" r="29.8" fill="url(#bezel)"/>
+  <circle cx="32" cy="32" r="24.4" fill="#6B4C04"/>
+  <circle cx="32" cy="32" r="23.2" fill="url(#face)"/>
+  <path d="M7.6 25.4A25.6 25.6 0 0 1 25.4 6.3 26.6 26.6 0 0 0 9.8 28.6Z" fill="url(#glintA)"/>
+  <path d="M56.2 39.4a25.6 25.6 0 0 1-17 18.3 26.6 26.6 0 0 0 15.1-21Z" fill="url(#glintB)"/>
+  <path d="M32 55.2a23.2 23.2 0 0 0 20.4-12.1 23.2 23.2 0 0 1-20.4 10.5A23.2 23.2 0 0 1 11.6 43a23.2 23.2 0 0 0 20.4 12.2Z" fill="#FFF3C0" fill-opacity=".45"/>
+  <path d="M37.82 16.34 22.51 38.02h7.91L27.67 50.06 42.98 28.38h-7.91Z" fill="#6B4C04" fill-opacity=".85"/>
+  <path d="M36.82 15.14 21.51 36.82h7.91L26.67 48.86 41.98 27.18h-7.91Z" fill="url(#bolt)"/>
+  <path d="M36.82 15.14 21.51 36.82h1.81L37.93 16.09Z" fill="#FFFBE6" fill-opacity=".95"/>
 </svg>

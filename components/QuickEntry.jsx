@@ -37,7 +37,7 @@ export default function QuickEntry({ locale }) {
       <header className="border-b border-white/10 bg-ink-deep/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-5">
           <Link href={localePath(locale)} aria-label={t.nav.home}>
-            <NakaLogo />
+            <NakaLogo id="quick" />
           </Link>
           <LanguageSwitch locale={locale} />
         </div>

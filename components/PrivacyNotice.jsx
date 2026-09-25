@@ -27,7 +27,7 @@ export default function PrivacyNotice({ locale }) {
       <header className="border-b border-white/10 bg-ink-deep/80 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-3xl items-center justify-between px-5 sm:px-8">
           <Link href={localePath(locale)} aria-label={dict.nav.home}>
-            <NakaLogo />
+            <NakaLogo id="privacy" />
           </Link>
           <LanguageSwitch locale={locale} />
         </div>

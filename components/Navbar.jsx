@@ -45,7 +45,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <a href={localePath(locale)} className="flex shrink-0 items-center gap-3" aria-label={t.nav.home}>
-          <NakaLogo />
+          <NakaLogo id="nav" />
           <span className="hidden h-8 w-px bg-white/10 xl:block" />
           <PoweredBadge className="hidden xl:inline-flex" />
         </a>
