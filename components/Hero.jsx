@@ -104,14 +104,18 @@ export default function Hero({ t, locale }) {
             </dl>
           </div>
 
-          {/* Visual: token XAUT stilizzato */}
+          {/* Visual: logo ufficiale Tether Gold, non più una riproduzione testuale */}
           <div className="relative mx-auto w-full max-w-sm animate-fade-up lg:max-w-none">
             <div className="glass relative overflow-hidden p-8 sm:p-10">
               <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-gold/60 to-transparent" />
-              <div className="mx-auto flex h-44 w-44 animate-floaty items-center justify-center rounded-full bg-gold-gradient shadow-gold sm:h-52 sm:w-52">
-                <div className="grid h-[88%] w-[88%] place-items-center rounded-full bg-ink-deep">
-                  <span className="text-4xl font-black text-gold-gradient sm:text-5xl">XAUT</span>
-                </div>
+              <div className="mx-auto flex h-44 w-44 animate-floaty items-center justify-center sm:h-52 sm:w-52">
+                <img
+                  src="/img/tether-gold.png"
+                  alt="Tether Gold (XAUT)"
+                  width={208}
+                  height={208}
+                  className="h-full w-full object-contain drop-shadow-[0_10px_40px_rgba(243,186,47,0.45)]"
+                />
               </div>
 
               <div className="mt-8 space-y-3">
