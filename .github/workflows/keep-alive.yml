@@ -1,0 +1,44 @@
+# Tiene sveglio il servizio sul piano gratuito di Render, che va in standby dopo ~15 minuti
+# di inattività e impiega poi quasi un minuto a ripartire.
+#
+# Serve SOLO in fase di anteprima. Dal piano Starter in poi lo standby non esiste, e per la
+# settimana del concorso il piano a pagamento è comunque necessario per il disco persistente:
+# a quel punto questo workflow si può disattivare.
+name: Keep alive
+
+on:
+  schedule:
+    # Ogni 10 minuti. GitHub non garantisce la puntualità: nelle ore di punta può ritardare
+    # di parecchi minuti, quindi è una rete di sicurezza, non un orologio.
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: keep-alive
+  cancel-in-progress: true
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping /api/health
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: |
+          if [ -z "$SITE_URL" ]; then
+            echo "SITE_URL non configurata: niente da tenere sveglio."
+            echo "Impostala in Settings → Secrets and variables → Actions → Variables."
+            exit 0
+          fi
+
+          # /api/health è l'endpoint più leggero: non tocca giocate né scontrini.
+          code=$(curl -sS -o /dev/null -m 90 -w '%{http_code}' "$SITE_URL/api/health" || echo "000")
+          echo "$SITE_URL/api/health → $code"
+
+          case "$code" in
+            200) echo "Servizio sveglio." ;;
+            503) echo "::warning::Servizio raggiungibile ma degradato (disco non scrivibile?)." ;;
+            000) echo "::error::Nessuna risposta entro 90 secondi." ; exit 1 ;;
+            *)   echo "::error::Risposta inattesa: $code" ; exit 1 ;;
+          esac
