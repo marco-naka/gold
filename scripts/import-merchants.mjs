@@ -41,6 +41,13 @@ const CATEGORY_MAP = {
 // Codici asset della crypto map -> asset accettati sul POS NAKA.
 const ASSET_MAP = { BTC: 'BTC', UST: 'USDT', USDT: 'USDT', XAUT: 'XAUT' };
 
+/**
+ * Sui POS NAKA si incassa in tutte e tre le monete. La crypto map della Città non è aggiornata
+ * a Tether Gold e per ogni esercente dichiara solo BTC e USDt: gli asset della sorgente servono
+ * quindi a selezionare chi è sul circuito NAKA, non a descrivere cosa accetta davvero.
+ */
+const NAKA_ASSETS = ['BTC', 'USDT', 'XAUT'];
+
 // Riquadro geografico plausibile per il Luganese: la sorgente contiene coordinate corrotte
 // (es. "Caffè Roma" con lat 846.005304 invece di 46.005304) che, se importate, sfondano il
 // bounding box della mappa e schiacciano tutti i pin in un angolo.
@@ -156,7 +163,7 @@ async function main() {
         name: norm(m.title),
         category: pickCategory(m.tags),
         address: [norm(m.address), [zip, city].filter(Boolean).join(' ')].filter(Boolean).join(', '),
-        assets: parseAssets(m.accepted_cryptos),
+        assets: NAKA_ASSETS,
         // Il flag NAKA della crypto map indica l'accettazione su rail NAKA:
         // è un forte candidato, ma va confermato dal backend POS NAKA (vedi `verified`).
         posActive: acceptsNaka(m.accepted_cryptos),

@@ -1,8 +1,19 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Search, MapPin, Navigation, X, CheckCircle2, Globe, Instagram, LocateFixed, ArrowDownAZ } from 'lucide-react';
-import { EVENT } from '@/lib/constants';
+import {
+  Search,
+  MapPin,
+  Navigation,
+  X,
+  CheckCircle2,
+  Globe,
+  Instagram,
+  LocateFixed,
+  ArrowDownAZ,
+  Wallet,
+} from 'lucide-react';
+import { EVENT, PAYMENT_ASSETS } from '@/lib/constants';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
@@ -182,6 +193,17 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
 
       {geoState === 'denied' && <p className="mt-2 text-xs text-muted/80">{t.nearMeDenied}</p>}
 
+      <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+        <Wallet className="h-3.5 w-3.5 text-gold" />
+        {t.allAccept}
+        {PAYMENT_ASSETS.map((asset, i) => (
+          <span key={asset.code} className="font-semibold text-white">
+            {asset.label}
+            {i < PAYMENT_ASSETS.length - 1 && <span className="font-normal text-muted"> ·</span>}
+          </span>
+        ))}
+      </p>
+
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         {shown.map((m) => (
           <GlassCard key={m.id} className="flex flex-col p-5">
@@ -228,11 +250,6 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                   {t.badgeVerified}
                 </span>
               )}
-              {m.assets.map((a) => (
-                <span key={a} className="chip">
-                  {a}
-                </span>
-              ))}
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">
