@@ -3,7 +3,7 @@ import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
 import { OFFICIAL_GUIDE, WALLETS } from '@/lib/wallets';
-import { assetSentence } from '@/lib/constants';
+import { PAYMENT_ASSETS, assetSentence } from '@/lib/constants';
 
 const ICONS = [CreditCard, FileCheck2, Trophy];
 
@@ -40,6 +40,26 @@ export default function HowItWorks({ t, conj, locale = 'it' }) {
           );
         })}
       </ol>
+
+      {/* Le reti contano: un USDt su Tron è un pagamento valido ma fuori concorso. */}
+      <GlassCard hover={false} className="mt-8 p-7 sm:p-9">
+        <h3 className="text-lg font-bold">{t.networksTitle}</h3>
+        <div className="mt-5 grid gap-3 sm:grid-cols-3">
+          {PAYMENT_ASSETS.map((asset) => (
+            <div key={asset.code} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-base font-bold text-white">{asset.label}</span>
+                <span className="font-mono text-xs text-muted">{asset.code}</span>
+              </div>
+              <p className="mt-1.5 text-sm text-gold">
+                <span className="text-muted">{t.networkOn} </span>
+                {asset.networks.join(' · ')}
+              </p>
+            </div>
+          ))}
+        </div>
+        <p className="mt-4 text-xs leading-relaxed text-muted/80">{t.networksNote}</p>
+      </GlassCard>
 
       {/* Come si paga sui POS: si rimanda alla guida ufficiale del circuito invece di duplicarla. */}
       <GlassCard hover={false} className="mt-8 p-7 sm:p-9">

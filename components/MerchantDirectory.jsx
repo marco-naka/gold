@@ -173,20 +173,16 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="chip">{categoryLabel(m.category)}</span>
-              <span
-                className={cn(
-                  'chip',
-                  m.verified
-                    ? 'border-green-500/30 bg-green-500/10 text-green-400'
-                    : m.posActive
-                      ? 'border-gold/30 bg-gold/10 text-gold'
-                      : 'border-white/10'
-                )}
-                title={m.verified ? t.badgeVerifiedTitle : t.badgeCircuitTitle}
-              >
-                <CheckCircle2 className="h-3.5 w-3.5" />
-                {m.verified ? t.badgeVerified : m.posActive ? t.badgeCircuit : t.badgePending}
-              </span>
+              {/* Un badge si mostra solo quando distingue: l'adesione confermata da NAKA. */}
+              {m.verified && (
+                <span
+                  className="chip border-green-500/30 bg-green-500/10 text-green-400"
+                  title={t.badgeVerifiedTitle}
+                >
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                  {t.badgeVerified}
+                </span>
+              )}
               {m.assets.map((a) => (
                 <span key={a} className="chip">
                   {a}
