@@ -13,6 +13,9 @@ import {
   Hash,
   AtSign,
   Trophy,
+  Medal,
+  Dices,
+  Gavel,
   Clock,
   Smartphone,
   Lightbulb,
@@ -42,6 +45,9 @@ import { formatDate, getDictionary, localePath } from '@/lib/i18n';
 
 const STEP_ICONS = [Video, Hash, AtSign, Mail];
 
+/** Un'icona per modo di assegnazione: classifica, giuria, sorteggio. */
+const ASSIGNMENT_ICONS = { volume: Medal, jury: Gavel, draw: Dices };
+
 export default function BestSocialContent({ locale }) {
   const dict = getDictionary(locale);
   const t = dict.video;
@@ -53,7 +59,7 @@ export default function BestSocialContent({ locale }) {
     min: specs.minSeconds,
     max: specs.maxSeconds,
     ratio: specs.ratio,
-    platforms: SOCIAL_CONTEST.platforms.slice(0, 3).join(', '),
+    platforms: SOCIAL_CONTEST.platforms.join(', '),
     email: CONTEST.merchantEmail,
     deadline,
   });
@@ -68,7 +74,7 @@ export default function BestSocialContent({ locale }) {
       <header className="border-b border-white/10 bg-ink-deep/80 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8">
           <Link href={localePath(locale)} className="flex items-center gap-3" aria-label={dict.nav.home}>
-            <NakaLogo />
+            <NakaLogo id="social" />
           </Link>
           <div className="flex items-center gap-3">
             <PlanBLogo className="hidden sm:inline-flex" />
@@ -318,8 +324,57 @@ export default function BestSocialContent({ locale }) {
           </div>
         </GlassCard>
 
-        {/* Guida completa per il commerciante: è la pagina a cui punta il QR del materiale */}
+        {/*
+          Il QR del materiale in negozio punta qui: da questo punto in poi la pagina è la guida
+          completa del commerciante, non solo il premio social. Si parte dai tre premi merchant
+          perché chi arriva dal volantino non sa che gli altri due esistono.
+        */}
         <section id="commercianti" className="mt-16 scroll-mt-24">
+          <SectionTitle
+            align="left"
+            eyebrow={t.merchantPrizes.eyebrow}
+            title={t.merchantPrizes.title(formatXaut(PRIZES.merchants.pool))}
+            subtitle={t.merchantPrizes.subtitle}
+          />
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {PRIZES.merchants.items.map((item) => {
+              const copy = t.merchantPrizes.items[item.place];
+              const Icon = ASSIGNMENT_ICONS[item.assignment] ?? Trophy;
+              return (
+                <GlassCard key={item.place} className="flex flex-col p-6">
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <span className="text-right text-lg font-bold text-gold">{formatXaut(item.amount)}</span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold">{copy.title}</h3>
+                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{copy.text}</p>
+                  <dl className="mt-4 space-y-3 border-t border-white/5 pt-4 text-xs leading-relaxed">
+                    <div>
+                      <dt className="font-semibold uppercase tracking-[0.14em] text-gold/90">
+                        {t.merchantPrizes.howLabel}
+                      </dt>
+                      <dd className="mt-1 text-muted">{t.merchantPrizes.how[item.assignment]}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold uppercase tracking-[0.14em] text-gold/90">
+                        {t.merchantPrizes.actionLabel}
+                      </dt>
+                      <dd className="mt-1 text-muted">{copy.action}</dd>
+                    </div>
+                  </dl>
+                </GlassCard>
+              );
+            })}
+          </div>
+          <p className="mt-4 text-xs leading-relaxed text-muted/80">
+            {t.merchantPrizes.note(formatDate(CONTEST.drawDate, locale))}
+          </p>
+        </section>
+
+        {/* Guida completa per il commerciante: è la pagina a cui punta il QR del materiale */}
+        <section className="mt-16">
           <SectionTitle
             align="left"
             eyebrow={t.merchantGuide.eyebrow}
