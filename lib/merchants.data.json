@@ -109,7 +109,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.003179,
-      "lng": 8.951313
+      "lng": 8.951313,
+      "logo": "/img/merchants/lug-agua-8c74c7.webp"
     },
     {
       "id": "lug-ail-arena-experience-center-cdf8c9",
@@ -126,7 +127,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004394,
-      "lng": 8.950006
+      "lng": 8.950006,
+      "logo": "/img/merchants/lug-ail-arena-experience-center-cdf8c9.webp"
     },
     {
       "id": "lug-aline-battistella-parrucchiera-48955b",
@@ -196,7 +198,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.011869,
-      "lng": 8.952816
+      "lng": 8.952816,
+      "logo": "/img/merchants/lug-altea-atelier-1c3fbd.webp"
     },
     {
       "id": "lug-am-hub-interiors-bb5551",
@@ -302,7 +305,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004101,
-      "lng": 8.95157
+      "lng": 8.95157,
+      "logo": "/img/merchants/lug-argentino-bistrot-pizza-f2a876.webp"
     },
     {
       "id": "lug-artestetica-889add",
@@ -337,7 +341,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005239,
-      "lng": 8.954032
+      "lng": 8.954032,
+      "logo": "/img/merchants/lug-ashri-boutique-678277.webp"
     },
     {
       "id": "lug-auberge-117b28",
@@ -511,7 +516,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-bar-ristorante-gabbani-74a757.webp"
     },
     {
       "id": "lug-bar-sempione-9b1583",
@@ -685,7 +691,8 @@
       "websiteKind": "website",
       "phone": "+41919220360",
       "lat": 46.005671,
-      "lng": 8.951507
+      "lng": 8.951507,
+      "logo": "/img/merchants/lug-bijoux-io-bb69b2.webp"
     },
     {
       "id": "lug-boatcenter-lugano-23e005",
@@ -790,7 +797,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005902,
-      "lng": 8.959286
+      "lng": 8.959286,
+      "logo": "/img/merchants/lug-boutique-per-la-schiena-b6027e.webp"
     },
     {
       "id": "lug-boutique-s2-2nd-hand-shop-afae26",
@@ -927,7 +935,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004149,
-      "lng": 8.955121
+      "lng": 8.955121,
+      "logo": "/img/merchants/lug-casino-lugano-ristorante-elementi-bar-ai-piani-b255cc.webp"
     },
     {
       "id": "lug-cct-formazione-linguistica-e-culturale-a5f695",
@@ -944,7 +953,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.00602,
-      "lng": 8.960395
+      "lng": 8.960395,
+      "logo": "/img/merchants/lug-cct-formazione-linguistica-e-culturale-a5f695.webp"
     },
     {
       "id": "lug-centrostampa-express-di-stefano-marinuzzi-fc5bb2",
@@ -1101,7 +1111,8 @@
       "websiteKind": "website",
       "phone": "+41919229653",
       "lat": 46.004894,
-      "lng": 8.953721
+      "lng": 8.953721,
+      "logo": "/img/merchants/lug-cinema-iride-2b6b7c.webp"
     },
     {
       "id": "lug-cinema-lux-caf511",
@@ -1189,7 +1200,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-club-g-161dab.webp"
     },
     {
       "id": "lug-club-g-597ee9",
@@ -1242,7 +1254,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005812,
-      "lng": 8.951328
+      "lng": 8.951328,
+      "logo": "/img/merchants/lug-coltelleria-maturi-01f95d.webp"
     },
     {
       "id": "lug-conservatorio-della-svizzera-italiana-0357e5",
@@ -1294,7 +1307,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.010161,
-      "lng": 8.937398
+      "lng": 8.937398,
+      "logo": "/img/merchants/lug-cyberconnect-9ced8a.webp"
     },
     {
       "id": "lug-d-amico-alimentari-frutta-e-verdura-fe1af0",
@@ -1328,7 +1342,8 @@
       "websiteKind": "website",
       "phone": "+41912520704",
       "lat": 46.009909,
-      "lng": 8.932859
+      "lng": 8.932859,
+      "logo": "/img/merchants/lug-d4b-digital-for-business-f44fb4.webp"
     },
     {
       "id": "lug-da-lia-coiffure-891a97",
@@ -1380,7 +1395,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.003457,
-      "lng": 8.940715
+      "lng": 8.940715,
+      "logo": "/img/merchants/lug-dance-in-your-essence-di-romina-henle-10036f.webp"
     },
     {
       "id": "lug-david-glamour-2b10e4",
@@ -1414,7 +1430,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.011151,
-      "lng": 8.954405
+      "lng": 8.954405,
+      "logo": "/img/merchants/lug-desk-food-12cb64.webp"
     },
     {
       "id": "lug-dhalia-beauty-center-lugano-638fd8",
@@ -1519,7 +1536,8 @@
       "websiteKind": "website",
       "phone": "+41912104029",
       "lat": 45.994538,
-      "lng": 8.942797
+      "lng": 8.942797,
+      "logo": "/img/merchants/lug-dolce-vita-shop-13d5d4.webp"
     },
     {
       "id": "lug-donde-art-gallery-ba741a",
@@ -1659,7 +1677,8 @@
       "websiteKind": "website",
       "phone": "+41919227770",
       "lat": 46.01097,
-      "lng": 8.954746
+      "lng": 8.954746,
+      "logo": "/img/merchants/lug-elisir-coiffure-b16496.webp"
     },
     {
       "id": "lug-elite-caffe-afa8c6",
@@ -1712,7 +1731,8 @@
       "websiteKind": "website",
       "phone": "+41764553326",
       "lat": 46.007828,
-      "lng": 8.95541
+      "lng": 8.95541,
+      "logo": "/img/merchants/lug-ermitage-lugano-negozio-di-arredamenti-77b0a2.webp"
     },
     {
       "id": "lug-erresse-beauty-spa-13bc91",
@@ -1747,7 +1767,8 @@
       "websiteKind": "website",
       "phone": "+41912105850",
       "lat": 46.007084,
-      "lng": 8.960368
+      "lng": 8.960368,
+      "logo": "/img/merchants/lug-europeancar-ch-sa-autoleasing-senza-banca-12efdb.webp"
     },
     {
       "id": "lug-evellyn-beauty-693462",
@@ -1887,7 +1908,8 @@
       "websiteKind": "website",
       "phone": "+41919228672",
       "lat": 46.024132,
-      "lng": 8.960491
+      "lng": 8.960491,
+      "logo": "/img/merchants/lug-fc-lugano-biglietteria-1edccc.webp"
     },
     {
       "id": "lug-fc-lugano-food-and-beverages-eabe1b",
@@ -1921,7 +1943,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.023931,
-      "lng": 8.960263
+      "lng": 8.960263,
+      "logo": "/img/merchants/lug-fc-lugano-merchandising-fc9098.webp"
     },
     {
       "id": "lug-flora-ticino-8d752b",
@@ -2009,7 +2032,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-gabbani-enoteca-d5d6f4.webp"
     },
     {
       "id": "lug-gabbani-formaggeria-1e7474",
@@ -2026,7 +2050,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-gabbani-formaggeria-1e7474.webp"
     },
     {
       "id": "lug-gabbani-frutteto-327875",
@@ -2043,7 +2068,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-gabbani-frutteto-327875.webp"
     },
     {
       "id": "lug-gabbani-macelleria-39f562",
@@ -2060,7 +2086,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-gabbani-macelleria-39f562.webp"
     },
     {
       "id": "lug-gabbani-panetteria-d30b52",
@@ -2077,7 +2104,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-gabbani-panetteria-d30b52.webp"
     },
     {
       "id": "lug-gabbani-portici-843e61",
@@ -2094,7 +2122,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004208,
-      "lng": 8.95044
+      "lng": 8.95044,
+      "logo": "/img/merchants/lug-gabbani-portici-843e61.webp"
     },
     {
       "id": "lug-gabrielli-hair-concept-f2a0f2",
@@ -2128,7 +2157,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005603,
-      "lng": 8.942837
+      "lng": 8.942837,
+      "logo": "/img/merchants/lug-galleria-doppia-v-atelier-walter-69095c.webp"
     },
     {
       "id": "lug-gastrosnack-bernasconi-c8ab05",
@@ -2196,7 +2226,8 @@
       "websiteKind": "website",
       "phone": "+41918359962",
       "lat": 46.003527,
-      "lng": 8.95056
+      "lng": 8.95056,
+      "logo": "/img/merchants/lug-gioielleria-f-h-18-81-c65642.webp"
     },
     {
       "id": "lug-gioielleria-fortuny-5ccb37",
@@ -2213,7 +2244,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.000849,
-      "lng": 8.949052
+      "lng": 8.949052,
+      "logo": "/img/merchants/lug-gioielleria-fortuny-5ccb37.webp"
     },
     {
       "id": "lug-gioielleria-preziosi-e39749",
@@ -2300,7 +2332,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 45.983538,
-      "lng": 8.931781
+      "lng": 8.931781,
+      "logo": "/img/merchants/lug-globocar-5e298b.webp"
     },
     {
       "id": "lug-grande-caffe-bistrot-74e456",
@@ -2421,7 +2454,8 @@
       "websiteKind": "website",
       "phone": "+41912301036",
       "lat": 46.027258,
-      "lng": 8.968887
+      "lng": 8.968887,
+      "logo": "/img/merchants/lug-healthy-life-clinic-883066.webp"
     },
     {
       "id": "lug-helvetiacom-7fd016",
@@ -2474,7 +2508,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004599,
-      "lng": 8.949325
+      "lng": 8.949325,
+      "logo": "/img/merchants/lug-hotel-acquarello-16f3f1.webp"
     },
     {
       "id": "lug-hotel-colorado-3ff935",
@@ -2526,7 +2561,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004295,
-      "lng": 8.950176
+      "lng": 8.950176,
+      "logo": "/img/merchants/lug-hotel-gabbani-15f234.webp"
     },
     {
       "id": "lug-hotel-pestalozzi-lugano-baada2",
@@ -2543,7 +2579,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005769,
-      "lng": 8.955034
+      "lng": 8.955034,
+      "logo": "/img/merchants/lug-hotel-pestalozzi-lugano-baada2.webp"
     },
     {
       "id": "lug-hotel-zurigo-downtown-0de3f3",
@@ -2578,7 +2615,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.013634,
-      "lng": 8.954872
+      "lng": 8.954872,
+      "logo": "/img/merchants/lug-ifa-trade-sa-26fe79.webp"
     },
     {
       "id": "lug-il-cannolo-sua-eccellenza-0a39ae",
@@ -2631,7 +2669,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.006146,
-      "lng": 8.951227
+      "lng": 8.951227,
+      "logo": "/img/merchants/lug-il-piccolo-principe-ottico-michel-d92fd2.webp"
     },
     {
       "id": "lug-imago-art-gallery-ea791d",
@@ -2702,7 +2741,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.00655,
-      "lng": 8.951784
+      "lng": 8.951784,
+      "logo": "/img/merchants/lug-istituto-sanders-f9a734.webp"
     },
     {
       "id": "lug-juliana-jewelry-e8b1d0",
@@ -2806,7 +2846,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.008198,
-      "lng": 8.950831
+      "lng": 8.950831,
+      "logo": "/img/merchants/lug-kinetic-center-02645e.webp"
     },
     {
       "id": "lug-kios-ka-d03fcf",
@@ -2963,7 +3004,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.002163,
-      "lng": 8.950041
+      "lng": 8.950041,
+      "logo": "/img/merchants/lug-la-cucina-di-alice-c7fcb3.webp"
     },
     {
       "id": "lug-la-dispensa-e80fbf",
@@ -2998,7 +3040,8 @@
       "websiteKind": "website",
       "phone": "+41919212131",
       "lat": 46.009254,
-      "lng": 8.967741
+      "lng": 8.967741,
+      "logo": "/img/merchants/lug-la-fioreria-f1b7af.webp"
     },
     {
       "id": "lug-la-kloche-a625a2",
@@ -3069,7 +3112,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.020643,
-      "lng": 8.96525
+      "lng": 8.96525,
+      "logo": "/img/merchants/lug-lala-caffe-77548c.webp"
     },
     {
       "id": "lug-lavanderia-san-nicolao-37f047",
@@ -3121,7 +3165,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.008978,
-      "lng": 8.955771
+      "lng": 8.955771,
+      "logo": "/img/merchants/lug-leplaw-ch-0e74d1.webp"
     },
     {
       "id": "lug-libera-events-organizzazione-eventi-b09282",
@@ -3191,7 +3236,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.006562,
-      "lng": 8.951796
+      "lng": 8.951796,
+      "logo": "/img/merchants/lug-linea-sana-lugano-040c7b.webp"
     },
     {
       "id": "lug-locanda-castagnola-1a2471",
@@ -3208,7 +3254,8 @@
       "websiteKind": "website",
       "phone": "+41912263515",
       "lat": 46.001328,
-      "lng": 8.97745
+      "lng": 8.97745,
+      "logo": "/img/merchants/lug-locanda-castagnola-1a2471.webp"
     },
     {
       "id": "lug-love-estetica-f5f677",
@@ -3260,7 +3307,8 @@
       "websiteKind": "website",
       "phone": "+41912234576",
       "lat": 46.015996,
-      "lng": 8.956521
+      "lng": 8.956521,
+      "logo": "/img/merchants/lug-lubrano-elettrodomestici-1b0322.webp"
     },
     {
       "id": "lug-lugadrive-3f16fe",
@@ -3277,7 +3325,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.020805,
-      "lng": 8.975589
+      "lng": 8.975589,
+      "logo": "/img/merchants/lug-lugadrive-3f16fe.webp"
     },
     {
       "id": "lug-lugano-plan-b-info-point-e878e0",
@@ -3294,7 +3343,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004188,
-      "lng": 8.949825
+      "lng": 8.949825,
+      "logo": "/img/merchants/lug-lugano-plan-b-info-point-e878e0.webp"
     },
     {
       "id": "lug-lugano-top-watches-9de52f",
@@ -3448,7 +3498,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.008899,
-      "lng": 8.965931
+      "lng": 8.965931,
+      "logo": "/img/merchants/lug-make-up-express-di-lisa-sommella-1f3773.webp"
     },
     {
       "id": "lug-marco-lucchetti-art-gallery-d61f89",
@@ -3571,7 +3622,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004539,
-      "lng": 8.952082
+      "lng": 8.952082,
+      "logo": "/img/merchants/lug-mauri-concept-food-beverage-d8c665.webp"
     },
     {
       "id": "lug-mcdonald-s-lugano-578ce0",
@@ -3709,7 +3761,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.006837,
-      "lng": 8.95675
+      "lng": 8.95675,
+      "logo": "/img/merchants/lug-monster-house-tattoo-piercing-321ef6.webp"
     },
     {
       "id": "lug-monvis-orologi-a6c97f",
@@ -3779,7 +3832,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.010909,
-      "lng": 8.955326
+      "lng": 8.955326,
+      "logo": "/img/merchants/lug-mr-vino-726632.webp"
     },
     {
       "id": "lug-musicdoor-2d0c25",
@@ -3814,7 +3868,8 @@
       "websiteKind": "website",
       "phone": "+41768426900",
       "lat": 46.010877,
-      "lng": 8.954273
+      "lng": 8.954273,
+      "logo": "/img/merchants/lug-mustis-pizza-kebab-hamburger-0fcc06.webp"
     },
     {
       "id": "lug-ncc-lugano-94e2e0",
@@ -4043,7 +4098,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.007652,
-      "lng": 8.953273
+      "lng": 8.953273,
+      "logo": "/img/merchants/lug-ottica-vicari-85760f.webp"
     },
     {
       "id": "lug-ottica-visio-157494",
@@ -4165,7 +4221,8 @@
       "websiteKind": "website",
       "phone": "+41792300858",
       "lat": 46.06787,
-      "lng": 9.015235
+      "lng": 9.015235,
+      "logo": "/img/merchants/lug-patrick-balmelli-vendita-diretta-di-carne-e-formaggio-9d7a39.webp"
     },
     {
       "id": "lug-pepita-take-away-54dddb",
@@ -4304,7 +4361,8 @@
       "websiteKind": "website",
       "phone": "+41919104410",
       "lat": 46.003855,
-      "lng": 8.949915
+      "lng": 8.949915,
+      "logo": "/img/merchants/lug-pow-space-6f7905.webp"
     },
     {
       "id": "lug-pow-gym-pow-space-members-only-dedf6e",
@@ -4357,7 +4415,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005511,
-      "lng": 8.950927
+      "lng": 8.950927,
+      "logo": "/img/merchants/lug-primaclasse-hairstyle-beauty-705c18.webp"
     },
     {
       "id": "lug-proof-of-steak-351cf2",
@@ -4444,7 +4503,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.024449,
-      "lng": 8.960327
+      "lng": 8.960327,
+      "logo": "/img/merchants/lug-ristorante-bianconero-221491.webp"
     },
     {
       "id": "lug-ristorante-cantinone-5118f3",
@@ -4530,7 +4590,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.004779,
-      "lng": 8.949864
+      "lng": 8.949864,
+      "logo": "/img/merchants/lug-ristorante-ikobani-14cd32.webp"
     },
     {
       "id": "lug-ristorante-la-fermata-141c95",
@@ -4634,7 +4695,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.008719,
-      "lng": 8.957365
+      "lng": 8.957365,
+      "logo": "/img/merchants/lug-ristorante-pizzeria-fresco-5ec2ce.webp"
     },
     {
       "id": "lug-ristorante-pizzeria-stadio-8b7fa8",
@@ -4686,7 +4748,8 @@
       "websiteKind": "website",
       "phone": "+41919222701",
       "lat": 46.004002,
-      "lng": 8.951687
+      "lng": 8.951687,
+      "logo": "/img/merchants/lug-ristorante-tango-lugano-8d6753.webp"
     },
     {
       "id": "lug-rolfing-ticino-3ef71a",
@@ -4703,7 +4766,8 @@
       "websiteKind": "website",
       "phone": "+41766505115",
       "lat": 46.005908,
-      "lng": 8.954608
+      "lng": 8.954608,
+      "logo": "/img/merchants/lug-rolfing-ticino-3ef71a.webp"
     },
     {
       "id": "lug-roma-rent-noleggio-auto-a-lungo-termine-d566ee",
@@ -4805,7 +4869,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.005883,
-      "lng": 8.943407
+      "lng": 8.943407,
+      "logo": "/img/merchants/lug-salone-di-bellezza-ama-il-tuo-stile-03d3f6.webp"
     },
     {
       "id": "lug-salone-la-lounge-loreto-318e8d",
@@ -4945,7 +5010,8 @@
       "websiteKind": "website",
       "phone": "+41919233422",
       "lat": 46.006462,
-      "lng": 8.958256
+      "lng": 8.958256,
+      "logo": "/img/merchants/lug-sd-studi-dentistici-e5e6d0.webp"
     },
     {
       "id": "lug-serena-maisto-artist-a35fc0",
@@ -5049,7 +5115,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.00644,
-      "lng": 8.965552
+      "lng": 8.965552,
+      "logo": "/img/merchants/lug-shoppa-smart-technology-store-276c0f.webp"
     },
     {
       "id": "lug-simone-marchi-tattoo-6c3c43",
@@ -5084,7 +5151,8 @@
       "websiteKind": "website",
       "phone": "+41919234515",
       "lat": 46.006599,
-      "lng": 8.953667
+      "lng": 8.953667,
+      "logo": "/img/merchants/lug-smile-institute-lugano-90f815.webp"
     },
     {
       "id": "lug-snack-bar-lido-riva-caccia-5e7b88",
@@ -5205,7 +5273,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.010931,
-      "lng": 8.954392
+      "lng": 8.954392,
+      "logo": "/img/merchants/lug-studio-antonini-107a19.webp"
     },
     {
       "id": "lug-studio-ceramica-lurra-98ff06",
@@ -5222,7 +5291,8 @@
       "websiteKind": "website",
       "phone": "+41779643862",
       "lat": 46.006551,
-      "lng": 8.95517
+      "lng": 8.95517,
+      "logo": "/img/merchants/lug-studio-ceramica-lurra-98ff06.webp"
     },
     {
       "id": "lug-studio-laterale-yoga-health-coaching-dc38fd",
@@ -5239,7 +5309,8 @@
       "websiteKind": "website",
       "phone": "+41787434149",
       "lat": 46.007306,
-      "lng": 8.94172
+      "lng": 8.94172,
+      "logo": "/img/merchants/lug-studio-laterale-yoga-health-coaching-dc38fd.webp"
     },
     {
       "id": "lug-studio-massaggi-medicali-di-gabriella-sessa-ce2f26",
@@ -5467,7 +5538,8 @@
       "websiteKind": "website",
       "phone": "+41912290161",
       "lat": 46.005261,
-      "lng": 8.95356
+      "lng": 8.95356,
+      "logo": "/img/merchants/lug-teddy-spiel-233d33.webp"
     },
     {
       "id": "lug-the-market-d714d6",
@@ -5605,7 +5677,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.00515,
-      "lng": 8.952115
+      "lng": 8.952115,
+      "logo": "/img/merchants/lug-tutti-servizi-mercato-alimentare-2b891f.webp"
     },
     {
       "id": "lug-valentina-beauty-center-596d31",
@@ -5709,7 +5782,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.007887,
-      "lng": 8.929319
+      "lng": 8.929319,
+      "logo": "/img/merchants/lug-vivi-breganzona-108a73.webp"
     },
     {
       "id": "lug-voltech-controllo-impianti-elettrici-b72894",
@@ -5797,7 +5871,8 @@
       "websiteKind": "website",
       "phone": null,
       "lat": 46.015899,
-      "lng": 8.958772
+      "lng": 8.958772,
+      "logo": "/img/merchants/lug-z-bike-lugano-da11c8.webp"
     },
     {
       "id": "lug-zenzero-beauty-culture-fd3663",
@@ -5854,5 +5929,5 @@
       "logo": "/img/merchants/lug-zoeyland-8d629e.webp"
     }
   ],
-  "logosImportedAt": "2026-09-25T06:42:53.006Z"
+  "logosImportedAt": "2026-09-25T06:49:54.435Z"
 }

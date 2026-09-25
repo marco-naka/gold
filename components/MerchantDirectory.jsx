@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { Search, MapPin, Navigation, X, CheckCircle2, Globe, Instagram, Phone, LocateFixed } from 'lucide-react';
+import { Search, MapPin, Navigation, X, CheckCircle2, Globe, Instagram, LocateFixed, ArrowDownAZ } from 'lucide-react';
 import { EVENT } from '@/lib/constants';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
@@ -21,11 +21,40 @@ const PAGE_SIZE = 12;
  * risponde con la distanza reale e con le indicazioni, non con un disegno.
  */
 export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = null }) {
-  const CATEGORIES = Object.entries(t.categories).map(([id, label]) => ({ id, label }));
   const categoryLabel = (id) => t.categories[id] ?? id;
+
+  // Il conteggio accanto all'etichetta evita il filtro che non dà risultati.
+  const CATEGORIES = useMemo(
+    () =>
+      Object.entries(t.categories).map(([id, label]) => ({
+        id,
+        label,
+        count: id === 'all' ? MERCHANTS.length : MERCHANTS.filter((m) => m.category === id).length,
+      })),
+    [t.categories]
+  );
 
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('all');
+
+  // Ricerca e categoria vivono anche nell'URL: un merchant può mandare ai clienti il link
+  // che lo mostra, e il tasto indietro del browser si comporta come ci si aspetta.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get('q');
+    const cat = params.get('cat');
+    if (q) setQuery(q);
+    if (cat && cat in t.categories) setCategory(cat);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    query.trim() ? params.set('q', query.trim()) : params.delete('q');
+    category !== 'all' ? params.set('cat', category) : params.delete('cat');
+    const next = `${window.location.pathname}${params.toString() ? `?${params}` : ''}${window.location.hash}`;
+    window.history.replaceState(null, '', next);
+  }, [query, category]);
   const [visible, setVisible] = useState(PAGE_SIZE);
   const [position, setPosition] = useState(null);
   const [geoState, setGeoState] = useState('idle'); // idle | loading | on | denied
@@ -107,6 +136,9 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
               )}
             >
               {cat.label}
+              <span className={cn('ml-1.5 tabular-nums', category === cat.id ? 'text-gold/70' : 'text-muted/70')}>
+                {cat.count}
+              </span>
             </button>
           ))}
         </div>
@@ -119,20 +151,33 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
           {category !== 'all' && t.inCategory(categoryLabel(category))}
         </p>
 
-        <button
-          type="button"
-          onClick={askLocation}
-          disabled={geoState === 'loading'}
-          className={cn(
-            'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition',
-            geoState === 'on'
-              ? 'border-gold/60 bg-gold/15 text-gold'
-              : 'border-white/10 bg-white/5 text-muted hover:border-gold/40 hover:text-gold'
-          )}
-        >
-          <LocateFixed className={cn('h-4 w-4', geoState === 'loading' && 'animate-pulse')} />
-          {geoState === 'on' ? t.nearMeOn : geoState === 'loading' ? t.nearMeLoading : t.nearMe}
-        </button>
+        <div className="inline-flex items-center gap-0.5 rounded-full border border-white/10 bg-white/5 p-0.5">
+          <button
+            type="button"
+            onClick={() => setPosition(null)}
+            aria-pressed={!position}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition',
+              position ? 'text-muted hover:text-white' : 'bg-gold/15 text-gold'
+            )}
+          >
+            <ArrowDownAZ className="h-4 w-4" />
+            {t.sortAlpha}
+          </button>
+          <button
+            type="button"
+            onClick={askLocation}
+            disabled={geoState === 'loading'}
+            aria-pressed={Boolean(position)}
+            className={cn(
+              'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition',
+              position ? 'bg-gold/15 text-gold' : 'text-muted hover:text-white'
+            )}
+          >
+            <LocateFixed className={cn('h-4 w-4', geoState === 'loading' && 'animate-pulse')} />
+            {geoState === 'loading' ? t.nearMeLoading : t.sortNear}
+          </button>
+        </div>
       </div>
 
       {geoState === 'denied' && <p className="mt-2 text-xs text-muted/80">{t.nearMeDenied}</p>}
@@ -203,19 +248,6 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                 <Navigation className="h-4 w-4 text-gold" />
                 {t.directions}
               </Button>
-              {/* Due dati che la mappa cittadina ha e che non stavamo mostrando */}
-              {m.phone && (
-                <Button
-                  as="a"
-                  href={`tel:${m.phone}`}
-                  variant="ghost"
-                  size="sm"
-                  className="flex-1 sm:flex-none"
-                >
-                  <Phone className="h-4 w-4 text-gold" />
-                  {t.call}
-                </Button>
-              )}
               {m.website && (
                 <Button
                   as="a"
