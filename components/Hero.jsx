@@ -1,6 +1,7 @@
 import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays, Ticket } from 'lucide-react';
 import Countdown from './Countdown';
 import LiveStats from './LiveStats';
+import PrizeValue from './PrizeValue';
 import Button from './ui/Button';
 import { PoweredBadge } from './Brand';
 import { CONTEST, EVENT, PAYMENT_ASSETS, PRIZES, TOTAL_POOL, formatXaut } from '@/lib/constants';
@@ -119,12 +120,13 @@ export default function Hero({ t, locale }) {
               </div>
 
               <div className="mt-8 space-y-3">
+                <PrizeValue t={d} locale={locale} />
                 <Row label={d.rowUsers} value={formatXaut(PRIZES.users.pool)} />
                 <Row label={d.rowMerchants} value={formatXaut(PRIZES.merchants.pool)} />
                 <Row label={d.rowAsset} value={d.rowAssetValue} />
               </div>
 
-              <p className="mt-6 text-center text-[11px] leading-relaxed text-muted/80">{d.disclaimer}</p>
+              <p className="mt-5 text-center text-[11px] leading-relaxed text-muted/80">{d.disclaimer}</p>
             </div>
           </div>
         </div>
