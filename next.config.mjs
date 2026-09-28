@@ -3,12 +3,19 @@ const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
 
-  // La pagina si chiamava /best-social-video: un redirect permanente evita che un link
-  // già condiviso (o stampato su un QR) finisca su un 404.
+  // La pagina dei commercianti si è chiamata /best-social-video e poi /best-social-content,
+  // quando conteneva solo il premio social. Ora contiene tutti e tre i premi merchant e sta su
+  // /commercianti (/en/merchants): i redirect permanenti evitano che un link già condiviso —
+  // o stampato su un QR — finisca su un 404. Il frammento #commercianti lo conserva il browser.
   async redirects() {
+    const merchantPage = ['/best-social-video', '/best-social-content'];
     return [
-      { source: '/best-social-video', destination: '/best-social-content', permanent: true },
-      { source: '/en/best-social-video', destination: '/en/best-social-content', permanent: true },
+      ...merchantPage.map((source) => ({ source, destination: '/commercianti', permanent: true })),
+      ...merchantPage.map((source) => ({
+        source: `/en${source}`,
+        destination: '/en/merchants',
+        permanent: true,
+      })),
     ];
   },
 

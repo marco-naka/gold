@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { DEFAULT_LOCALE, LOCALES, getDictionary } from '@/lib/i18n';
+import { LOCALES, getDictionary, switchLocalePath } from '@/lib/i18n';
 import { cn } from './ui/cn';
 
 // Bandierine: più immediate di una sigla per un pubblico internazionale.
@@ -10,14 +10,11 @@ const FLAGS = { it: '🇮🇹', en: '🇬🇧' };
 
 /**
  * Selettore di lingua sempre visibile con entrambe le opzioni: si resta sulla stessa pagina
- * (/ ↔ /en, /best-social-video ↔ /en/best-social-video) e si vede subito quale è attiva.
+ * (/ ↔ /en, /commercianti ↔ /en/merchants) e si vede subito quale è attiva.
  */
 export default function LanguageSwitch({ locale, className }) {
   const pathname = usePathname() || '/';
-  const basePath = pathname.replace(/^\/en(?=\/|$)/, '') || '/';
-
-  const hrefFor = (target) =>
-    target === DEFAULT_LOCALE ? basePath : basePath === '/' ? '/en' : `/en${basePath}`;
+  const hrefFor = (target) => switchLocalePath(pathname, target);
 
   return (
     <div

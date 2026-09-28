@@ -78,7 +78,7 @@ export default function Prizes({ t, locale }) {
                     <p className="mt-1 text-xs leading-relaxed text-muted">{label(item).desc}</p>
                     {item.place === 'Best Social Content' && (
                       <Link
-                        href={localePath(locale, "/best-social-content")}
+                        href={localePath(locale, "/commercianti")}
                         className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold underline underline-offset-2 hover:text-gold-warm"
                       >
                         {t.videoLink}

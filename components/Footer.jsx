@@ -46,7 +46,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
       <div className="mx-auto w-full max-w-7xl px-5 py-14 sm:px-8">
         <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr]">
           <div>
-            <NakaLogo id="footer" />
+            <NakaLogo id="footer" locale={locale} />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
               {d.tagline(t.meta.contestTitle, CONTEST.organizer, EVENT.name, EVENT.city)}
             </p>
@@ -73,14 +73,14 @@ export default function Footer({ locale = 'it', onOpenRules }) {
               </li>
               <li>
                 <Link
-                  href={localePath(locale, locale === 'en' ? '/winners' : '/vincitori')}
+                  href={localePath(locale, '/vincitori')}
                   className="text-sm text-muted transition hover:text-gold"
                 >
                   {d.winners}
                 </Link>
               </li>
               <li>
-                <Link href={localePath(locale, "/best-social-content")} className="text-sm text-muted transition hover:text-gold">
+                <Link href={localePath(locale, "/commercianti")} className="text-sm text-muted transition hover:text-gold">
                   {d.bestVideo}
                 </Link>
               </li>

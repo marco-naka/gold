@@ -1,8 +1,9 @@
-import { CreditCard, FileCheck2, Trophy, Wallet, ExternalLink, BookOpen } from 'lucide-react';
+import { CreditCard, FileCheck2, Trophy, Wallet, ExternalLink, BookOpen, AlertTriangle } from 'lucide-react';
+import AssetMark from './AssetMark';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
-import { OFFICIAL_GUIDE, WALLETS } from '@/lib/wallets';
+import { OFFICIAL_GUIDE, ONCHAIN_GUIDES, WALLETS } from '@/lib/wallets';
 import { PAYMENT_ASSETS, assetSentence } from '@/lib/constants';
 
 const ICONS = [CreditCard, FileCheck2, Trophy];
@@ -46,15 +47,21 @@ export default function HowItWorks({ t, conj, locale = 'it' }) {
         <h3 className="text-lg font-bold">{t.networksTitle}</h3>
         <div className="mt-5 grid gap-3 sm:grid-cols-3">
           {PAYMENT_ASSETS.map((asset) => (
-            <div key={asset.code} className="rounded-xl border border-white/10 bg-white/[0.03] p-4">
-              <div className="flex items-baseline gap-2">
-                <span className="text-base font-bold text-white">{asset.label}</span>
-                <span className="font-mono text-xs text-muted">{asset.code}</span>
+            <div
+              key={asset.code}
+              className="flex items-center gap-3.5 rounded-xl border border-white/10 bg-white/[0.03] p-4"
+            >
+              <AssetMark code={asset.code} className="h-10 w-10 shrink-0" />
+              <div className="min-w-0">
+                <div className="flex items-baseline gap-2">
+                  <span className="text-base font-bold text-white">{asset.label}</span>
+                  <span className="font-mono text-xs text-muted">{asset.code}</span>
+                </div>
+                <p className="mt-1 text-sm text-gold">
+                  <span className="text-muted">{t.networkOn} </span>
+                  {asset.networks.join(' · ')}
+                </p>
               </div>
-              <p className="mt-1.5 text-sm text-gold">
-                <span className="text-muted">{t.networkOn} </span>
-                {asset.networks.join(' · ')}
-              </p>
             </div>
           ))}
         </div>
@@ -106,6 +113,53 @@ export default function HowItWorks({ t, conj, locale = 'it' }) {
             </Button>
           </div>
         </div>
+      </GlassCard>
+
+      {/*
+        Le guide dei wallet on-chain stanno in una scheda a parte: chi paga in Lightning non deve
+        leggerle, e chi paga in USD₮ non trova la sua procedura in quella del circuito cittadino.
+      */}
+      <GlassCard hover={false} className="mt-6 p-7 sm:p-9">
+        <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+          <Wallet className="h-5 w-5" />
+        </span>
+        <h3 className="mt-4 text-lg font-bold">{t.guideOnchainTitle}</h3>
+        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted">{t.guideOnchainText}</p>
+
+        <ol className="mt-7 grid gap-4 sm:grid-cols-3">
+          {t.guideOnchainSteps.map((step, i) => (
+            <li key={step.title} className="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+              <span className="grid h-7 w-7 place-items-center rounded-full border border-gold/30 bg-gold/10 text-[11px] font-bold text-gold">
+                {i + 1}
+              </span>
+              <h4 className="mt-3.5 text-sm font-bold text-white">{step.title}</h4>
+              <p className="mt-1.5 text-xs leading-relaxed text-muted">{step.text}</p>
+            </li>
+          ))}
+        </ol>
+
+        <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-muted/90">
+          <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
+          {t.guideOnchainWarning}
+        </p>
+
+        <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
+          <ExternalLink className="h-3.5 w-3.5 text-gold" />
+          {t.guideOnchainLinks}
+          {ONCHAIN_GUIDES.map((guide, i) => (
+            <span key={guide.url}>
+              <a
+                href={guide.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-gold/90 underline underline-offset-2 hover:text-gold"
+              >
+                {guide.topic}
+              </a>
+              {i < ONCHAIN_GUIDES.length - 1 && <span aria-hidden="true"> ·</span>}
+            </span>
+          ))}
+        </p>
       </GlassCard>
     </section>
   );

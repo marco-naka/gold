@@ -14,6 +14,8 @@ export default function Navbar({ t, locale, onOpenRules }) {
     { label: t.nav.prizes, href: '#montepremi' },
     { label: t.nav.map, href: '#mappa' },
     { label: t.nav.upload, href: '#partecipa' },
+    // Ultima voce e unica che esce dalla landing: è la porta dell'area commercianti.
+    { label: t.nav.merchants, href: localePath(locale, '/commercianti') },
   ];
 
   const [scrolled, setScrolled] = useState(false);
@@ -45,9 +47,9 @@ export default function Navbar({ t, locale, onOpenRules }) {
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <a href={localePath(locale)} className="flex shrink-0 items-center gap-3" aria-label={t.nav.home}>
-          <NakaLogo id="nav" />
-          <span className="hidden h-8 w-px bg-white/10 xl:block" />
-          <PoweredBadge className="hidden xl:inline-flex" />
+          <NakaLogo id="nav" locale={locale} />
+          <span className="hidden h-8 w-px bg-white/10 2xl:block" />
+          <PoweredBadge className="hidden 2xl:inline-flex" />
         </a>
 
         <div className="hidden items-center gap-1 lg:flex">
@@ -55,7 +57,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
             <a
               key={link.href}
               href={link.href}
-              className="rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
+              className="whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
             >
               {link.label}
             </a>
@@ -63,7 +65,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
           <button
             type="button"
             onClick={onOpenRules}
-            className="inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
+            className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-medium text-muted transition hover:bg-white/5 hover:text-white"
           >
             <ScrollText className="h-4 w-4" />
             {t.nav.rules}
@@ -71,9 +73,9 @@ export default function Navbar({ t, locale, onOpenRules }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <PlanBLogo className="hidden md:inline-flex" />
+          <PlanBLogo className="hidden xl:inline-flex" />
           <LanguageSwitch locale={locale} />
-          <Button as="a" href="#partecipa" size="sm" className="hidden sm:inline-flex">
+          <Button as="a" href="#partecipa" size="sm" className="hidden whitespace-nowrap sm:inline-flex">
             {t.nav.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Button>

@@ -1,3 +1,5 @@
+import { getDictionary } from '@/lib/i18n';
+
 /**
  * Marchio dell'iniziativa: moneta d'oro lucido con il fulmine in rilievo.
  * L'oro è il premio — XAUT — e il fulmine è la rete Lightning con cui si paga sui POS.
@@ -70,14 +72,26 @@ export function Mark({ className = '', id = 'mark' }) {
 }
 
 /**
- * Lockup di testata. Il wordmark NAKA resta tipografico: è il marchio di un terzo
- * e va sostituito con l'asset ufficiale quando arriva, senza toccare il resto.
+ * Lockup di testata: il marchio e il nome dell'iniziativa su due righe.
+ *
+ * In testata sta il nome del concorso, non quello dell'organizzatore: chi arriva dal QR o dal
+ * volantino cerca «Paga Crypto Vinci Oro», e NAKA compare già nel badge accanto e nel footer.
+ * Il titolo per esteso — «Paga in Crypto e Vinci Oro Digitale» — non entra in una barra alta
+ * 80 px senza rimpicciolirsi fino a non leggersi più.
  */
-export function NakaLogo({ className = '', id = 'nav' }) {
+export function NakaLogo({ className = '', id = 'nav', locale = 'it' }) {
+  const t = getDictionary(locale).brand;
   return (
-    <span className={`inline-flex items-center gap-2.5 ${className}`}>
-      <Mark id={id} className="h-9 w-9 shadow-gold-sm rounded-xl" />
-      <span className="text-lg font-extrabold tracking-[0.18em] text-white">NAKA</span>
+    <span className={`inline-flex items-center gap-3 ${className}`}>
+      <Mark id={id} className="h-10 w-10 shrink-0" />
+      <span className="flex flex-col gap-1 leading-none">
+        <span className="text-[13px] font-extrabold uppercase tracking-[0.16em] text-white sm:text-sm">
+          {t.line1}
+        </span>
+        <span className="text-gold-gradient text-[13px] font-extrabold uppercase tracking-[0.16em] sm:text-sm">
+          {t.line2}
+        </span>
+      </span>
     </span>
   );
 }

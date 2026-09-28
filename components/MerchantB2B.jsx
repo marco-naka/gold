@@ -46,7 +46,7 @@ export default function MerchantB2B({ t, locale }) {
                 <Mail className="h-5 w-5" />
                 {t.cta}
               </Button>
-              <Button as={Link} href={`${localePath(locale, "/best-social-content")}#commercianti`} variant="secondary" size="lg">
+              <Button as={Link} href={localePath(locale, '/commercianti')} variant="secondary" size="lg">
                 <BookOpen className="h-5 w-5" />
                 {t.ctaGuide}
               </Button>
