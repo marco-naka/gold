@@ -8,26 +8,27 @@ import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
 import { deleteReceipt, storeReceipt } from '@/lib/server/receipts';
 import { sendEntryReceived } from '@/lib/server/mailer';
+import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
+import { clientIp } from '@/lib/server/client-ip';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const rateLimit = new Map(); // chiave (ip|email) -> timestamp[]
-const WINDOW_MS = 60 * 60 * 1000; // 1 ora
-const MAX_PER_WINDOW = 10;
+// Due limiti, non uno: quello per email impedisce a una persona di riempire l'urna, quello
+// per solo IP impedisce di aggirarlo cambiando email a ogni richiesta — che è esattamente
+// quello che farebbe uno script.
+const PER_EMAIL = { max: 10, windowMs: HOUR };
+const PER_IP = { max: 40, windowMs: HOUR };
+
+// Oltre questa dimensione la richiesta si rifiuta PRIMA di leggerla: formData() carica
+// tutto il corpo in memoria, quindi senza questo controllo un upload da un giga lo
+// occuperebbe davvero prima che la validazione possa dire di no.
+const MAX_BODY_BYTES = 12 * 1024 * 1024;
 // Un form compilato in meno di 3 secondi è quasi certamente automatizzato.
 const MIN_FILL_MS = 3000;
 
 const mask = (value, head = 6, tail = 4) =>
   !value || value.length <= head + tail ? value : `${value.slice(0, head)}…${value.slice(-tail)}`;
-
-function isRateLimited(key) {
-  const now = Date.now();
-  const hits = (rateLimit.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  hits.push(now);
-  rateLimit.set(key, hits);
-  return hits.length > MAX_PER_WINDOW;
-}
 
 /** Riconosce il negozio dichiarato (testo libero) tra quelli della mappa, senza imporlo. */
 function matchMerchant(input) {
@@ -55,6 +56,19 @@ export async function POST(request) {
       { code: window.reason === 'upcoming' ? 'closed_upcoming' : 'closed_ended', closed: true },
       { status: 403 }
     );
+  }
+
+  const ip = clientIp(request);
+
+  const declared = Number(request.headers.get('content-length') ?? 0);
+  if (declared > MAX_BODY_BYTES) {
+    return NextResponse.json({ code: 'bad_request' }, { status: 413 });
+  }
+
+  // Il limite per IP si applica prima di leggere il corpo: un flood non deve nemmeno
+  // arrivare a essere parsato.
+  if (hit(`ip:${ip}`, PER_IP) || globalLimit('entries', 120)) {
+    return NextResponse.json({ code: 'rate_limited' }, { status: 429 });
   }
 
   let form;
@@ -100,9 +114,8 @@ export async function POST(request) {
     );
   }
 
-  // 3. Rate limiting per IP + email (anti flooding di giocate automatizzate)
-  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
-  if (isRateLimited(`${ip}|${data.email.toLowerCase()}`)) {
+  // 3. Rate limiting per email (quello per IP è già scattato prima di leggere il corpo)
+  if (hit(`entry:${ip}|${data.email.toLowerCase()}`, PER_EMAIL)) {
     return NextResponse.json(
       { code: 'rate_limited' },
       { status: 429 }
