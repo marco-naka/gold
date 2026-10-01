@@ -3,6 +3,8 @@ import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { submissionWindow } from '@/lib/contest';
 import { DEPLOY_PROFILE, IS_DEMO } from '@/lib/deploy';
+import { hasCommitment, hasResult } from '@/lib/server/draw';
+import { drawAutomationEnabled } from '@/lib/server/draw-scheduler';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -38,6 +40,10 @@ export async function GET() {
       dataDir: DATA_DIR,
       submissions: IS_DEMO ? 'disattivate (anteprima)' : window.open ? 'aperte' : window.reason,
       mailer: process.env.MAIL_PROVIDER_API_KEY ? 'provider configurato' : 'outbox locale',
+      draw: {
+        automatic: drawAutomationEnabled(),
+        phase: (await hasResult()) ? 'estratto' : (await hasCommitment()) ? 'impegnato' : 'in attesa',
+      },
       time: new Date().toISOString(),
     },
     { status: healthy ? 200 : 503 }

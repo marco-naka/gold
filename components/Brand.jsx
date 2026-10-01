@@ -1,9 +1,13 @@
+import AssetMark from './AssetMark';
 import { getDictionary } from '@/lib/i18n';
 
 /**
- * Marchio dell'iniziativa: moneta d'oro lucido con il fulmine in rilievo.
- * L'oro è il premio — XAUT — e il fulmine è la rete Lightning con cui si paga sui POS.
- * È la stessa forma di `app/icon.svg`: favicon e header non devono divergere.
+ * Moneta d'oro lucido con il fulmine in rilievo.
+ *
+ * Era il marchio dell'iniziativa quando il premio era l'oro per tutti. Ora l'oro è il premio
+ * dei soli COMMERCIANTI, e questo segno resta il loro: materiali di negozio e pagina
+ * commercianti. Il marchio del sito è il ₿ arancione, perché la campagna che il sito presenta
+ * per prima è quella dei clienti.
  *
  * Il volume sta tutto nei gradienti: due bande chiare e una scura sul bisello fanno il
  * metallo, la copia scura sotto il fulmine lo stacca dalla faccia. Niente filtri di
@@ -64,7 +68,11 @@ export function Mark({ className = '', id = 'mark' }) {
         fill="#FFF3C0"
         fillOpacity=".45"
       />
-      <path d="M37.82 16.34 22.51 38.02h7.91L27.67 50.06 42.98 28.38h-7.91Z" fill="#6B4C04" fillOpacity=".85" />
+      <path
+        d="M37.82 16.34 22.51 38.02h7.91L27.67 50.06 42.98 28.38h-7.91Z"
+        fill="#6B4C04"
+        fillOpacity=".85"
+      />
       <path d="M36.82 15.14 21.51 36.82h7.91L26.67 48.86 41.98 27.18h-7.91Z" fill={`url(#${bolt})`} />
       <path d="M36.82 15.14 21.51 36.82h1.81L37.93 16.09Z" fill="#FFFBE6" fillOpacity=".95" />
     </svg>
@@ -75,20 +83,24 @@ export function Mark({ className = '', id = 'mark' }) {
  * Lockup di testata: il marchio e il nome dell'iniziativa su due righe.
  *
  * In testata sta il nome del concorso, non quello dell'organizzatore: chi arriva dal QR o dal
- * volantino cerca «Paga Crypto Vinci Oro», e NAKA compare già nel badge accanto e nel footer.
- * Il titolo per esteso — «Paga in Crypto e Vinci Oro Digitale» — non entra in una barra alta
- * 80 px senza rimpicciolirsi fino a non leggersi più.
+ * volantino cerca «Paga Crypto Vinci Bitcoin», e NAKA compare già nel badge accanto e nel
+ * footer. Il titolo per esteso non entra in una barra alta 80 px senza rimpicciolirsi fino a
+ * non leggersi più.
+ *
+ * Il lockup è quello della campagna CLIENTI, perché è quella che il sito presenta per prima.
+ * I commercianti hanno la loro — «Offri pagamenti crypto e vinci oro» — che vive nel titolo
+ * della loro pagina, non qui.
  */
 export function NakaLogo({ className = '', id = 'nav', locale = 'it' }) {
   const t = getDictionary(locale).brand;
   return (
     <span className={`inline-flex items-center gap-3 ${className}`}>
-      <Mark id={id} className="h-10 w-10 shrink-0" />
+      <AssetMark code="BTC" className="h-10 w-10 shrink-0" />
       <span className="flex flex-col gap-1 leading-none">
         <span className="text-[13px] font-extrabold uppercase tracking-[0.16em] text-white sm:text-sm">
           {t.line1}
         </span>
-        <span className="text-gold-gradient text-[13px] font-extrabold uppercase tracking-[0.16em] sm:text-sm">
+        <span className="text-btc-gradient text-[13px] font-extrabold uppercase tracking-[0.16em] sm:text-sm">
           {t.line2}
         </span>
       </span>
@@ -101,7 +113,7 @@ export function PlanBLogo({ className = '' }) {
     <span
       className={`inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-2.5 py-1.5 ${className}`}
     >
-      <span className="text-base font-black leading-none text-gold">₿</span>
+      <span className="text-base font-black leading-none text-btc">₿</span>
       <span className="text-[11px] font-semibold leading-tight text-muted">
         Plan ₿ Forum
         <span className="block text-[10px] font-normal text-muted/80">2026 · Lugano</span>
@@ -112,8 +124,8 @@ export function PlanBLogo({ className = '' }) {
 
 export function PoweredBadge({ className = '' }) {
   return (
-    <span className={`chip border-gold/30 bg-gold/10 text-gold ${className}`} title="NAKA">
-      <span className="h-1.5 w-1.5 rounded-full bg-gold animate-pulse" />
+    <span className={`chip border-btc/30 bg-btc/10 text-btc ${className}`} title="NAKA">
+      <span className="h-1.5 w-1.5 rounded-full bg-btc animate-pulse" />
       Powered by NAKA
     </span>
   );

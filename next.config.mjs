@@ -2,6 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Serve a `instrumentation.js`, che all'avvio del server fa partire l'estrazione automatica.
+  experimental: { instrumentationHook: true },
 
   // La pagina dei commercianti si è chiamata /best-social-video e poi /best-social-content,
   // quando conteneva solo il premio social. Ora contiene tutti e tre i premi merchant e sta su
@@ -10,6 +12,11 @@ const nextConfig = {
   async redirects() {
     const merchantPage = ['/best-social-video', '/best-social-content'];
     return [
+      // /bitcoin era la pagina clienti della variante in satoshi, quando le due ipotesi di
+      // montepremi convivevano. Ora i premi dei clienti SONO in bitcoin e quella pagina è la
+      // home: chi ha il vecchio link ci arriva senza passare da un 404.
+      { source: '/bitcoin', destination: '/', permanent: true },
+      { source: '/en/bitcoin', destination: '/en', permanent: true },
       ...merchantPage.map((source) => ({ source, destination: '/commercianti', permanent: true })),
       ...merchantPage.map((source) => ({
         source: `/en${source}`,

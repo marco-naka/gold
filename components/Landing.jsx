@@ -6,6 +6,7 @@ import Hero from './Hero';
 import DualInitiative from './DualInitiative';
 import HowItWorks from './HowItWorks';
 import Prizes from './Prizes';
+import ProvableDraw from './ProvableDraw';
 import EntryForm from './EntryForm';
 import MerchantDirectory from './MerchantDirectory';
 import MerchantB2B from './MerchantB2B';
@@ -34,6 +35,7 @@ export default function Landing({ locale }) {
         <DualInitiative t={t.dual} conj={t.meta.assetsConjunction} />
         <HowItWorks t={t.how} locale={locale} />
         <Prizes t={t.prizes} locale={locale} />
+        <ProvableDraw t={t.draw} locale={locale} />
         <EntryForm t={t.form} locale={locale} onOpenRules={openRules} />
         <MerchantDirectory t={t.map} locale={locale} />
         <MerchantB2B t={t.b2b} locale={locale} />

@@ -3,15 +3,19 @@
 import { AlertTriangle } from 'lucide-react';
 import Modal from './ui/Modal';
 import Button from './ui/Button';
-import { CONTEST, EVENT, PRIZES, formatXaut } from '@/lib/constants';
-import { formatDate, formatDateTime, intlLocale } from '@/lib/i18n';
+import { CONTEST, DRAW, EVENT, SOCIAL_CONTEST } from '@/lib/constants';
+import { ANCHOR } from '@/lib/anchor';
+import { DECLARED, POOLS, formatPrize } from '@/lib/campaigns';
+import { SATOSHI_SPRITZ, formatSats } from '@/lib/bitcoin';
+import { anchoredMerchantsSats } from '@/lib/anchor';
+import { formatDate, formatDateTime, formatTime, intlLocale } from '@/lib/i18n';
 
-/** "1° Premio — 2.00 XAUT ciascuno; …" a partire dai dati dei premi. */
-const listPrizes = (tier, t) =>
-  tier.items
+/** "1° Premio — 5'000'000 sat; Estrazione Riservata Merchant — 0.25 XAUT ×2; …" */
+const listPrizes = (pool, t, locale) =>
+  pool.items
     .map((i) => {
       const place = t.prizes.items[i.place]?.place ?? i.place;
-      return `${place} — ${formatXaut(i.amount)}${i.count > 1 ? ' ×' + i.count : ''}`;
+      return `${place} — ${formatPrize(i, locale)}${i.count > 1 ? ' ×' + i.count : ''}`;
     })
     .join('; ');
 
@@ -24,13 +28,45 @@ export default function RulesModal({ t, locale, open, onClose }) {
     city: EVENT.city,
     from: formatDateTime(CONTEST.validFrom, locale),
     to: formatDateTime(CONTEST.validTo, locale),
-    draw: formatDateTime(CONTEST.drawDate, locale),
+    // Il giorno, non l'ora: l'ora dipende dalla rete Bitcoin e l'articolo 7 ne dà la finestra.
+    draw: formatDate(CONTEST.drawDate, locale),
+    commitBy: formatTime(DRAW.commitBy, locale),
+    blocks: DRAW.blocksAhead,
+    drawFrom: formatTime(DRAW.expectedFrom, locale),
+    drawTo: formatTime(DRAW.expectedBy, locale),
     support: CONTEST.supportEmail,
-    users: formatXaut(PRIZES.users.pool),
-    merchants: formatXaut(PRIZES.merchants.pool),
+    users: POOLS.users.format(POOLS.users.total, locale),
+    merchants: POOLS.merchants.format(POOLS.merchants.total, locale),
+    declared: formatSats(DECLARED.sats, locale),
     prizeList: {
-      users: listPrizes(PRIZES.users, t),
-      merchants: listPrizes(PRIZES.merchants, t),
+      users: listPrizes(POOLS.users, t, locale),
+      merchants: listPrizes(POOLS.merchants, t, locale),
+    },
+    // L'ancoraggio va citato per esteso: è il conto che rende vero il numero dichiarato.
+    anchor: {
+      at: formatDateTime(ANCHOR.at, locale),
+      btcUsd: ANCHOR.btcUsd.toLocaleString(intlLocale(locale)),
+      xautUsd: ANCHOR.xautUsd.toLocaleString(intlLocale(locale)),
+      ratio: DECLARED.ratio,
+      // Il valore vero a quelle quotazioni: 10'000'120, non un tondo 10 milioni. Scriverlo
+      // esatto è ciò che permette a chiunque di rifare il conto e trovarci d'accordo.
+      merchantsSats: anchoredMerchantsSats().toLocaleString(intlLocale(locale)),
+      source: locale === 'en' ? ANCHOR.sourceEn : ANCHOR.source,
+    },
+    social: {
+      deadline: formatDateTime(SOCIAL_CONTEST.publishDeadline, locale),
+      tags: SOCIAL_CONTEST.hashtagsUsers.join(' '),
+    },
+    spritz: {
+      from: formatDateTime(SATOSHI_SPRITZ.from, locale),
+      to: formatTime(SATOSHI_SPRITZ.to, locale),
+      // «02:00 del 23 ottobre 2026»: l'ora prima della data, perché il testo dice «le ore …».
+      registeredUntil: `${formatTime(SATOSHI_SPRITZ.registeredUntil, locale)} ${locale === 'en' ? 'on' : 'del'} ${formatDate(
+        SATOSHI_SPRITZ.registeredUntil,
+        locale,
+      )}`,
+      area: SATOSHI_SPRITZ.area,
+      url: SATOSHI_SPRITZ.url,
     },
   });
 
@@ -53,8 +89,8 @@ export default function RulesModal({ t, locale, open, onClose }) {
         </div>
       }
     >
-      <div className="flex items-start gap-3 rounded-xl border border-gold/30 bg-gold/[0.06] p-4">
-        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
+      <div className="flex items-start gap-3 rounded-xl border border-btc/30 bg-btc/[0.06] p-4">
+        <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-btc" />
         <p className="text-xs leading-relaxed text-muted">{d.draftNotice}</p>
       </div>
 
@@ -68,7 +104,7 @@ export default function RulesModal({ t, locale, open, onClose }) {
       <div className="mt-6 space-y-7">
         {articles.map((article) => (
           <article key={article.title}>
-            <h4 className="text-sm font-bold text-gold">{article.title}</h4>
+            <h4 className="text-sm font-bold text-btc">{article.title}</h4>
             <div className="mt-2 space-y-2">
               {article.body.map((p) => (
                 <p key={p} className="text-xs leading-relaxed text-muted">
@@ -81,7 +117,7 @@ export default function RulesModal({ t, locale, open, onClose }) {
       </div>
 
       <p className="mt-8 border-t border-white/10 pt-5 text-[11px] text-muted/80">
-        {d.updated(new Date().toLocaleDateString(intlLocale(locale)), CONTEST.organizer)}
+        {d.updated(formatDate(new Date(), locale, { day: 'numeric', month: 'numeric', year: 'numeric' }), CONTEST.organizer)}
       </p>
     </Modal>
   );

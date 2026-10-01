@@ -5,15 +5,15 @@ import GlassCard from './ui/GlassCard';
 import { CONTEST, MAILTO_MERCHANT, PRIZES, formatXaut } from '@/lib/constants';
 import { localePath } from '@/lib/i18n';
 
-
-
 export default function MerchantB2B({ t, locale }) {
   // Chi vede la vetrofania del vicino ma non ha ricevuto l'invito non deve restare a mani vuote.
   const joinMailto = `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(
-    t.merchantJoin.subject
+    t.merchantJoin.subject,
   )}&body=${encodeURIComponent(t.merchantJoin.body.join('\n'))}`;
   const icons = [Zap, TrendingUp, Trophy];
-  const perks = t.perks(formatXaut(PRIZES.merchants.pool)).map((text, i) => ({ icon: icons[i] ?? Zap, text }));
+  const perks = t
+    .perks(formatXaut(PRIZES.merchants.pool))
+    .map((text, i) => ({ icon: icons[i] ?? Zap, text }));
 
   return (
     <section id="merchant" className="section-pad">
@@ -46,7 +46,7 @@ export default function MerchantB2B({ t, locale }) {
                 <Mail className="h-5 w-5" />
                 {t.cta}
               </Button>
-              <Button as={Link} href={localePath(locale, '/commercianti')} variant="secondary" size="lg">
+              <Button as={Link} href={localePath(locale, '/commercianti')} variant="secondary-gold" size="lg">
                 <BookOpen className="h-5 w-5" />
                 {t.ctaGuide}
               </Button>
@@ -54,7 +54,10 @@ export default function MerchantB2B({ t, locale }) {
 
             <p className="mt-5 text-sm text-muted">
               {t.merchantJoin.question}{' '}
-              <a href={joinMailto} className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm">
+              <a
+                href={joinMailto}
+                className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm"
+              >
                 {t.merchantJoin.cta}
               </a>
             </p>

@@ -9,7 +9,8 @@
  *   node scripts/entries.mjs stats
  *   node scripts/entries.mjs list --status pending_verification
  *   node scripts/entries.mjs show NK-2026-ABC123
- *   node scripts/entries.mjs validate NK-2026-ABC123 [--note "riscontro POS #4412"]
+ *   node scripts/entries.mjs validate NK-2026-ABC123 [--note "riscontro POS #4412"] [--paid-at "2026-10-22 19:30"]
+ *   node scripts/entries.mjs paid     NK-2026-ABC123 --at "2026-10-22 19:30"   (ora del POS, ora di Lugano)
  *   node scripts/entries.mjs reject   NK-2026-ABC123 --reason "transazione non trovata"
  *   node scripts/entries.mjs export   > giocate.csv
  */
@@ -18,6 +19,7 @@ import { sourceReport } from '../lib/server/stats.js';
 import { rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { CONTEST } from '../lib/constants.js';
+import { TIME_ZONE, zurichLocalToIso } from '../lib/time.js';
 
 const STATUS = {
   pending_verification: 'in verifica',
@@ -110,7 +112,7 @@ async function purge(rest) {
 
   if (!rest.includes('--yes')) {
     out(`Cancellazione dati personali di ${withData.length} giocate (email, scontrini, numeri di transazione).`);
-    out(`Data prevista dalla privacy policy: ${until.toLocaleDateString('it-CH')}`);
+    out(`Data prevista dalla privacy policy: ${until.toLocaleDateString('it-CH', { timeZone: TIME_ZONE })}`);
     if (Date.now() < until.getTime()) out('⚠ La data non è ancora arrivata: procedi solo se sai perché.');
     return out('Conferma con --yes. Operazione irreversibile.');
   }
@@ -136,7 +138,21 @@ const commands = {
   stats,
   list: () => list(rest),
   show: () => show(rest),
-  validate: () => setStatus(rest[0], 'validated', { verifiedBy: 'cli', note: flag(rest, 'note') ?? null }),
+  // `--paid-at`: l'ora della transazione letta sul POS. Decide l'ammissione al Satoshi Spritz,
+  // che conta il momento del pagamento e non quello della registrazione.
+  validate: () =>
+    setStatus(rest[0], 'validated', {
+      verifiedBy: 'cli',
+      note: flag(rest, 'note') ?? null,
+      ...(flag(rest, 'paid-at') ? { paidAt: zurichLocalToIso(flag(rest, 'paid-at')) } : {}),
+    }),
+  paid: async () => {
+    if (!rest[0] || !flag(rest, 'at')) throw new Error('Uso: paid <ID> --at "AAAA-MM-GG HH:MM" (ora di Lugano, dal POS)');
+    const paidAt = zurichLocalToIso(flag(rest, 'at'));
+    const res = await updateEntry(rest[0], { paidAt });
+    if (!res.ok) throw new Error(`Giocata ${rest[0]} non trovata.`);
+    out(`✓ ${rest[0]} pagata il ${new Date(paidAt).toLocaleString('it-CH', { timeZone: TIME_ZONE })}`);
+  },
   reject: () => setStatus(rest[0], 'rejected', { rejectionReason: flag(rest, 'reason') ?? null }),
   'validate-all': () => validateAll(rest),
   export: exportCsv,
@@ -146,7 +162,7 @@ const commands = {
 const fn = commands[command];
 if (!fn) {
   process.stderr.write(
-    'Uso: stats | list [--status <stato>] | show <id> | validate <id> | reject <id> --reason <testo> | validate-all --yes | export | purge --yes\n'
+    'Uso: stats | list [--status <stato>] | show <id> | validate <id> [--paid-at "…"] | paid <id> --at "…" | reject <id> --reason <testo> | validate-all --yes | export | purge --yes\n'
   );
   process.exit(1);
 }

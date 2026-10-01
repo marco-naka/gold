@@ -18,7 +18,10 @@ export default function LanguageSwitch({ locale, className }) {
 
   return (
     <div
-      className={cn('inline-flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5', className)}
+      className={cn(
+        'inline-flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5',
+        className,
+      )}
       role="group"
       aria-label={getDictionary(locale).meta.languageLabel}
     >
@@ -33,7 +36,7 @@ export default function LanguageSwitch({ locale, className }) {
             aria-label={getDictionary(target).meta.languageName}
             className={cn(
               'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition',
-              active ? 'bg-gold/15 text-gold' : 'text-muted hover:bg-white/5 hover:text-white'
+              active ? 'bg-btc/15 text-btc' : 'text-muted hover:bg-white/5 hover:text-white',
             )}
           >
             <span aria-hidden="true" className="text-sm leading-none">

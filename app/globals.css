@@ -34,18 +34,23 @@
 
   body {
     @apply bg-ink text-white font-sans antialiased;
+    /*
+      Le due luci di fondo sono comuni a tutte le pagine, quindi sono arancioni come il sito.
+      L'oro non sparisce: resta sulle superfici dei commercianti, dove distingue il montepremi
+      in Tether Gold da quello in satoshi.
+    */
     background-image:
-      radial-gradient(60rem 40rem at 78% -10%, rgba(243, 186, 47, 0.13), transparent 60%),
-      radial-gradient(45rem 35rem at -5% 15%, rgba(255, 215, 0, 0.07), transparent 60%);
+      radial-gradient(60rem 40rem at 78% -10%, rgba(247, 147, 26, 0.12), transparent 60%),
+      radial-gradient(45rem 35rem at -5% 15%, rgba(247, 147, 26, 0.06), transparent 60%);
     background-attachment: fixed;
   }
 
   ::selection {
-    @apply bg-gold/30 text-white;
+    @apply bg-btc/30 text-white;
   }
 
   :focus-visible {
-    @apply outline-none ring-2 ring-gold/70 ring-offset-2 ring-offset-ink rounded-md;
+    @apply outline-none ring-2 ring-btc/70 ring-offset-2 ring-offset-ink rounded-md;
   }
 }
 
@@ -56,11 +61,15 @@
   }
 
   .glass-hover {
-    @apply transition duration-300 hover:border-gold/40 hover:bg-white/[0.06] hover:shadow-gold-sm;
+    @apply transition duration-300 hover:border-btc/40 hover:bg-white/[0.06] hover:shadow-btc-sm;
   }
 
+  /* Oro per i premi dei commercianti, arancio per quelli dei clienti. */
   .text-gold-gradient {
     @apply bg-gold-gradient bg-clip-text text-transparent;
+  }
+  .text-btc-gradient {
+    @apply bg-btc-gradient bg-clip-text text-transparent;
   }
 
   .section-pad {
@@ -70,7 +79,7 @@
   .field {
     @apply w-full rounded-xl border border-white/10 bg-ink-deep/70 px-4 py-3 text-sm text-white
            placeholder:text-muted/60 transition
-           focus:border-gold/60 focus:ring-2 focus:ring-gold/25 focus:outline-none;
+           focus:border-btc/60 focus:ring-2 focus:ring-btc/25 focus:outline-none;
   }
 
   .field-error {

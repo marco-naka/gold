@@ -36,9 +36,10 @@ test('funziona anche senza negozio indicato (campo facoltativo)', () => {
   assert.ok(msg.text.includes(entry.id));
 });
 
-test('avverte di conservare lo scontrino e mette in guardia sul phishing', () => {
+test('avverte di conservare la prova d’acquisto e mette in guardia sul phishing', () => {
+  // La prova può essere cartacea o digitale: il test guarda l'avvertenza, non la carta.
   const { text } = entryReceivedTemplate(entry);
-  assert.ok(/conserva lo scontrino originale/i.test(text));
+  assert.ok(/conserva la prova d’acquisto/i.test(text));
   assert.ok(/mai chiavi private/i.test(text));
 });
 

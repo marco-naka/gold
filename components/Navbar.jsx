@@ -42,7 +42,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
         'fixed inset-x-0 top-0 z-50 transition-all duration-300',
         scrolled || open
           ? 'border-b border-white/10 bg-ink-deep/85 backdrop-blur-xl shadow-lg shadow-black/40'
-          : 'border-b border-transparent bg-transparent'
+          : 'border-b border-transparent bg-transparent',
       )}
     >
       <nav className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
@@ -75,7 +75,13 @@ export default function Navbar({ t, locale, onOpenRules }) {
         <div className="flex items-center gap-3">
           <PlanBLogo className="hidden xl:inline-flex" />
           <LanguageSwitch locale={locale} />
-          <Button as="a" href="#partecipa" size="sm" className="hidden whitespace-nowrap sm:inline-flex">
+          <Button
+            variant="btc"
+            as="a"
+            href="#partecipa"
+            size="sm"
+            className="hidden whitespace-nowrap sm:inline-flex"
+          >
             {t.nav.cta}
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
           </Button>
@@ -85,7 +91,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
             aria-expanded={open}
             aria-controls="mobile-nav"
             aria-label={open ? t.nav.closeMenu : t.nav.openMenu}
-            className="rounded-lg border border-white/10 bg-white/5 p-2.5 text-white transition hover:border-gold/40 lg:hidden"
+            className="rounded-lg border border-white/10 bg-white/5 p-2.5 text-white transition hover:border-btc/40 lg:hidden"
           >
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -97,7 +103,7 @@ export default function Navbar({ t, locale, onOpenRules }) {
         id="mobile-nav"
         className={cn(
           'overflow-hidden border-t border-white/10 bg-ink-deep/95 backdrop-blur-xl transition-[max-height] duration-300 lg:hidden',
-          open ? 'max-h-96' : 'max-h-0 border-t-0'
+          open ? 'max-h-96' : 'max-h-0 border-t-0',
         )}
       >
         <div className="space-y-1 px-5 py-4">

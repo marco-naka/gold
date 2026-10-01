@@ -16,6 +16,24 @@ import { PAYMENT_ASSETS } from '@/lib/constants';
 
 const ICONS = [CreditCard, FileCheck2, Trophy];
 
+/**
+ * Segnaposto grafico dei wallet: l'iniziale in una tessera.
+ *
+ * Non sono i marchi ufficiali — quelli non li abbiamo, e una riproduzione a memoria di un logo
+ * altrui si riconosce e fa un pessimo effetto. La tessera dà alle tre voci lo stesso peso
+ * visivo che darebbe un logo, e il giorno in cui arrivano gli SVG ufficiali si sostituisce qui.
+ */
+function WalletMark({ name }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-btc/25 bg-btc/10 text-sm font-black text-btc"
+    >
+      {name.charAt(0)}
+    </span>
+  );
+}
+
 export default function HowItWorks({ t, locale = 'it' }) {
   // La guida ufficiale esiste in IT e EN: si offre prima quella della lingua corrente.
   const other = locale === 'en' ? 'it' : 'en';
@@ -29,7 +47,7 @@ export default function HowItWorks({ t, locale = 'it' }) {
         {/* Linea di collegamento tra gli step (solo desktop) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute left-0 right-0 top-16 hidden h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent md:block"
+          className="pointer-events-none absolute left-0 right-0 top-16 hidden h-px bg-gradient-to-r from-transparent via-btc/30 to-transparent md:block"
         />
         {steps.map((step, i) => {
           const Icon = ICONS[i] ?? Trophy;
@@ -37,7 +55,7 @@ export default function HowItWorks({ t, locale = 'it' }) {
             <li key={step.title} className="relative">
               <GlassCard className="h-full p-7">
                 <div className="flex items-center justify-between">
-                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-gold-gradient text-ink-deep shadow-gold-sm">
+                  <span className="grid h-12 w-12 place-items-center rounded-xl bg-btc-gradient text-ink-deep shadow-btc-sm">
                     <Icon className="h-6 w-6" strokeWidth={2.2} />
                   </span>
                   <span className="text-5xl font-black leading-none text-white/[0.07]">0{i + 1}</span>
@@ -89,23 +107,39 @@ export default function HowItWorks({ t, locale = 'it' }) {
             <h3 className="mt-4 text-lg font-bold">{t.guideTitle}</h3>
             <p className="mt-2 text-sm leading-relaxed text-muted">{t.guideText}</p>
 
-            <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-              <Wallet className="h-3.5 w-3.5 text-gold" />
-              {t.guideWallets}
-              {WALLETS.map((w, i) => (
-                <span key={w.name}>
-                  <a
-                    href={w.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-medium text-gold/90 underline underline-offset-2 hover:text-gold"
-                  >
-                    {w.name}
-                  </a>
-                  {i < WALLETS.length - 1 && <span aria-hidden="true"> ·</span>}
-                </span>
-              ))}
-            </p>
+            {/*
+              I tre wallet erano una riga di link in fondo, dopo la spiegazione. Ma chi legge
+              questa scheda ha una domanda operativa — «con cosa pago?» — e la risposta sono
+              questi tre nomi: stanno in alto e hanno la loro riga ciascuno. Non è un consiglio
+              nostro: è l'elenco del circuito cittadino, e il link sotto lo conferma.
+            */}
+            <div className="mt-5 rounded-xl border border-btc/20 bg-btc/[0.05] p-4">
+              <p className="flex items-center gap-2 text-xs font-semibold text-btc">
+                <Wallet className="h-3.5 w-3.5 shrink-0" />
+                {t.guideWallets}
+              </p>
+              <ul className="mt-3 space-y-2.5">
+                {WALLETS.map((w) => (
+                  <li key={w.name}>
+                    <a
+                      href={w.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-start gap-3 rounded-lg p-1.5 transition hover:bg-white/[0.04]"
+                    >
+                      <WalletMark name={w.name} />
+                      <span className="min-w-0">
+                        <span className="flex items-center gap-1 text-sm font-semibold text-white">
+                          {w.name}
+                          <ExternalLink className="h-3 w-3 shrink-0 text-muted transition group-hover:text-btc" />
+                        </span>
+                        <span className="mt-0.5 block text-xs leading-relaxed text-muted">{w.desc}</span>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
             <div className="mt-auto flex flex-col gap-3 pt-7 sm:flex-row">
               <Button
@@ -143,7 +177,7 @@ export default function HowItWorks({ t, locale = 'it' }) {
             <ol className="mt-5 space-y-3">
               {t.guideOnchainSteps.map((step, i) => (
                 <li key={step.title} className="flex gap-3">
-                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-gold/30 bg-gold/10 text-[11px] font-bold text-gold">
+                  <span className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full border border-btc/30 bg-btc/10 text-[11px] font-bold text-btc">
                     {i + 1}
                   </span>
                   <p className="text-xs leading-relaxed text-muted">
@@ -158,8 +192,8 @@ export default function HowItWorks({ t, locale = 'it' }) {
               e aperta rubava a colpo d'occhio più spazio dei tre passi che la gente deve leggere
               davvero. Un <details> la tiene a una riga e non ha bisogno di JavaScript.
             */}
-            <details className="group mt-auto rounded-xl border border-gold/20 bg-gold/[0.06]">
-              <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-xs font-semibold text-gold [&::-webkit-details-marker]:hidden">
+            <details className="group mt-auto rounded-xl border border-btc/20 bg-btc/[0.06]">
+              <summary className="flex cursor-pointer list-none items-center gap-2 p-4 text-xs font-semibold text-btc [&::-webkit-details-marker]:hidden">
                 <AlertTriangle className="h-3.5 w-3.5 shrink-0" />
                 {t.guideOnchainWarningLabel}
                 <ChevronDown className="ml-auto h-4 w-4 transition-transform group-open:rotate-180" />

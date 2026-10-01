@@ -19,7 +19,7 @@ import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { formatDate } from '@/lib/i18n';
-import { MERCHANTS, MERCHANT_SOURCE, distanceMeters, mapsUrl } from '@/lib/merchants';
+import { MERCHANTS, distanceMeters, mapsUrl } from '@/lib/merchants';
 
 const PAGE_SIZE = 12;
 
@@ -42,7 +42,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
         label,
         count: id === 'all' ? MERCHANTS.length : MERCHANTS.filter((m) => m.category === id).length,
       })),
-    [t.categories]
+    [t.categories],
   );
 
   const [query, setQuery] = useState('');
@@ -98,7 +98,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
         setGeoState('on');
       },
       () => setGeoState('denied'),
-      { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 }
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 300000 },
     );
   };
 
@@ -142,12 +142,14 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
               className={cn(
                 'shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition',
                 category === cat.id
-                  ? 'border-gold/60 bg-gold/15 text-gold'
-                  : 'border-white/10 bg-white/5 text-muted hover:border-white/25 hover:text-white'
+                  ? 'border-btc/60 bg-btc/15 text-btc'
+                  : 'border-white/10 bg-white/5 text-muted hover:border-white/25 hover:text-white',
               )}
             >
               {cat.label}
-              <span className={cn('ml-1.5 tabular-nums', category === cat.id ? 'text-gold/70' : 'text-muted/70')}>
+              <span
+                className={cn('ml-1.5 tabular-nums', category === cat.id ? 'text-btc/70' : 'text-muted/70')}
+              >
                 {cat.count}
               </span>
             </button>
@@ -169,7 +171,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
             aria-pressed={!position}
             className={cn(
               'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition',
-              position ? 'text-muted hover:text-white' : 'bg-gold/15 text-gold'
+              position ? 'text-muted hover:text-white' : 'bg-btc/15 text-btc',
             )}
           >
             <ArrowDownAZ className="h-4 w-4" />
@@ -182,7 +184,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
             aria-pressed={Boolean(position)}
             className={cn(
               'inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition',
-              position ? 'bg-gold/15 text-gold' : 'text-muted hover:text-white'
+              position ? 'bg-btc/15 text-btc' : 'text-muted hover:text-white',
             )}
           >
             <LocateFixed className={cn('h-4 w-4', geoState === 'loading' && 'animate-pulse')} />
@@ -194,7 +196,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
       {geoState === 'denied' && <p className="mt-2 text-xs text-muted/80">{t.nearMeDenied}</p>}
 
       <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-        <Wallet className="h-3.5 w-3.5 text-gold" />
+        <Wallet className="h-3.5 w-3.5 text-btc" />
         {t.allAccept}
         {PAYMENT_ASSETS.map((asset, i) => (
           <span key={asset.code} className="font-semibold text-white">
@@ -226,15 +228,15 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                   )}
                 </span>
                 <div className="min-w-0">
-                <h3 className="text-base font-bold text-white">{m.name}</h3>
-                <p className="mt-1 flex items-start gap-1.5 text-xs text-muted">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
-                  {m.address}
-                </p>
+                  <h3 className="text-base font-bold text-white">{m.name}</h3>
+                  <p className="mt-1 flex items-start gap-1.5 text-xs text-muted">
+                    <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-btc" />
+                    {m.address}
+                  </p>
                 </div>
               </div>
               {m.distance != null && (
-                <span className="chip border-gold/30 bg-gold/10 text-gold">{t.distance(m.distance)}</span>
+                <span className="chip border-btc/30 bg-btc/10 text-btc">{t.distance(m.distance)}</span>
               )}
             </div>
 
@@ -246,7 +248,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                 non dice «verificato»: sarebbe una promessa che vale per tutti e non
                 significa niente, e che dovremmo poter dimostrare uno per uno.
               */}
-              <span className="chip border-gold/30 bg-gold/10 text-gold" title={t.badgeVerifiedTitle}>
+              <span className="chip border-btc/30 bg-btc/10 text-btc" title={t.badgeVerifiedTitle}>
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 {t.badgeVerified}
               </span>
@@ -262,7 +264,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                 size="sm"
                 className="flex-1 sm:flex-none"
               >
-                <Navigation className="h-4 w-4 text-gold" />
+                <Navigation className="h-4 w-4 text-btc" />
                 {t.directions}
               </Button>
               {m.website && (
@@ -276,9 +278,9 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
                   className="flex-1 sm:flex-none"
                 >
                   {m.websiteKind === 'instagram' ? (
-                    <Instagram className="h-4 w-4 text-gold" />
+                    <Instagram className="h-4 w-4 text-btc" />
                   ) : (
-                    <Globe className="h-4 w-4 text-gold" />
+                    <Globe className="h-4 w-4 text-btc" />
                   )}
                   {t.linkKinds[m.websiteKind] ?? t.website}
                 </Button>
@@ -308,21 +310,6 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
           </Button>
         )}
       </div>
-
-      {MERCHANT_SOURCE.url && (
-        <p className="mt-8 text-center text-[11px] leading-relaxed text-muted/80">
-          {t.sourcePrefix}
-          <a
-            href={MERCHANT_SOURCE.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-gold/80 underline underline-offset-2 hover:text-gold"
-          >
-            {MERCHANT_SOURCE.label}
-          </a>
-          {t.sourceSuffix(MERCHANT_SOURCE.importedAt ? formatDate(MERCHANT_SOURCE.importedAt, locale) : '')}
-        </p>
-      )}
     </section>
   );
 }

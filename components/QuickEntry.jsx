@@ -47,11 +47,11 @@ export default function QuickEntry({ locale }) {
         <div className="text-center">
           <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">{t.quick.title}</h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted">{t.quick.intro}</p>
-          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/10 px-4 py-1.5 text-xs font-semibold text-gold">
+          <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-btc/30 bg-btc/10 px-4 py-1.5 text-xs font-semibold text-btc">
             <Clock className="h-3.5 w-3.5" />
             {t.quick.deadline(formatDate(CONTEST.validTo, locale))}
           </p>
-          <LiveStats t={t.stats} className="mt-5" />
+          <LiveStats t={t.stats} locale={locale} className="mt-5" />
         </div>
 
         <EntryForm t={t.form} locale={locale} compact />
@@ -59,7 +59,7 @@ export default function QuickEntry({ locale }) {
         <div className="mt-10 text-center">
           <Link
             href={localePath(locale)}
-            className="inline-flex items-center gap-2 text-sm font-semibold text-gold underline-offset-4 hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-btc underline-offset-4 hover:underline"
           >
             {t.quick.backToSite}
             <ArrowRight className="h-4 w-4" />

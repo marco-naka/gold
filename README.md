@@ -1,7 +1,24 @@
-# Paga in Crypto e Vinci Oro Digitale — NAKA × Plan ₿ Forum 2026 Lugano
+# Paga in Crypto e Vinci Bitcoin — NAKA × Plan ₿ Forum 2026 Lugano
 
 Landing page / web app del concorso NAKA: paga in crypto su POS NAKA a Lugano e partecipa
-all'estrazione di premi in Tether Gold (XAUT).
+all'estrazione.
+
+**Il montepremi è diviso in due asset**, ed è la decisione portante del progetto: chi paga
+vince bitcoin, chi offre il pagamento vince oro. Non è una scelta estetica — un negoziante non
+paga, mette a disposizione il modo di pagare — e si riflette in tutto il resto:
+
+| | Clienti | Commercianti |
+|---|---|---|
+| Premio | 11'000'000 sat | 2.00 XAUT |
+| Rete | Lightning | Ethereum |
+| Vincitori | 12 | 4 |
+| Pagina | `/` (`/en`) | `/commercianti` (`/en/merchants`) |
+| Modulo | `lib/bitcoin.js` | `lib/constants.js` |
+
+Il totale dichiarato — **21'000'000 di satoshi** — è la somma delle due quote a un'equivalenza
+fissata a un istante preciso: `lib/anchor.js` la documenta e `npm run anchor` la rimisura. I due
+moduli dei premi si incontrano solo in `lib/campaigns.js`, che è l'unico posto da cui i
+componenti leggono importi, formati e conteggi.
 
 ## Stack
 Next.js 14 (App Router) · React 18 · TailwindCSS 3 · lucide-react. Nessuna dipendenza extra.
@@ -392,25 +409,56 @@ c'è unicità da garantire, lo storico è il dato utile.
 
 ## Estrazione verificabile
 
+**È automatica.** In produzione il server stesso (`lib/server/draw-scheduler.js`, avviato da
+`instrumentation.js`) controlla ogni minuto e fa i passi da solo: impegno dopo la chiusura, copia
+su archive.org, estrazione appena il seme è definitivo, copia del risultato. Stato su
+`/api/health` (`draw.phase`), dettagli nei log del servizio con il prefisso `[estrazione]`.
+`DRAW_AUTOMATIC=off` lo spegne; in locale e in demo è spento. I comandi qui sotto restano per
+controllare, intervenire se l'automatismo si ferma, verificare ed escludere un vincitore:
+
 ```bash
-npm run draw commit                 # impegna l'elenco delle giocate validate
-npm run draw -- run --seed <hash>   # estrae usando l'hash del blocco Bitcoin annunciato
-npm run draw verify                 # ricalcola e conferma il risultato
+npm run draw commit                          # entro le 16:30: elenchi + impronte + blocco-seme
+npm run draw status                          # quanti blocchi mancano
+npm run draw run                             # dalle 17:00, quando il seme ha un blocco sopra
+npm run draw disqualify <ID> -- --reason "…" # vincitore non verificato: entra la riserva
+npm run draw verify                          # ricalcola tutto e rilegge il blocco online
 ```
 
-Estrae solo i premi con `assignment: 'draw'` (clienti + estrazione riservata merchant): Top Volume
-è una classifica sui volumi POS e Best Social Video è deciso dalla giuria, quindi restano fuori.
-I merchant hanno **un biglietto ciascuno**, non uno per transazione: è un'estrazione tra pari.
-I due sorteggi sono separati crittograficamente (`sha256("<seme>:<categoria>:<id>")`).
+L'ordine è la garanzia: **prima** si impegnano gli elenchi, **poi** nasce il seme. Il seme non è
+«il primo blocco dopo la chiusura» — quello arriverebbe mentre l'elenco si prepara, e chi lo
+prepara lo conoscerebbe già — ma il blocco che sarà minato **6 posizioni dopo** la cima della
+catena al momento dell'impegno. Parametri in `DRAW` (`lib/constants.js`).
 
-Tre fasi: **commit** dell'elenco (SHA-256 degli ID ordinati, pubblicato prima che il seme esista),
-**seme** pubblico e imprevedibile (hash di un blocco Bitcoin a un'altezza annunciata in anticipo),
-**estrazione** deterministica — il vincitore è chi ha il valore `sha256("<seme>:<ID giocata>")` più
-basso. `run` rifiuta di procedere se l'elenco non combacia con il commit.
+| Quando (24 ottobre) | Cosa |
+|---|---|
+| 16:00 | chiusura delle registrazioni |
+| entro 16:30 | `commit`: elenchi, impronte SHA-256, cima della catena e altezza del blocco-seme, subito su /vincitori e da ripubblicare su LinkedIn |
+| ~1 ora dopo | la rete mina il blocco-seme (6 blocchi: nel 95% dei casi meno di 1 h 45) |
+| +1 blocco | il seme è definitivo: `run`, mai prima delle 17:00 |
+| di norma 17:00–19:00 | finestra annunciata nel regolamento (art. 7) |
 
-Si pubblicano `commitment.json`, `participants.txt` (soli ID, nessun dato personale) e `result.json`:
-chiunque rifà il calcolo e ottiene gli stessi vincitori. Coperto da 6 test, incluso un controllo di
-distribuzione su 200 semi.
+- Negli elenchi entrano **tutte** le giocate registrate in tempo e non respinte, anche se ancora in
+  verifica: così l'impegno non aspetta ore di riscontri. La verifica completa si fa su chi vince;
+  chi non la supera viene escluso con `disqualify`, con una motivazione pubblica, e il premio passa
+  alla prima riserva dell'ordine già pubblicato. Nessun nuovo sorteggio, nessuna scelta.
+- `commit` rifiuta di sovrascrivere un impegno esistente; `run` rifiuta di partire prima delle
+  17:00 o prima che sopra il seme ci sia un altro blocco. `--force` esiste solo per le prove.
+- Cima della catena e hash del blocco si leggono da **due esploratori** (mempool.space e
+  blockstream.info) e devono coincidere.
+- Biglietto: `sha256("<seme>:<users|spritz|merchants>:<ID>")`, ordine crescente; seguono 10 riserve.
+- I file pubblici (`commitment.json`, elenchi, `result.json`) si scaricano da `/api/draw/<file>`:
+  contengono solo ID, nessun dato personale. Subito dopo l'impegno ne viene depositata una copia
+  su **archive.org**, che ne certifica data e ora: è la prova, indipendente da noi, che gli elenchi
+  esistevano prima del blocco-seme. Se l'archivio non risponde si riprova, senza fermare l'estrazione.
+- **Un premio per giocata.** Si estrae prima il generale dei clienti; nello Spritz si saltano gli
+  ID che hanno già vinto lì. Se un'esclusione promuove nel generale una giocata che aveva vinto lo
+  Spritz, lo Spritz passa da solo alla successiva del suo elenco.
+- **Satoshi Spritz**: entrano le giocate fatte nei locali della piazza (`SATOSHI_SPRITZ.venues`, o
+  tutti i negozi all'indirizzo della serata finché l'elenco non c'è) con l'ora di pagamento del POS
+  nella finestra; senza quel dato, registrate entro le 02:00 della notte. L'ora del POS si salva
+  con `npm run entries paid <ID> -- --at "2026-10-22 19:30"` (ora di Lugano).
+
+Top Volume (classifica sui volumi POS) e Best Social Content (giuria) non passano dal sorteggio.
 
 ## Note legali
 Il testo del regolamento in `components/RulesModal.jsx` è una bozza operativa completa

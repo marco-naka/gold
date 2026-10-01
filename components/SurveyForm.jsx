@@ -31,6 +31,7 @@ import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
 import { compressAll } from '@/lib/compress-image';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
+import { TIME_ZONE } from '@/lib/time';
 
 /*
  * Modulo di rilevazione, pensato per un telefono tenuto in una mano dentro un negozio.
@@ -118,7 +119,7 @@ function LocaleSwitch({ locale, onLocale }) {
           aria-pressed={code === locale}
           className={cn(
             'rounded-md px-2.5 py-1 text-xs font-semibold uppercase transition',
-            code === locale ? 'bg-gold/15 text-gold' : 'text-muted hover:text-white'
+            code === locale ? 'bg-btc/15 text-btc' : 'text-muted hover:text-white',
           )}
         >
           {code}
@@ -153,7 +154,7 @@ function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
   return (
     <div className="mx-auto w-full max-w-sm px-5 py-24">
       <div className="glass p-8">
-        <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+        <span className="grid h-11 w-11 place-items-center rounded-xl border border-btc/25 bg-btc/10 text-btc">
           <Lock className="h-5 w-5" />
         </span>
         <div className="mt-5 flex items-start justify-between gap-3">
@@ -176,8 +177,8 @@ function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
 
           {/* Compare solo finché i PIN sono quelli di prova: con i PIN veri sparisce da sé. */}
           {pinHint && (
-            <p className="mt-3 rounded-lg border border-gold/25 bg-gold/[0.07] px-3 py-2 text-xs text-muted">
-              {t.pinHint} <span className="font-mono font-bold text-gold">{pinHint}</span>
+            <p className="mt-3 rounded-lg border border-btc/25 bg-btc/[0.07] px-3 py-2 text-xs text-muted">
+              {t.pinHint} <span className="font-mono font-bold text-btc">{pinHint}</span>
             </p>
           )}
           <Button type="submit" disabled={busy || !code} className="mt-4 w-full">
@@ -201,6 +202,8 @@ function Survey({ locale, onLocale, operator }) {
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(null);
+  // Ricominciare cancella risposte e foto: si chiede conferma, non si fa al primo tocco.
+  const [askReset, setAskReset] = useState(false);
   const restored = useRef(false);
 
   // Bozza: si rilegge all'apertura e si riscrive a ogni modifica. Le foto restano fuori,
@@ -241,7 +244,9 @@ function Survey({ locale, onLocale, operator }) {
   // di oggi una sezione intera può non applicarsi, e un titolo senza domande sotto sembra
   // un errore. Il numero di passi cambia mentre si compila, ed è giusto così.
   const steps = useMemo(() => {
-    const live = SECTIONS.filter((sec) => sec.questions.some((q) => isVisible(q, answers))).map((sec) => sec.id);
+    const live = SECTIONS.filter((sec) => sec.questions.some((q) => isVisible(q, answers))).map(
+      (sec) => sec.id,
+    );
     return ['negozio', ...live, 'foto'];
   }, [answers]);
 
@@ -270,6 +275,7 @@ function Survey({ locale, onLocale, operator }) {
     setErrors({});
     setStep(0);
     setDone(null);
+    setAskReset(false);
   }
 
   async function submit() {
@@ -371,31 +377,48 @@ function Survey({ locale, onLocale, operator }) {
 
       {/* Barra fissa: i pollici stanno in basso, e in negozio si guarda lo schermo di sfuggita */}
       <div className="fixed inset-x-0 bottom-0 border-t border-white/10 bg-ink-deep/95 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-2xl items-center gap-3 px-5 py-4">
-          <Button
-            variant="ghost"
-            onClick={() => setStep((s) => Math.max(0, s - 1))}
-            disabled={step === 0}
-            aria-label={t.back}
-          >
-            <ChevronLeft className="h-5 w-5" />
-          </Button>
+        <div className="mx-auto max-w-2xl px-5 py-4">
+          <div className="flex items-center gap-3">
+            <Button
+              variant="ghost"
+              onClick={() => setStep((s) => Math.max(0, s - 1))}
+              disabled={step === 0}
+              aria-label={t.back}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </Button>
 
-          {canGoNext ? (
-            <Button onClick={() => setStep((s) => s + 1)} className="flex-1">
-              {t.next}
-              <ChevronRight className="h-5 w-5" />
+            {canGoNext ? (
+              <Button onClick={() => setStep((s) => s + 1)} className="flex-1">
+                {t.next}
+                <ChevronRight className="h-5 w-5" />
+              </Button>
+            ) : (
+              <Button onClick={submit} disabled={sending} className="flex-1">
+                <Send className="h-5 w-5" />
+                {sending ? t.saving : t.save}
+              </Button>
+            )}
+
+            <Button variant="ghost" onClick={() => setAskReset(true)}>
+              <RotateCcw className="h-4 w-4" />
+              {t.restart}
             </Button>
-          ) : (
-            <Button onClick={submit} disabled={sending} className="flex-1">
-              <Send className="h-5 w-5" />
-              {sending ? t.saving : t.save}
-            </Button>
+          </div>
+
+          {askReset && (
+            <div className="mt-3 rounded-xl border border-btc/30 bg-btc/[0.07] p-3">
+              <p className="text-xs leading-relaxed text-white">{t.restartConfirm}</p>
+              <div className="mt-3 flex gap-2">
+                <Button size="sm" variant="btc" onClick={reset} className="flex-1">
+                  {t.restartYes}
+                </Button>
+                <Button size="sm" variant="ghost" onClick={() => setAskReset(false)} className="flex-1">
+                  {t.restartNo}
+                </Button>
+              </div>
+            </div>
           )}
-
-          <Button variant="ghost" onClick={reset} aria-label={t.restart}>
-            <RotateCcw className="h-4 w-4" />
-          </Button>
         </div>
       </div>
     </div>
@@ -408,7 +431,7 @@ function Progress({ step, total, merchant, locale, onLocale }) {
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between gap-3 text-xs text-muted">
-        <span className="font-semibold uppercase tracking-[0.16em] text-gold">
+        <span className="font-semibold uppercase tracking-[0.16em] text-btc">
           {step + 1} / {total}
         </span>
         <span className="flex min-w-0 items-center gap-3">
@@ -418,7 +441,7 @@ function Progress({ step, total, merchant, locale, onLocale }) {
       </div>
       <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-full rounded-full bg-gold-gradient transition-all duration-300"
+          className="h-full rounded-full bg-btc-gradient transition-all duration-300"
           style={{ width: `${((step + 1) / total) * 100}%` }}
         />
       </div>
@@ -426,7 +449,18 @@ function Progress({ step, total, merchant, locale, onLocale }) {
   );
 }
 
-function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnswers, error, photos, setPhotos, locale }) {
+function MerchantStep({
+  merchant,
+  onPick,
+  surveyor,
+  onSurveyor,
+  operator,
+  onAnswers,
+  error,
+  photos,
+  setPhotos,
+  locale,
+}) {
   const t = ui(locale);
   const [q, setQ] = useState('');
   const [hits, setHits] = useState([]);
@@ -486,8 +520,8 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
       <h2 className="text-xl font-bold">{t.stepMerchant}</h2>
 
       {operator ? (
-        <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-gold/25 bg-gold/[0.07] px-4 py-2.5 text-sm">
-          <Check className="h-4 w-4 text-gold" />
+        <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-btc/25 bg-btc/[0.07] px-4 py-2.5 text-sm">
+          <Check className="h-4 w-4 text-btc" />
           <span className="text-muted">
             {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
           </span>
@@ -511,27 +545,25 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
 
       <h3 className="mt-8 text-sm font-semibold text-white">{t.shop}</h3>
       {merchant ? (
-        <div className="mt-2 rounded-xl border border-gold/30 bg-gold/[0.06] p-4">
+        <div className="mt-2 rounded-xl border border-btc/30 bg-btc/[0.06] p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="font-semibold text-white">{merchant.name}</p>
               {merchant.address && (
                 <p className="mt-1 flex items-start gap-1.5 text-xs text-muted">
-                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gold" />
+                  <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-btc" />
                   {merchant.address}
                 </p>
               )}
-              {!merchant.id && (
-                <p className="mt-2 text-xs text-gold">{t.newShop}</p>
-              )}
+              {!merchant.id && <p className="mt-2 text-xs text-btc">{t.newShop}</p>}
             </div>
             <button
               type="button"
               onClick={() => onPick(null)}
-              className="shrink-0 rounded-lg border border-white/10 p-2 text-muted hover:text-white"
-              aria-label={t.changeShop}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-2 text-xs font-semibold text-muted hover:border-white/25 hover:text-white"
             >
               <X className="h-4 w-4" />
+              {t.changeShop}
             </button>
           </div>
 
@@ -561,7 +593,10 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
                 <RotateCcw className="h-4 w-4" />
                 {ripreso
                   ? t.resumed
-                  : t.resumeFrom(last.surveyor || '—', new Date(last.at).toLocaleDateString('it-CH'))}
+                  : t.resumeFrom(
+                      last.surveyor || '—',
+                      new Date(last.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE }),
+                    )}
               </Button>
               <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{t.resumeHint}</p>
             </div>
@@ -569,12 +604,16 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
 
           {history.length > 0 && (
             <div className="mt-3 border-t border-white/10 pt-3">
-              <p className="text-xs font-semibold text-gold">{t.visitedTimes(history.length)}</p>
+              <p className="text-xs font-semibold text-btc">{t.visitedTimes(history.length)}</p>
               <ul className="mt-1.5 space-y-1">
                 {history.map((h) => (
                   <li key={h.id} className="text-xs text-muted">
-                    {new Date(h.at).toLocaleDateString('it-CH')} · {h.surveyor} ·{' '}
-                    {outcomeIn(h.outcome, OUTCOMES.find((o) => o.id === h.outcome)?.label ?? h.outcome, locale)}
+                    {new Date(h.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE })} · {h.surveyor} ·{' '}
+                    {outcomeIn(
+                      h.outcome,
+                      OUTCOMES.find((o) => o.id === h.outcome)?.label ?? h.outcome,
+                      locale,
+                    )}
                   </li>
                 ))}
               </ul>
@@ -607,7 +646,7 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
                       <Store
                         className={cn(
                           'mt-0.5 h-4 w-4 shrink-0',
-                          seen?.status === 'completo' ? 'text-muted' : 'text-gold'
+                          seen?.status === 'completo' ? 'text-muted' : 'text-btc',
                         )}
                       />
                       <span className="min-w-0 flex-1">
@@ -625,7 +664,7 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
             <button
               type="button"
               onClick={() => onPick({ name: q.trim() })}
-              className="mt-2 w-full rounded-xl border border-dashed border-white/20 p-3.5 text-sm text-muted transition hover:border-gold/40 hover:text-white"
+              className="mt-2 w-full rounded-xl border border-dashed border-white/20 p-3.5 text-sm text-muted transition hover:border-btc/40 hover:text-white"
             >
               {t.notListed(q.trim())}
             </button>
@@ -662,8 +701,12 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnsw
 function VisitedBadge({ seen, locale }) {
   const t = ui(locale);
   const completo = seen.status === 'completo';
-  const esito = outcomeIn(seen.outcome, OUTCOMES.find((o) => o.id === seen.outcome)?.label ?? seen.outcome, locale);
-  const quando = new Date(seen.at).toLocaleDateString('it-CH');
+  const esito = outcomeIn(
+    seen.outcome,
+    OUTCOMES.find((o) => o.id === seen.outcome)?.label ?? seen.outcome,
+    locale,
+  );
+  const quando = new Date(seen.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE });
 
   return (
     <span className="mt-1.5 flex flex-wrap items-center gap-1.5">
@@ -672,7 +715,7 @@ function VisitedBadge({ seen, locale }) {
           'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-semibold',
           completo
             ? 'border-green-500/30 bg-green-500/10 text-green-400'
-            : 'border-gold/40 bg-gold/15 text-gold'
+            : 'border-btc/40 bg-btc/15 text-btc',
         )}
       >
         {completo ? <Check className="h-3 w-3" /> : <RotateCcw className="h-3 w-3" />}
@@ -686,7 +729,7 @@ function VisitedBadge({ seen, locale }) {
 
       {seen.ripasso && (
         <span className="inline-flex items-center gap-1 rounded-full border border-white/15 px-2 py-0.5 text-[11px] text-muted">
-          {t.returnOn} {new Date(seen.ripasso).toLocaleDateString('it-CH')}
+          {t.returnOn} {new Date(seen.ripasso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE })}
         </span>
       )}
     </span>
@@ -736,19 +779,19 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
         aria-pressed={on}
         className={cn(
           'flex w-full items-start gap-3 rounded-xl border p-4 text-left transition',
-          on ? 'border-gold bg-gold/10' : 'border-white/10 bg-white/[0.03] hover:border-white/25'
+          on ? 'border-btc bg-btc/10' : 'border-white/10 bg-white/[0.03] hover:border-white/25',
         )}
       >
         <span
           className={cn(
             'mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded border',
-            on ? 'border-gold bg-gold text-ink-deep' : 'border-white/25'
+            on ? 'border-btc bg-btc text-ink-deep' : 'border-white/25',
           )}
         >
           {on && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
         </span>
         <span>
-          <span className={cn('block text-sm font-medium', on ? 'text-gold' : 'text-white')}>{label}</span>
+          <span className={cn('block text-sm font-medium', on ? 'text-btc' : 'text-white')}>{label}</span>
           {help && <span className="mt-0.5 block text-xs text-muted">{help}</span>}
         </span>
       </button>
@@ -759,7 +802,7 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
     <div>
       <p className="text-sm font-semibold text-white">
         {label}
-        {question.required && <span className="text-gold"> *</span>}
+        {question.required && <span className="text-btc"> *</span>}
       </p>
       {help && <p className="mt-1 text-xs leading-relaxed text-muted">{help}</p>}
 
@@ -777,11 +820,7 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
         )}
 
         {question.type === 'single' && (
-          <Choices
-            options={options}
-            value={value}
-            onSelect={(v) => onChange(id, v)}
-          />
+          <Choices options={options} value={value} onSelect={(v) => onChange(id, v)} />
         )}
 
         {question.type === 'multi' && (
@@ -796,14 +835,12 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
                     id,
                     (Array.isArray(value) ? value : []).length === options.length
                       ? []
-                      : options.map((o) => o.value)
+                      : options.map((o) => o.value),
                   )
                 }
-                className="mb-2.5 text-xs font-semibold text-gold underline underline-offset-2 transition hover:text-gold-warm"
+                className="mb-2.5 text-xs font-semibold text-btc underline underline-offset-2 transition hover:text-btc-warm"
               >
-                {(Array.isArray(value) ? value : []).length === options.length
-                  ? t.deselectAll
-                  : t.selectAll}
+                {(Array.isArray(value) ? value : []).length === options.length ? t.deselectAll : t.selectAll}
               </button>
             )}
             <Choices
@@ -829,8 +866,8 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
                 className={cn(
                   'h-12 flex-1 rounded-xl border text-base font-bold transition',
                   Number(value) === n
-                    ? 'border-gold bg-gold/15 text-gold'
-                    : 'border-white/10 bg-white/[0.03] text-muted hover:border-white/25'
+                    ? 'border-btc bg-btc/15 text-btc'
+                    : 'border-white/10 bg-white/[0.03] text-muted hover:border-white/25',
                 )}
               >
                 {n}
@@ -884,9 +921,7 @@ function Question({ question, value, onChange, error, photos, setPhotos, answers
           ))}
       </div>
 
-      {error && (
-        <p className="mt-2 text-sm text-red-400">{error === 'too_long' ? t.tooLong : t.required}</p>
-      )}
+      {error && <p className="mt-2 text-sm text-red-400">{error === 'too_long' ? t.tooLong : t.required}</p>}
     </div>
   );
 }
@@ -902,9 +937,9 @@ function ReviewQr({ question, locale }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="rounded-xl border border-gold/25 bg-gold/[0.06] p-4">
+    <div className="rounded-xl border border-btc/25 bg-btc/[0.06] p-4">
       <div className="flex items-start gap-3">
-        <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-gold/30 bg-gold/10 text-gold">
+        <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-btc/30 bg-btc/10 text-btc">
           <QrCode className="h-4.5 w-4.5" />
         </span>
         <div className="min-w-0 flex-1">
@@ -924,7 +959,14 @@ function ReviewQr({ question, locale }) {
           />
           <p className="mt-3 break-all text-center text-[11px] text-muted/80">{question.url}</p>
           <div className="mt-3 flex gap-2">
-            <Button as="a" href={question.url} target="_blank" rel="noopener noreferrer" variant="secondary" className="flex-1">
+            <Button
+              as="a"
+              href={question.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="secondary"
+              className="flex-1"
+            >
               {t.openLink}
             </Button>
             <Button variant="ghost" onClick={() => setOpen(false)}>
@@ -968,15 +1010,15 @@ function Choices({ options, value, onSelect, multi = false, variant = 'auto' }) 
             tags && 'justify-start py-2.5',
             !row && !tags && 'w-full justify-start py-3 text-left',
             selected(o.value)
-              ? 'border-gold bg-gold/15 text-gold'
-              : 'border-white/10 bg-white/[0.03] text-muted hover:border-white/25'
+              ? 'border-btc bg-btc/15 text-btc'
+              : 'border-white/10 bg-white/[0.03] text-muted hover:border-white/25',
           )}
         >
           {multi && (
             <span
               className={cn(
                 'grid h-5 w-5 shrink-0 place-items-center rounded border',
-                selected(o.value) ? 'border-gold bg-gold text-ink-deep' : 'border-white/25'
+                selected(o.value) ? 'border-btc bg-btc text-ink-deep' : 'border-white/25',
               )}
             >
               {selected(o.value) && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
@@ -994,9 +1036,7 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
   return (
     <section>
       <h2 className="text-xl font-bold">{t.photosTitle}</h2>
-      <p className="mt-1.5 text-sm text-muted">
-        {t.photosIntro}
-      </p>
+      <p className="mt-1.5 text-sm text-muted">{t.photosIntro}</p>
       <div className="mt-7 space-y-4">
         {PHOTOS.map((photo) => (
           <PhotoSlot
@@ -1012,9 +1052,7 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
       </div>
 
       {generic && (
-        <p className="mt-5 text-sm text-red-400">
-          {generic === 'network' ? t.offline : t.genericError}
-        </p>
+        <p className="mt-5 text-sm text-red-400">{generic === 'network' ? t.offline : t.genericError}</p>
       )}
     </section>
   );
@@ -1057,14 +1095,16 @@ function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
   };
 
   return (
-    <div className={cn('rounded-xl border p-4', error ? 'border-red-400/50' : 'border-white/10 bg-white/[0.03]')}>
+    <div
+      className={cn('rounded-xl border p-4', error ? 'border-red-400/50' : 'border-white/10 bg-white/[0.03]')}
+    >
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-white">{label}</p>
           {hint && <p className="mt-0.5 text-xs text-muted">{hint}</p>}
         </div>
         {files.length > 0 && (
-          <span className="shrink-0 rounded-full border border-gold/30 bg-gold/10 px-2.5 py-1 text-xs font-semibold text-gold">
+          <span className="shrink-0 rounded-full border border-btc/30 bg-btc/10 px-2.5 py-1 text-xs font-semibold text-btc">
             {files.length}
           </span>
         )}
@@ -1096,8 +1136,8 @@ function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
       {(photo.multiple || files.length === 0) && (
         <label
           className={cn(
-            'mt-3 flex cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-dashed border-white/20 text-sm text-muted transition hover:border-gold/40 hover:text-white',
-            files.length ? 'h-14' : 'h-24'
+            'mt-3 flex cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-dashed border-white/20 text-sm text-muted transition hover:border-btc/40 hover:text-white',
+            files.length ? 'h-14' : 'h-24',
           )}
         >
           <Camera className="h-5 w-5" />
@@ -1129,12 +1169,12 @@ function Done({ id, merchant, onNext, locale }) {
   const t = ui(locale);
   return (
     <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
-      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gold-gradient text-ink-deep">
+      <span className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-btc-gradient text-ink-deep">
         <Check className="h-7 w-7" strokeWidth={3} />
       </span>
       <h1 className="mt-6 text-2xl font-bold">{t.savedTitle}</h1>
       <p className="mt-2 text-sm text-muted">
-        {merchant?.name} · <span className="font-mono text-gold">{id}</span>
+        {merchant?.name} · <span className="font-mono text-btc">{id}</span>
       </p>
       <Button onClick={onNext} size="lg" className="mt-8 w-full">
         {t.nextShop}

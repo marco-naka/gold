@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
-import { PRIZES, TOTAL_WINNERS } from '@/lib/constants';
+import { POOLS, TOTAL_WINNERS } from '@/lib/campaigns';
 import { IS_DEMO } from '@/lib/deploy';
 import { publicStats } from '@/lib/server/stats';
 
@@ -17,7 +17,7 @@ export async function GET() {
 
   const { entries, validated } = await publicStats();
   return NextResponse.json(
-    { collecting: true, entries, validated, merchants, prizes: TOTAL_WINNERS, userPrizes: PRIZES.users.winners },
+    { collecting: true, entries, validated, merchants, prizes: TOTAL_WINNERS, userPrizes: POOLS.users.winners },
     { headers: { 'Cache-Control': 'public, max-age=30' } }
   );
 }

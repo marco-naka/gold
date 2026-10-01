@@ -19,7 +19,7 @@ import {
 
 test('ogni quota è la somma dei suoi premi', () => {
   for (const pool of POOL_LIST) {
-    const somma = pool.items.reduce((tot, item) => tot + pool.amountOf(item) * item.count, 0);
+    const somma = pool.items.reduce((tot, item) => tot + item.amount * item.count, 0);
     // Gli importi in oro hanno i decimali: si confronta a meno dei residui in virgola mobile.
     assert.ok(Math.abs(somma - pool.total) < 1e-6, `${pool.id}: dichiarato ${pool.total}, somma ${somma}`);
   }

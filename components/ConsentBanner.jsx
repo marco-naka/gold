@@ -13,6 +13,12 @@ const STORAGE_KEY = 'naka-consent';
  * compare soltanto se viene configurata la variabile NEXT_PUBLIC_ANALYTICS_ID, cioè nel
  * momento in cui si introduce uno strumento che richiede consenso preventivo.
  */
+/*
+ * ATTENZIONE prima di accendere l'analytics: la pagina privacy dichiara «non c'è niente da
+ * accettare o rifiutare, ed è il motivo per cui non vedi un banner» (chiave `privacy.sections`
+ * nei dizionari). Appena `NEXT_PUBLIC_ANALYTICS_ID` è impostata quella frase diventa falsa e va
+ * riscritta in italiano e in inglese, nello stesso rilascio.
+ */
 export default function ConsentBanner({ t, privacyHref }) {
   const enabled = Boolean(process.env.NEXT_PUBLIC_ANALYTICS_ID);
   const [choice, setChoice] = useState('pending');
@@ -47,7 +53,7 @@ export default function ConsentBanner({ t, privacyHref }) {
       <p className="text-sm font-bold">{t.title}</p>
       <p className="mt-1.5 text-xs leading-relaxed text-muted">
         {t.text}{' '}
-        <a href={privacyHref} className="text-gold underline underline-offset-2">
+        <a href={privacyHref} className="text-btc underline underline-offset-2">
           {t.link}
         </a>
       </p>

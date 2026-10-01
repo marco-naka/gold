@@ -36,21 +36,25 @@ export default function PrivacyNotice({ locale }) {
       <main className="mx-auto w-full max-w-3xl px-5 pb-24 pt-12 sm:px-8">
         <Link
           href={localePath(locale)}
-          className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-gold"
+          className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-btc"
         >
           <ArrowLeft className="h-4 w-4" />
           {t.back}
         </Link>
 
         <h1 className="mt-8 text-4xl font-extrabold tracking-tight sm:text-5xl">{t.title}</h1>
-        <p className="mt-3 text-xs text-muted">{t.updated(formatDate(CONTEST.onlineUntil, locale, { day: 'numeric', month: 'long', year: 'numeric' }))}</p>
+        <p className="mt-3 text-xs text-muted">
+          {t.updated(
+            formatDate(CONTEST.onlineUntil, locale, { day: 'numeric', month: 'long', year: 'numeric' }),
+          )}
+        </p>
 
-        <GlassCard hover={false} className="mt-8 flex items-start gap-4 border-gold/30 bg-gold/[0.06] p-6">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gold/30 bg-gold/10 text-gold">
+        <GlassCard hover={false} className="mt-8 flex items-start gap-4 border-btc/30 bg-btc/[0.06] p-6">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-btc/30 bg-btc/10 text-btc">
             <CookieIcon className="h-5 w-5" />
           </span>
           <div>
-            <p className="text-sm font-bold text-gold">{t.cookieBadge}</p>
+            <p className="text-sm font-bold text-btc">{t.cookieBadge}</p>
             <p className="mt-1.5 text-sm leading-relaxed text-muted">{t.cookieLead}</p>
           </div>
         </GlassCard>
@@ -59,7 +63,7 @@ export default function PrivacyNotice({ locale }) {
           {sections.map((section) => (
             <section key={section.title}>
               <h2 className="flex items-center gap-2 text-lg font-bold">
-                <ShieldCheck className="h-4 w-4 shrink-0 text-gold" />
+                <ShieldCheck className="h-4 w-4 shrink-0 text-btc" />
                 {section.title}
               </h2>
               <div className="mt-3 space-y-3">
@@ -73,7 +77,7 @@ export default function PrivacyNotice({ locale }) {
                 <ul className="mt-3 space-y-2">
                   {section.list.map((item) => (
                     <li key={item} className="flex items-start gap-2.5 text-sm leading-relaxed text-muted">
-                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+                      <span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-btc" />
                       {item}
                     </li>
                   ))}

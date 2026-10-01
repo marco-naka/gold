@@ -3,7 +3,8 @@ import { MERCHANTS } from '@/lib/merchants';
 import { MAX_MERCHANT_LENGTH, parseAmount, txKind, txSuffix, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
 import { normalizeSource } from '@/lib/server/stats';
-import { intlLocale } from '@/lib/i18n';
+import { formatDateTime } from '@/lib/i18n';
+import { yearInZurich } from '@/lib/time';
 import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
 import { deleteReceipt, storeReceipt } from '@/lib/server/receipts';
@@ -134,7 +135,7 @@ export async function POST(request) {
   const tx = `${suffix}|${cents}`;
   const merchant = matchMerchant(data.merchant);
   const createdAt = new Date();
-  const id = `NK-${createdAt.getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+  const id = `NK-${yearInZurich(createdAt)}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 
   let stored = null;
   try {
@@ -164,7 +165,7 @@ export async function POST(request) {
     receipt: stored,
     status: 'pending_verification',
     createdAt: createdAt.toISOString(),
-    createdAtLabel: createdAt.toLocaleString(intlLocale(data.locale), { dateStyle: 'medium', timeStyle: 'short' }),
+    createdAtLabel: formatDateTime(createdAt, data.locale, { dateStyle: 'medium', timeStyle: 'short' }),
   };
 
   // 5. Unicità del numero di transazione, verificata e applicata nella stessa transazione di scrittura.

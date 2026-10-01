@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Users, Trophy, Store } from 'lucide-react';
+import { intlLocale } from '@/lib/i18n';
 import { cn } from './ui/cn';
 
 /**
@@ -9,7 +10,7 @@ import { cn } from './ui/cn';
  * è insieme prova sociale e trasparenza sulle probabilità, che in un concorso valgono più
  * di qualunque claim. In anteprima non si raccolgono giocate, quindi mostra solo i negozi.
  */
-export default function LiveStats({ t, className }) {
+export default function LiveStats({ t, className, locale = 'it' }) {
   const [stats, setStats] = useState(null);
 
   useEffect(() => {
@@ -26,7 +27,9 @@ export default function LiveStats({ t, className }) {
   if (!stats) return null;
 
   const items = [
-    stats.collecting ? { icon: Users, value: stats.entries.toLocaleString('it-CH'), label: t.entries } : null,
+    stats.collecting
+      ? { icon: Users, value: stats.entries.toLocaleString(intlLocale(locale)), label: t.entries }
+      : null,
     { icon: Trophy, value: stats.prizes, label: t.prizes },
     { icon: Store, value: stats.merchants, label: t.merchants },
   ].filter(Boolean);
@@ -35,7 +38,7 @@ export default function LiveStats({ t, className }) {
     <div className={cn('flex flex-wrap items-center justify-center gap-3', className)}>
       {items.map(({ icon: Icon, value, label }) => (
         <div key={label} className="chip border-white/10 bg-white/5 px-4 py-2">
-          <Icon className="h-4 w-4 text-gold" />
+          <Icon className="h-4 w-4 text-btc" />
           <span className="font-bold text-white">{value}</span>
           <span className="text-muted">{label}</span>
         </div>

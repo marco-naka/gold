@@ -12,7 +12,7 @@ import { getDictionary, localePath } from '@/lib/i18n';
  * così la voce non resta un pulsante inerte.
  */
 function RulesLink({ onOpenRules, locale = 'it', children }) {
-  const className = 'text-sm text-muted transition hover:text-gold';
+  const className = 'text-sm text-muted transition hover:text-btc';
   if (onOpenRules) {
     return (
       <button type="button" onClick={onOpenRules} className={className}>
@@ -57,30 +57,41 @@ export default function Footer({ locale = 'it', onOpenRules }) {
           </div>
 
           <nav aria-label={d.navLabel}>
-            <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-white">{d.contestHeading}</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-white">
+              {d.contestHeading}
+            </h2>
             <ul className="mt-4 space-y-2.5">
               {links.map((link) => (
                 <li key={link.href}>
-                  <a href={onOpenRules ? link.href : `${localePath(locale)}${link.href}`} className="text-sm text-muted transition hover:text-gold">
+                  <a
+                    href={onOpenRules ? link.href : `${localePath(locale)}${link.href}`}
+                    className="text-sm text-muted transition hover:text-btc"
+                  >
                     {link.label}
                   </a>
                 </li>
               ))}
               <li>
-                <a href={onOpenRules ? '#faq' : `${localePath(locale)}#faq`} className="text-sm text-muted transition hover:text-gold">
+                <a
+                  href={onOpenRules ? '#faq' : `${localePath(locale)}#faq`}
+                  className="text-sm text-muted transition hover:text-btc"
+                >
                   {d.faq}
                 </a>
               </li>
               <li>
                 <Link
                   href={localePath(locale, '/vincitori')}
-                  className="text-sm text-muted transition hover:text-gold"
+                  className="text-sm text-muted transition hover:text-btc"
                 >
                   {d.winners}
                 </Link>
               </li>
               <li>
-                <Link href={localePath(locale, "/commercianti")} className="text-sm text-muted transition hover:text-gold">
+                <Link
+                  href={localePath(locale, '/commercianti')}
+                  className="text-sm text-muted transition hover:text-btc"
+                >
                   {d.bestVideo}
                 </Link>
               </li>
@@ -89,7 +100,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                   href={OFFICIAL_CHANNELS.linkedin.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-gold"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-btc"
                 >
                   {d.linkedin}
                   <ExternalLink className="h-3 w-3" />
@@ -100,7 +111,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                   href={OFFICIAL_GUIDE[locale] ?? OFFICIAL_GUIDE.it}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-gold"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-btc"
                 >
                   {d.payGuide}
                   <ExternalLink className="h-3 w-3" />
@@ -113,17 +124,22 @@ export default function Footer({ locale = 'it', onOpenRules }) {
             <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-white">{d.legalHeading}</h2>
             <ul className="mt-4 space-y-2.5">
               <li>
-                <RulesLink onOpenRules={onOpenRules} locale={locale}>{d.rules}</RulesLink>
+                <RulesLink onOpenRules={onOpenRules} locale={locale}>
+                  {d.rules}
+                </RulesLink>
               </li>
               <li>
-                <Link href={localePath(locale, '/privacy')} className="text-sm text-muted transition hover:text-gold">
+                <Link
+                  href={localePath(locale, '/privacy')}
+                  className="text-sm text-muted transition hover:text-btc"
+                >
                   {d.privacy}
                 </Link>
               </li>
               <li>
                 <a
                   href={`mailto:${CONTEST.supportEmail}`}
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-gold"
+                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-btc"
                 >
                   <Mail className="h-3.5 w-3.5" />
                   {d.support}
@@ -137,7 +153,7 @@ export default function Footer({ locale = 'it', onOpenRules }) {
           <p className="text-center text-xs text-muted/80 sm:text-left">{d.copyright(CONTEST.organizer)}</p>
           <a
             href={onOpenRules ? '#top' : localePath(locale)}
-            className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs text-muted transition hover:border-gold/40 hover:text-gold"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-xs text-muted transition hover:border-btc/40 hover:text-btc"
           >
             <ArrowUp className="h-3.5 w-3.5" />
             {d.backToTop}

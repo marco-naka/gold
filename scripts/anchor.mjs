@@ -9,6 +9,7 @@
  * di satoshi, e i 21 milioni dichiarati dal concorso smettono di essere un arrotondamento.
  */
 import { TARGET_RATIO, TOLERANCE, PRIZE_POOL, merchantsSatsNow, ratioDrift } from '../lib/anchor.js';
+import { TIME_ZONE } from '../lib/time.js';
 
 const SOURCE = 'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,tether-gold&vs_currencies=usd,chf';
 
@@ -29,7 +30,7 @@ function report({ btc, xaut }) {
   const colto = Math.abs(drift) <= TOLERANCE;
 
   const riga = [
-    new Date().toLocaleTimeString('it-CH'),
+    new Date().toLocaleTimeString('it-CH', { timeZone: TIME_ZONE }),
     `BTC ${btc.toLocaleString('it-CH')}`,
     `XAUT ${xaut.toLocaleString('it-CH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
     `rapporto ${ratio.toFixed(4)}`,

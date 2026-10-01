@@ -17,7 +17,7 @@ function diff(target) {
  * Countdown live verso l'inizio dell'iniziativa; una volta partita passa al conto alla rovescia
  * sulla chiusura delle giocate. Il primo render è statico per evitare mismatch di idratazione.
  */
-export default function Countdown({ startsAt, endsAt, t }) {
+export default function Countdown({ startsAt, endsAt, t, demo = false }) {
   const [state, setState] = useState(null);
 
   useEffect(() => {
@@ -41,16 +41,23 @@ export default function Countdown({ startsAt, endsAt, t }) {
 
   return (
     <div className="w-full">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
-        {!state && t.loading}
-        {state && !state.live && t.toStart}
-        {state && state.live && !ended && t.running}
-        {ended && t.ended}
+      <p className="mb-3 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted">
+        <span>
+          {!state && t.loading}
+          {state && !state.live && t.toStart}
+          {state && state.live && !ended && t.running}
+          {ended && t.ended}
+        </span>
+        {demo && (
+          <span className="rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-[10px] tracking-normal text-red-300">
+            {t.demo}
+          </span>
+        )}
       </p>
       <div className="grid max-w-md grid-cols-4 gap-2 sm:gap-3" role="timer" aria-live="off">
         {units.map((unit) => (
           <div key={unit.key} className="glass flex flex-col items-center px-2 py-3 sm:px-3 sm:py-4">
-            <span className="text-gold-gradient text-2xl font-extrabold tabular-nums sm:text-3xl">
+            <span className="text-btc-gradient text-2xl font-extrabold tabular-nums sm:text-3xl">
               {state ? String(state[unit.key]).padStart(2, '0') : '--'}
             </span>
             <span className="mt-1 text-[10px] font-medium uppercase tracking-wider text-muted sm:text-xs">

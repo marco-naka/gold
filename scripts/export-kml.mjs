@@ -28,7 +28,7 @@ const places = MERCHANTS.map(
 process.stdout.write(`<?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
-    <name>Paga in Crypto e Vinci Oro Digitale — negozi aderenti</name>
+    <name>Paga in Crypto e Vinci Bitcoin — negozi aderenti</name>
     <description>NAKA × Plan ₿ Forum 2026, Lugano. ${MERCHANTS.length} esercenti con POS NAKA.</description>
 ${places}
   </Document>

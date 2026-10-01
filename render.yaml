@@ -32,6 +32,10 @@ services:
     envVars:
       - key: NODE_VERSION
         value: 22.11.0
+      # Il codice scrive già ogni data nel fuso di Lugano (lib/time.js). Questo vale per tutto il
+      # resto: log, script lanciati dalla Shell, qualunque data che sfuggisse alla regola.
+      - key: TZ
+        value: Europe/Zurich
       - key: NEXT_PUBLIC_DEPLOY_PROFILE
         value: demo # -> production quando c'è il disco
       # - key: DATA_DIR
@@ -44,5 +48,9 @@ services:
         sync: false # es. "NAKA <contest@naka.com>"
       - key: RILEVAZIONI_OPERATORI
         sync: false # "Nome:PIN,Nome:PIN" — senza, l'area /rilevazioni resta aperta
+      # Estrazione automatica (lib/server/draw-scheduler.js): si accende da sola con il profilo
+      # production e resta spenta in demo. Per procedere a mano dalla Shell con `npm run draw`:
+      # - key: DRAW_AUTOMATIC
+      #   value: "off"
       - key: RILEVAZIONI_CODE
         sync: false # alternativa: un codice condiviso, senza identità del rilevatore

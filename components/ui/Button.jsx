@@ -1,11 +1,22 @@
 import { cn } from './cn';
 
 const VARIANTS = {
-  // CTA primaria: gradiente dorato con riflesso metallico animato all'hover
+  /*
+   * CTA primaria: gradiente dorato con riflesso metallico animato all'hover.
+   * È il colore dei COMMERCIANTI, che vincono oro — resta la primaria sulla loro pagina.
+   */
   primary:
     'relative overflow-hidden bg-gold-gradient text-ink-deep font-bold shadow-gold hover:shadow-gold ' +
     'hover:brightness-110 active:scale-[.98]',
+  /* Stessa forma, arancio Bitcoin: è l'azione dei CLIENTI, che vincono satoshi. */
+  btc:
+    'relative overflow-hidden bg-btc-gradient text-ink-deep font-bold shadow-btc hover:shadow-btc ' +
+    'hover:brightness-110 active:scale-[.98]',
+  /* Contorno arancione: la secondaria delle pagine clienti, che sono quasi tutte. */
   secondary:
+    'border border-btc/40 text-btc bg-btc/5 font-semibold hover:bg-btc/12 hover:border-btc/70 active:scale-[.98]',
+  /* La stessa, in oro, per le pagine dei commercianti. */
+  'secondary-gold':
     'border border-gold/40 text-gold bg-gold/5 font-semibold hover:bg-gold/12 hover:border-gold/70 active:scale-[.98]',
   ghost: 'border border-white/10 bg-white/5 text-white font-medium hover:bg-white/10 hover:border-white/25',
 };
@@ -31,11 +42,11 @@ export default function Button({
         'disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100',
         VARIANTS[variant],
         SIZES[size],
-        className
+        className,
       )}
       {...props}
     >
-      {variant === 'primary' && (
+      {(variant === 'primary' || variant === 'btc') && (
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/3 bg-gold-sheen opacity-0 group-hover:opacity-100 group-hover:animate-sheen"

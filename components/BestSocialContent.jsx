@@ -27,6 +27,7 @@ import {
   CheckCircle2,
   ExternalLink,
 } from 'lucide-react';
+import FiatValue from './FiatValue';
 import GlassCard from './ui/GlassCard';
 import Button from './ui/Button';
 import SectionTitle from './ui/SectionTitle';
@@ -62,12 +63,12 @@ export default function BestSocialContent({ locale }) {
     max: specs.maxSeconds,
     ratio: specs.ratio,
     platforms: SOCIAL_CONTEST.platforms.join(', '),
-    email: CONTEST.merchantEmail,
+    email: CONTEST.merchantSupportEmail,
     deadline,
   });
 
-  const mailto = `mailto:${CONTEST.merchantEmail}?subject=${encodeURIComponent(
-    t.mailSubject
+  const mailto = `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(
+    t.mailSubject,
   )}&body=${encodeURIComponent(t.mailBody.join('\n'))}`;
 
   return (
@@ -109,7 +110,7 @@ export default function BestSocialContent({ locale }) {
                 <Trophy className="h-4 w-4" />
                 {t.ctaPrizes}
               </Button>
-              <Button as="a" href="#commercianti" variant="secondary">
+              <Button as="a" href="#commercianti" variant="secondary-gold">
                 <BookOpen className="h-4 w-4" />
                 {t.ctaHow}
               </Button>
@@ -122,9 +123,18 @@ export default function BestSocialContent({ locale }) {
               perché il concorso chiude sabato ma i contenuti social vanno pubblicati entro venerdì.
             */}
             <dl className="space-y-4">
-              <Stat icon={Trophy} label={t.statPrize} value={formatXaut(PRIZES.merchants.pool)} />
+              <Stat
+                icon={Trophy}
+                label={t.statPrize}
+                value={formatXaut(PRIZES.merchants.pool, locale)}
+                extra={<FiatValue asset="XAUT" amount={PRIZES.merchants.pool} locale={locale} />}
+              />
               <Stat icon={Clock} label={t.statDeadline} value={deadline} />
-              <Stat icon={CalendarClock} label={t.statFormat} value={formatDateTime(CONTEST.validTo, locale)} />
+              <Stat
+                icon={CalendarClock}
+                label={t.statFormat}
+                value={formatDateTime(CONTEST.validTo, locale)}
+              />
             </dl>
           </GlassCard>
         </div>
@@ -136,6 +146,7 @@ export default function BestSocialContent({ locale }) {
         */}
         <section id="premi" className="mt-16 scroll-mt-24">
           <SectionTitle
+            accent="gold"
             align="left"
             eyebrow={t.merchantPrizes.eyebrow}
             title={t.merchantPrizes.title(formatXaut(PRIZES.merchants.pool))}
@@ -151,7 +162,23 @@ export default function BestSocialContent({ locale }) {
                     <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
                       <Icon className="h-5 w-5" />
                     </span>
-                    <span className="text-right text-lg font-bold text-gold">{formatXaut(item.amount)}</span>
+                    <span className="text-right">
+                      <span className="block text-lg font-bold text-gold">
+                        {formatXaut(item.amount, locale)}
+                        {/* «0.25 XAUT» da solo fa pensare a un premio unico più piccolo:
+                            il moltiplicatore dice che le occasioni di vincere sono due. */}
+                        {item.count > 1 && (
+                          <span className="font-semibold text-muted"> × {item.count}</span>
+                        )}
+                      </span>
+                      <FiatValue
+                        asset={item.asset}
+                        amount={item.amount}
+                        locale={locale}
+                        className="block text-[11px] font-normal text-muted"
+                        suffix={item.count > 1 ? t.merchantPrizes.each : null}
+                      />
+                    </span>
                   </div>
                   <h3 className="mt-4 text-lg font-bold">{copy.title}</h3>
                   <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{copy.text}</p>
@@ -181,6 +208,7 @@ export default function BestSocialContent({ locale }) {
         {/* Guida completa per il commerciante: è la sezione a cui punta il QR del materiale */}
         <section id="commercianti" className="mt-16 scroll-mt-24">
           <SectionTitle
+            accent="gold"
             align="left"
             eyebrow={t.merchantGuide.eyebrow}
             title={t.merchantGuide.title}
@@ -210,6 +238,7 @@ export default function BestSocialContent({ locale }) {
             scadenze sono diverse e la confusione tra il 23 e il 24 è la domanda più frequente. */}
         <section className="mt-16">
           <SectionTitle
+            accent="gold"
             align="left"
             eyebrow={t.socialEyebrow}
             title={t.socialTitle}
@@ -219,7 +248,7 @@ export default function BestSocialContent({ locale }) {
 
         {/* Che cosa si può pubblicare: non solo video */}
         <section className="mt-14">
-          <SectionTitle align="left" title={t.contentTitle} subtitle={t.contentSubtitle} />
+          <SectionTitle accent="gold" align="left" title={t.contentTitle} subtitle={t.contentSubtitle} />
           <div className="mt-8 grid gap-4 md:grid-cols-3">
             {t.contentTypes.map((type, i) => {
               const Icon = [Video, FileText, ImageIcon][i] ?? Video;
@@ -291,7 +320,7 @@ export default function BestSocialContent({ locale }) {
 
         {/* Come partecipare */}
         <section className="mt-16">
-          <SectionTitle align="left" eyebrow={t.stepsEyebrow} title={t.stepsTitle} />
+          <SectionTitle accent="gold" align="left" eyebrow={t.stepsEyebrow} title={t.stepsTitle} />
           <ol className="mt-8 grid gap-4 sm:grid-cols-2">
             {steps.map((step, i) => {
               const Icon = STEP_ICONS[i] ?? Video;
@@ -315,7 +344,7 @@ export default function BestSocialContent({ locale }) {
 
         {/* Come si vince: due fasi */}
         <section className="mt-16">
-          <SectionTitle align="left" eyebrow={t.selectionEyebrow} title={t.selectionTitle} />
+          <SectionTitle accent="gold" align="left" eyebrow={t.selectionEyebrow} title={t.selectionTitle} />
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {t.selection.map((phase, i) => (
               <GlassCard key={phase.phase} className="p-7">
@@ -343,7 +372,13 @@ export default function BestSocialContent({ locale }) {
 
         {/* Idee */}
         <section id="idee" className="mt-16 scroll-mt-24">
-          <SectionTitle align="left" eyebrow={t.ideasEyebrow} title={t.ideasTitle} subtitle={t.ideasSubtitle} />
+          <SectionTitle
+            accent="gold"
+            align="left"
+            eyebrow={t.ideasEyebrow}
+            title={t.ideasTitle}
+            subtitle={t.ideasSubtitle}
+          />
           <div className="mt-8 grid gap-4 md:grid-cols-2">
             {t.ideas.map((idea, i) => (
               <GlassCard key={idea.title} className="p-6">
@@ -492,7 +527,7 @@ export default function BestSocialContent({ locale }) {
               href={CONTEST.googleReviewUrl}
               target="_blank"
               rel="noopener noreferrer"
-              variant="secondary"
+              variant="secondary-gold"
               className="mt-5 w-full sm:w-auto"
             >
               <Star className="h-4 w-4" />
@@ -502,7 +537,10 @@ export default function BestSocialContent({ locale }) {
         </section>
 
         {/* Annuncio ufficiale su LinkedIn */}
-        <GlassCard hover={false} className="mt-6 flex flex-col gap-4 p-7 sm:flex-row sm:items-center sm:justify-between">
+        <GlassCard
+          hover={false}
+          className="mt-6 flex flex-col gap-4 p-7 sm:flex-row sm:items-center sm:justify-between"
+        >
           <p className="flex items-start gap-3 text-sm leading-relaxed text-muted">
             <Linkedin className="mt-0.5 h-5 w-5 shrink-0 text-gold" />
             {t.announcement.text}
@@ -536,7 +574,7 @@ export default function BestSocialContent({ locale }) {
   );
 }
 
-function Stat({ icon: Icon, label, value }) {
+function Stat({ icon: Icon, label, value, extra = null }) {
   return (
     <div className="flex items-center gap-3">
       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
@@ -544,7 +582,10 @@ function Stat({ icon: Icon, label, value }) {
       </span>
       <div>
         <dt className="text-xs text-muted">{label}</dt>
-        <dd className="text-base font-bold text-white">{value}</dd>
+        <dd className="text-base font-bold text-white">
+          {value}
+          {extra && <span className="ml-2 text-xs font-normal text-muted">{extra}</span>}
+        </dd>
       </div>
     </div>
   );

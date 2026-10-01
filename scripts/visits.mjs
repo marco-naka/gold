@@ -14,6 +14,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { ALL_QUESTIONS, OUTCOMES, PHOTOS } from '../lib/survey.js';
+import { TIME_ZONE } from '../lib/time.js';
 
 const DATA_DIR = process.env.DATA_DIR || join(process.cwd(), '.data');
 const FILE = join(DATA_DIR, 'rilevazioni.json');
@@ -36,7 +37,7 @@ async function load() {
 }
 
 const label = (id) => OUTCOMES.find((o) => o.id === id)?.label ?? id;
-const day = (iso) => new Date(iso).toLocaleDateString('it-CH');
+const day = (iso) => new Date(iso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE });
 
 /** Risposta leggibile: gli array diventano una lista, i sì/no restano parole. */
 function show(value) {
