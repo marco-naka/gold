@@ -258,7 +258,8 @@ disco è montato.
 | `/` · `/en` | Landing completa: chi arriva da LinkedIn o dalla locandina |
 | `/p` · `/en/p` | **Pagina del QR**: solo il form, 24 KB contro i 230 della home. Chi inquadra il codice è alla cassa con trenta secondi: 43 parole prima del campo email invece di 648 |
 | `/vincitori` · `/en/winners` | Risultato dell'estrazione e spiegazione della procedura verificabile (prima del sorteggio mostra solo quest'ultima) |
-| `/best-social-content` | Premio social e guida commercianti |
+| `/commercianti` · `/en/merchants` | Area commercianti: i tre premi, come aderire, regole del premio social |
+| `/rilevazioni` | **Non linkata, con codice.** Area interna dei rilevatori sul campo |
 
 I suggerimenti del negozio arrivano da `/api/merchants?q=` mentre si scrive: lo snapshot da 123 KB
 non entra più nel bundle del form.
@@ -313,6 +314,81 @@ npm run entries export > giocate.csv
 
 È l'anello tra la registrazione (`pending_verification`) e l'estrazione, che ammette **solo** le
 giocate `validated`. `stats` segnala le giocate con negozio non riconosciuto, da controllare a mano.
+
+## Area rilevazioni sul campo
+
+Due incaricati girano i negozi di Lugano prima del forum: spiegano l'iniziativa, verificano il
+POS e raccolgono lo stato della comunicazione in vetrina. Registrano tutto da **`/rilevazioni`**,
+un'area non linkata da nessuna parte del sito, esclusa dalla sitemap, con `noindex` e protetta da
+un codice condiviso (`RILEVAZIONI_CODE`).
+
+⚠️ Se la variabile è vuota l'area è **aperta a chiunque conosca l'indirizzo**: comodo in locale,
+da impostare prima del go-live. Un URL nascosto smette di esserlo appena finisce in una cronologia.
+
+### Le domande stanno in un file solo
+
+`lib/survey.js` contiene sezioni, domande, esiti e slot fotografici. Aggiungere o riordinare una
+domanda non richiede di toccare il modulo, la validazione o l'esportazione: si ridisegnano da lì.
+
+| Tipo | Risposta |
+|---|---|
+| `yesno` · `yesnona` | sì / no, con «non applicabile» opzionale |
+| `single` · `multi` | una o più opzioni da un elenco |
+| `scale` | valutazione 1–5 |
+| `number` · `text` | numero intero, testo libero (max 1000 caratteri) |
+
+`showIf` mostra una domanda solo se un'altra ha un certo valore (`value`, `not`, `min`), così il
+modulo resta corto: se il POS non c'è, le tre domande sul POS non compaiono — e la validazione
+non le pretende, perché il rilevatore non le ha nemmeno viste.
+
+L'`id` di una domanda è la chiave con cui la risposta viene salvata e la colonna del CSV: una
+volta raccolte le prime rilevazioni non va più cambiato, altrimenti le vecchie risposte restano
+orfane. Un test verifica che gli id siano unici, che le domande a scelta abbiano le opzioni e che
+ogni `showIf` punti a una domanda esistente.
+
+### Il modulo
+
+Pensato per un telefono tenuto in una mano dentro un negozio: una sezione per schermata, risposte
+a bottoni grandi invece che menu a tendina, barra dei comandi fissa in basso dove stanno i pollici.
+
+La **bozza è salvata nel telefono** a ogni tocco: una chiamata in arrivo o la rete che cade nel
+retrobottega non cancellano mezz'ora di lavoro. Il nome del rilevatore resta memorizzato tra un
+negozio e l'altro. Le foto restano fuori dalla bozza — troppo pesanti per `localStorage` e si
+riscattano in un attimo.
+
+Scelto il negozio, la scheda mostra **i dati della mappa** (indirizzo, asset accettati, telefono) da
+verificare sul posto e **le visite precedenti**, così non si rifà un giro già fatto dal collega. Un
+negozio fuori elenco si aggiunge scrivendone il nome e viene marcato per l'inserimento.
+
+Tre foto, **nessuna obbligatoria**: vetrina prima di entrare, POS con il QR, ricevuta della
+transazione di prova. Decide il rilevatore in base a cosa ha senso in quel negozio.
+
+### Chi dice no esce dall'elenco
+
+L'esito della visita è il campo su cui si filtra. `Non aderisce` e `Chiuso o non trovato` marcano
+il record come escludente; `npm run visits exclude` raccoglie **l'ultima** rilevazione di ogni
+negozio e rigenera `lib/merchants.overrides.json`, che `lib/merchants.js` sottrae dall'elenco
+pubblico. Vale l'ultima visita, quindi chi prima rifiuta e poi ci ripensa rientra da solo.
+
+Lo snapshot non viene toccato: l'esclusione è reversibile e si vede nel diff di git perché è stata
+fatta. `MERCHANTS` è l'elenco pubblico, `ALL_MERCHANTS` quello completo — l'area rilevazioni cerca
+nel secondo, altrimenti un negozio escluso non si potrebbe più visitare.
+
+```bash
+npm run visits stats                     # esiti, rilevatori, medie delle valutazioni
+npm run visits list --outcome rifiuta
+npm run visits show RV-2026-AB12CD
+npm run visits export > rilevazioni.csv  # una riga per visita, una colonna per domanda
+npm run visits exclude -- --yes          # aggiorna gli esclusi dall'elenco pubblico
+```
+
+`stats` segnala le rilevazioni senza foto e i negozi non presenti nello snapshot.
+
+### Dati
+
+`.data/rilevazioni.json` per le rilevazioni, `.data/rilevazioni/<anno>/<id>-<slot>.<ext>` per le foto, fuori
+dalla cartella pubblica come gli scontrini. Lo stesso negozio può essere visitato più volte: non
+c'è unicità da garantire, lo storico è il dato utile.
 
 ## Estrazione verificabile
 

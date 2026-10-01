@@ -2,5 +2,7 @@ node_modules
 .next
 out
 .env*
+# L'esempio va versionato: non contiene segreti ed è quello che il README dice di copiare.
+!.env.example
 .DS_Store
 .data
