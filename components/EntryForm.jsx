@@ -20,6 +20,7 @@ import Button from './ui/Button';
 import GlassCard from './ui/GlassCard';
 import Modal from './ui/Modal';
 import SectionTitle from './ui/SectionTitle';
+import { compressImage } from '@/lib/compress-image';
 import { cn } from './ui/cn';
 import { MAX_RECEIPT_BYTES, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
@@ -38,6 +39,7 @@ const EMPTY = {
 export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
   const [values, setValues] = useState(EMPTY);
   const [receipt, setReceipt] = useState(null);
+  const [preparing, setPreparing] = useState(false);
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
   const [status, setStatus] = useState('idle'); // idle | submitting | error
@@ -62,7 +64,7 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
   }, []);
 
   // I suggerimenti del negozio arrivano da /api/merchants mentre si scrive: così la pagina
-  // di partecipazione non scarica lo snapshot completo dei merchant per un campo facoltativo.
+  // di partecipazione non scarica lo snapshot completo dei merchant solo per un campo.
   const [merchantSuggestions, setMerchantSuggestions] = useState([]);
 
   useEffect(() => {
@@ -98,9 +100,25 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
     setErrors(runValidation());
   };
 
-  const handleFile = (file) => {
-    setReceipt(file ?? null);
-    setErrors(runValidation(values, file ?? null));
+  /**
+   * Lo scontrino si riduce nel browser prima di partire: da telefono uno scatto pesa
+   * qualche megabyte, e durante la settimana del forum sono migliaia. Il file leggero
+   * parte più in fretta dalla rete mobile della cassa e occupa un decimo sul disco.
+   * I file già piccoli passano intatti.
+   */
+  const handleFile = async (file) => {
+    if (!file) {
+      setReceipt(null);
+      setErrors(runValidation(values, null));
+      return;
+    }
+    setPreparing(true);
+    // Si valida l'originale: se la compressione fallisce si carica quello, e le regole
+    // su tipo e peso devono valere comunque.
+    const ready = await compressImage(file);
+    setPreparing(false);
+    setReceipt(ready);
+    setErrors(runValidation(values, ready));
   };
 
   /** Da codice a messaggio nella lingua della pagina; un codice ignoto non resta mai a schermo. */
@@ -305,7 +323,7 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
                   id="receipt"
                   name="receipt"
                   type="file"
-                  accept="image/*,application/pdf"
+                  accept="image/*"
                   capture="environment"
                   className="sr-only"
                   onChange={(e) => handleFile(e.target.files?.[0])}
@@ -319,7 +337,9 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
                     )}
                   >
                     <Upload className="h-6 w-6 text-gold" />
-                    <span className="text-sm font-medium text-white">{t.receiptCta}</span>
+                    <span className="text-sm font-medium text-white">
+                      {preparing ? t.receiptPreparing : t.receiptCta}
+                    </span>
                     <span className="text-xs text-muted">
                       {t.receiptFormats(Math.round(MAX_RECEIPT_BYTES / 1024 / 1024))}
                     </span>
@@ -350,13 +370,10 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
 
           </fieldset>
 
-          {/* 3. Merchant: facoltativo, testo libero con suggerimenti dalla mappa */}
+          {/* 3. Merchant: testo libero con suggerimenti dalla mappa. Un nome fuori elenco
+              è accettato e marcato dalla route come da verificare a mano. */}
           <Field
-            label={
-              <>
-                {t.merchantLabel} <span className="font-normal text-muted">{t.merchantOptional}</span>
-              </>
-            }
+            label={t.merchantLabel}
             hint={t.merchantHint}
             icon={Store}
             error={showError('merchant')}
@@ -369,6 +386,7 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
               list="merchant-options"
               autoComplete="off"
               placeholder={t.merchantPlaceholder}
+              required
               value={values.merchant}
               onChange={(e) => setField('merchant', e.target.value)}
               onBlur={handleBlur}
@@ -576,7 +594,7 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
         <SummaryRow label={t.rowProof} value={proofLabel} />
         {entry.txIdMasked && <SummaryRow label={t.rowTx} value={entry.txIdMasked} mono />}
         {entry.amountLabel && <SummaryRow label={t.rowAmount} value={entry.amountLabel} mono />}
-        {entry.merchant && <SummaryRow label={t.rowMerchant} value={entry.merchant} />}
+        <SummaryRow label={t.rowMerchant} value={entry.merchant} />
         <SummaryRow label={t.rowDate} value={entry.createdAtLabel} />
         <SummaryRow label={t.rowStatus} value={t.statusValue} />
       </dl>

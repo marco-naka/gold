@@ -7,7 +7,7 @@ const valid = {
   email: 'mario@rossi.ch',
   txId: '0adca2', // ultime 6 cifre come stampate sulla ricevuta NAKA
   amount: '0.10',
-  merchant: '',
+  merchant: 'Caffè Roma',
   confirmAge: true,
   acceptRules: true,
 };
@@ -46,10 +46,13 @@ test('controlla formato e peso dell’allegato', () => {
   assert.equal(validateEntry(valid, { ...jpg, size: MAX_RECEIPT_BYTES + 1 }).receipt, 'receipt_size');
 });
 
-test('il merchant è facoltativo ma limitato in lunghezza', () => {
-  assert.deepEqual(validateEntry({ ...valid, merchant: '' }, jpg), {});
+test('il merchant è obbligatorio e limitato in lunghezza', () => {
+  assert.equal(validateEntry({ ...valid, merchant: '' }, jpg).merchant, 'merchant_missing');
+  assert.equal(validateEntry({ ...valid, merchant: '   ' }, jpg).merchant, 'merchant_missing');
   assert.deepEqual(validateEntry({ ...valid, merchant: 'Caffè Roma' }, jpg), {});
-  assert.ok(validateEntry({ ...valid, merchant: 'x'.repeat(200) }, jpg).merchant);
+  // Un nome fuori dall'elenco resta valido: lo marca la route come da verificare a mano.
+  assert.deepEqual(validateEntry({ ...valid, merchant: 'Bar che non è sulla mappa' }, jpg), {});
+  assert.equal(validateEntry({ ...valid, merchant: 'x'.repeat(200) }, jpg).merchant, 'merchant_too_long');
 });
 
 test('bastano le ultime 6 cifre, ma il numero intero resta accettato', () => {

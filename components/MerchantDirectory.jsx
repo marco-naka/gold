@@ -240,16 +240,16 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
               <span className="chip">{categoryLabel(m.category)}</span>
-              {/* Un badge si mostra solo quando distingue: l'adesione confermata da NAKA. */}
-              {m.verified && (
-                <span
-                  className="chip border-green-500/30 bg-green-500/10 text-green-400"
-                  title={t.badgeVerifiedTitle}
-                >
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  {t.badgeVerified}
-                </span>
-              )}
+              {/*
+                Sta su tutte le schede: ogni negozio in elenco ha un POS NAKA, quindi non
+                distingue nessuno — è una rassicurazione, non una classifica. Per questo
+                non dice «verificato»: sarebbe una promessa che vale per tutti e non
+                significa niente, e che dovremmo poter dimostrare uno per uno.
+              */}
+              <span className="chip border-gold/30 bg-gold/10 text-gold" title={t.badgeVerifiedTitle}>
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                {t.badgeVerified}
+              </span>
             </div>
 
             <div className="mt-4 flex flex-wrap gap-2">

@@ -8,7 +8,7 @@ import { formatDate, intlLocale } from '@/lib/i18n';
 /**
  * Montepremi totale con il controvalore in dollari.
  *
- * Serve a chi non ragiona in once d'oro: "6.20 XAUT" non dice niente, "circa 26'000 dollari" sì.
+ * Serve a chi non ragiona in once d'oro: "4.20 XAUT" non dice niente, "circa 18'000 dollari" sì.
  * Il cambio arriva da /api/xaut, cioè dal nostro server: il browser dell'utente non contatta
  * CoinGecko e il suo IP non raggiunge nessun terzo. Finché non risponde si mostra comunque la
  * quantità in XAUT, che è il dato che fa fede.

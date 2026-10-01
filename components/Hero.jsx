@@ -1,11 +1,11 @@
-import { Upload, MapPin, ShieldCheck, Zap, Store, CalendarDays, Ticket } from 'lucide-react';
+import { Upload, MapPin, CalendarDays, Ticket } from 'lucide-react';
 import Countdown from './Countdown';
 import LiveStats from './LiveStats';
 import PrizeValue from './PrizeValue';
 import Button from './ui/Button';
 import { PoweredBadge } from './Brand';
-import { CONTEST, EVENT, PAYMENT_ASSETS, PRIZES, TOTAL_POOL, formatXaut } from '@/lib/constants';
-import { MERCHANTS } from '@/lib/merchants';
+import { CONTEST, EVENT, PRIZES, TOTAL_POOL, TOTAL_WINNERS, formatXaut } from '@/lib/constants';
+import { formatDateTime } from '@/lib/i18n';
 
 export default function Hero({ t, locale }) {
   const d = t.hero;
@@ -14,11 +14,12 @@ export default function Hero({ t, locale }) {
     locale === 'en' ? 'en-CH' : 'it-CH',
     { day: 'numeric', month: 'long', year: 'numeric' }
   )}`;
-  const stats = [
-    { icon: Store, value: String(MERCHANTS.filter((m) => m.posActive).length), label: d.statMerchants },
-    { icon: Zap, value: String(PAYMENT_ASSETS.length), label: d.statAssets(PAYMENT_ASSETS.map((a) => a.short).join(', ')) },
-    { icon: ShieldCheck, value: formatXaut(TOTAL_POOL), label: d.statPool },
-  ];
+  // Nella prima schermata ci va la spiegazione, non il titolo riscritto in prosa: quando,
+  // dove, con cosa si paga, cosa si vince e quando si estrae.
+  // Il numero dei negozi non compare: "328" si legge come un tetto massimo, mentre l'elenco
+  // cresce con le adesioni. Il conteggio vero sta nel contatore qui sotto.
+  const week = locale === 'en' ? CONTEST.weekLabelEn : CONTEST.weekLabel;
+  const drawDate = formatDateTime(CONTEST.drawDate, locale);
 
   return (
     <section id="top" className="relative overflow-hidden pt-32 sm:pt-36">
@@ -51,9 +52,10 @@ export default function Hero({ t, locale }) {
               {d.titleLead} <span className="text-gold-gradient">{d.titleGold}</span>
             </h1>
 
-            <p className="mt-6 max-w-xl text-base leading-relaxed text-muted sm:text-lg">
-              {d.subtitle(EVENT.name)}
-            </p>
+            <div className="mt-7 max-w-xl space-y-4 text-base leading-relaxed text-muted">
+              <p>{d.lead(EVENT.name, week)}</p>
+              <p>{d.leadPrize(TOTAL_WINNERS, formatXaut(TOTAL_POOL), drawDate)}</p>
+            </div>
 
             <div className="mt-9">
               <Countdown startsAt={CONTEST.validFrom} endsAt={CONTEST.validTo} t={t.countdown} />
@@ -90,19 +92,6 @@ export default function Hero({ t, locale }) {
               </a>
             </div>
 
-            <dl className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-              {stats.map(({ icon: Icon, value, label }) => (
-                <div key={label} className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
-                    <Icon className="h-5 w-5" />
-                  </span>
-                  <div>
-                    <dt className="text-lg font-bold leading-none text-white">{value}</dt>
-                    <dd className="mt-1 text-xs leading-snug text-muted">{label}</dd>
-                  </div>
-                </div>
-              ))}
-            </dl>
           </div>
 
           {/* Visual: logo ufficiale Tether Gold, non più una riproduzione testuale */}
