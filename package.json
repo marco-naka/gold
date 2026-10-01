@@ -13,6 +13,7 @@
     "draw": "node scripts/draw.mjs",
     "entries": "node scripts/entries.mjs",
     "visits": "node scripts/visits.mjs",
+    "anchor": "node scripts/anchor.mjs",
     "qr:review": "node scripts/qr-review.mjs",
     "export:kml": "node scripts/export-kml.mjs",
     "import:logos": "node scripts/import-logos.mjs"

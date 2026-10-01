@@ -1,5 +1,5 @@
 import SurveyForm from '@/components/SurveyForm';
-import { isOpenAccess } from '@/lib/server/rilevazioni-auth';
+import { isOpenAccess, placeholderPin } from '@/lib/server/rilevazioni-auth';
 
 /**
  * Area interna per i rilevatori sul campo. Non è linkata da nessuna parte del sito, è esclusa
@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic';
 export default function Page() {
   return (
     <main className="min-h-screen">
-      <SurveyForm locked={!isOpenAccess()} />
+      <SurveyForm locked={!isOpenAccess()} pinHint={placeholderPin()} />
     </main>
   );
 }

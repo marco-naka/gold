@@ -9,7 +9,7 @@ import { localePath } from '@/lib/i18n';
 
 export default function MerchantB2B({ t, locale }) {
   // Chi vede la vetrofania del vicino ma non ha ricevuto l'invito non deve restare a mani vuote.
-  const joinMailto = `mailto:${CONTEST.merchantEmail}?subject=${encodeURIComponent(
+  const joinMailto = `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(
     t.merchantJoin.subject
   )}&body=${encodeURIComponent(t.merchantJoin.body.join('\n'))}`;
   const icons = [Zap, TrendingUp, Trophy];

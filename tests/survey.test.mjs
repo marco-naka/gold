@@ -65,13 +65,18 @@ test('a serranda abbassata la visita si chiude in due tocchi', () => {
   // Il caso che bloccava tutto: con il negozio chiuso restavano obbligatorie domande a
   // cui nessuno poteva rispondere, e la rilevazione non era inviabile.
   const chiuso = { con_chi: 'Era chiuso' };
-  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: chiuso }), {});
   assert.equal(outcomeOf(chiuso), 'chiuso');
 
-  // Resta solo chi hai trovato e le note: della vetrina parla la foto, scattata
-  // nella prima schermata mentre si cerca il negozio.
-  const visibili = ALL_QUESTIONS.filter((q) => isVisible(q, chiuso)).map((q) => q.id);
-  assert.deepEqual(visibili, ['con_chi', 'note']);
+  // A serranda abbassata si torna per forza: il ritorno si apre da sé e vuole data e motivo.
+  const errori = validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: chiuso });
+  assert.deepEqual(Object.keys(errori).sort(), ['ritorno_motivo', 'ritorno_quando']);
+
+  const completo = { ...chiuso, ritorno_motivo: ['Titolare assente'], ritorno_quando: '2026-10-09' };
+  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: completo }), {});
+
+  // Della vetrina parla la foto, scattata nella prima schermata.
+  const visibili = ALL_QUESTIONS.filter((q) => isVisible(q, completo)).map((q) => q.id);
+  assert.deepEqual(visibili, ['con_chi', 'ritorno_motivo', 'ritorno_quando', 'ritorno_ora', 'note']);
 });
 
 test('l’adesione non si chiede a un negozio chiuso', () => {
@@ -175,11 +180,16 @@ test('l’appuntamento commerciale si propone a chi le carte non le fa con NAKA'
   assert.equal(isVisible(appuntamento, { naka_carte: 'Non accetta carte' }), false);
 });
 
-test('l’ora del ripasso è facoltativa, la data no', () => {
-  const daFare = { ...answers, pos_test: 'Da fare: ripasso fissato', pos_test_quando: '2026-10-14' };
+test('l’ora del ritorno è facoltativa, la data no', () => {
+  const daFare = {
+    ...answers,
+    pos_test: 'Da fare: ripasso fissato',
+    ritorno_motivo: ['Transazione di prova da fare'],
+    ritorno_quando: '2026-10-14',
+  };
   assert.deepEqual(validateVisit({ ...valid, answers: daFare }), {});
-  assert.deepEqual(validateVisit({ ...valid, answers: { ...daFare, pos_test_ora: '09:30' } }), {});
-  assert.equal(validateVisit({ ...valid, answers: { ...daFare, pos_test_ora: '25:00' } }).pos_test_ora, 'invalid');
+  assert.deepEqual(validateVisit({ ...valid, answers: { ...daFare, ritorno_ora: '09:30' } }), {});
+  assert.equal(validateVisit({ ...valid, answers: { ...daFare, ritorno_ora: '25:00' } }).ritorno_ora, 'invalid');
 });
 
 test('le foto dichiarate nel questionario non sono risposte', () => {
@@ -310,16 +320,29 @@ test('le fasce di tempo sono tre, non due', () => {
   }
 });
 
-test('il ripasso vuole una data', () => {
-  const daFare = { ...answers, pos_test: 'Da fare: ripasso fissato' };
-  assert.equal(validateVisit({ ...valid, answers: daFare }).pos_test_quando, 'required');
-  assert.deepEqual(validateVisit({ ...valid, answers: { ...daFare, pos_test_quando: '2026-10-14' } }), {});
+test('si può fissare un ritorno anche quando tutto è andato bene', () => {
+  // Era il buco: la data si poteva mettere solo se la transazione restava da fare,
+  // quindi i ritorni per materiale o formazione non finivano in agenda.
+  const ritorno = ALL_QUESTIONS.find((q) => q.id === 'ritorno');
+  const liscia = { con_chi: 'Titolare', pos_test: 'Solo generato i QR', adesione: 'Aderisce' };
+
+  assert.equal(isVisible(ritorno, liscia), true, 'la casella deve restare proponibile');
+  assert.equal(isVisible(ALL_QUESTIONS.find((q) => q.id === 'ritorno_quando'), liscia), false);
+
+  // Spuntandola, data e motivo diventano obbligatori.
+  const chiesto = { ...answers, ritorno: true };
+  const errori = validateVisit({ ...valid, answers: chiesto });
+  assert.deepEqual(Object.keys(errori).sort(), ['ritorno_motivo', 'ritorno_quando']);
+});
+
+test('la casella sparisce quando il ritorno è già implicito', () => {
+  const ritorno = ALL_QUESTIONS.find((q) => q.id === 'ritorno');
+  assert.equal(isVisible(ritorno, { con_chi: 'Titolare', pos_test: 'Da fare: ripasso fissato' }), false);
   assert.equal(
-    validateVisit({ ...valid, answers: { ...daFare, pos_test_quando: '14/10/2026' } }).pos_test_quando,
-    'invalid'
+    isVisible(ritorno, { con_chi: 'Titolare', adesione: 'Non è stato possibile ottenere una risposta' }),
+    false
   );
-  // Fatta adesso: la data non si chiede.
-  assert.equal(validateVisit({ ...valid, answers }).pos_test_quando, undefined);
+  assert.equal(isVisible(ritorno, { con_chi: 'Era chiuso' }), false);
 });
 
 test('la segnalazione di un problema si apre in due modi', () => {

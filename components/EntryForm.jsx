@@ -377,10 +377,15 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
             hint={t.merchantHint}
             icon={Store}
             error={showError('merchant')}
-            htmlFor="merchant"
+            htmlFor="merchant-field"
           >
+            {/*
+              L'id non è "merchant": quello è l'ancora della sezione Area Commercianti più in
+              basso, e due elementi con lo stesso id facevano atterrare «Scopri come aderire»
+              su questo campo invece che su quella sezione.
+            */}
             <input
-              id="merchant"
+              id="merchant-field"
               name="merchant"
               type="text"
               list="merchant-options"

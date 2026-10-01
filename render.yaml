@@ -42,5 +42,7 @@ services:
         sync: false # chiave provider email (serve solo in production)
       - key: MAIL_FROM
         sync: false # es. "NAKA <contest@naka.com>"
+      - key: RILEVAZIONI_OPERATORI
+        sync: false # "Nome:PIN,Nome:PIN" — senza, l'area /rilevazioni resta aperta
       - key: RILEVAZIONI_CODE
-        sync: false # codice dell'area /rilevazioni: senza, l'area resta aperta
+        sync: false # alternativa: un codice condiviso, senza identità del rilevatore

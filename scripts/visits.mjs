@@ -102,8 +102,8 @@ if (command === 'stats') {
     for (const v of leads) console.log(`  ${v.merchantName}`);
   }
 
-  const pending = visits.filter((v) => v.answers?.pos_test_quando).length;
-  if (pending) console.log(`\n${pending} transazioni di prova da fare: npm run visits agenda`);
+  const pending = visits.filter((v) => v.answers?.ritorno_quando).length;
+  if (pending) console.log(`\n${pending} ritorni da fare: npm run visits agenda`);
 
   const noPhotos = visits.filter((v) => !Object.keys(v.photos ?? {}).length).length;
   if (noPhotos) console.log(`\n${noPhotos} rilevazioni senza alcuna foto.`);
@@ -193,11 +193,12 @@ if (command === 'stats') {
     );
   }
 } else if (command === 'agenda') {
-  // I negozi dove la prova di pagamento è rimasta da fare: è la lista con cui si organizza
-  // il secondo giro, ed è il motivo per cui la data si chiede sul posto invece che dopo.
-  const key = (v) => `${v.answers.pos_test_quando} ${v.answers.pos_test_ora ?? '99:99'}`;
+  // I ritorni fissati, per qualunque motivo: prova da fare, titolare assente, materiale da
+  // consegnare. È la lista con cui si organizza il secondo giro, ed è il motivo per cui la
+  // data si chiede sul posto invece che dopo.
+  const key = (v) => `${v.answers.ritorno_quando} ${v.answers.ritorno_ora ?? '99:99'}`;
   const pending = visits
-    .filter((v) => v.answers?.pos_test_quando)
+    .filter((v) => v.answers?.ritorno_quando)
     .sort((a, b) => key(a).localeCompare(key(b)));
 
   if (!pending.length) {
@@ -206,14 +207,14 @@ if (command === 'stats') {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  console.log(`\nRipassi fissati: ${pending.length}\n`);
+  console.log(`\nRitorni fissati: ${pending.length}\n`);
   for (const v of pending) {
-    const when = v.answers.pos_test_quando;
+    const when = v.answers.ritorno_quando;
     // L'ora è facoltativa: dove manca resta la colonna vuota, allineata con le altre.
-    const at = (v.answers.pos_test_ora ?? '').padEnd(5);
+    const at = (v.answers.ritorno_ora ?? '').padEnd(5);
     const late = when < today ? ' ⚠ scaduto' : '';
     console.log(
-      `${when} ${at}  ${v.merchantName.slice(0, 34).padEnd(36)} ${v.surveyor.padEnd(16)} ${v.id}${late}`
+      `${when} ${at}  ${v.merchantName.slice(0, 30).padEnd(32)} ${(v.answers.ritorno_motivo ?? []).join(', ').slice(0, 30).padEnd(32)} ${v.id}${late}`
     );
   }
   console.log();

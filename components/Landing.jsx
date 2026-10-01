@@ -32,7 +32,7 @@ export default function Landing({ locale }) {
       <main>
         <Hero t={t} locale={locale} />
         <DualInitiative t={t.dual} conj={t.meta.assetsConjunction} />
-        <HowItWorks t={t.how} conj={t.meta.assetsConjunction} locale={locale} />
+        <HowItWorks t={t.how} locale={locale} />
         <Prizes t={t.prizes} locale={locale} />
         <EntryForm t={t.form} locale={locale} onOpenRules={openRules} />
         <MerchantDirectory t={t.map} locale={locale} />

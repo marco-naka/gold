@@ -1,4 +1,4 @@
-import { Upload, MapPin, CalendarDays, Ticket } from 'lucide-react';
+import { Upload, MapPin, CalendarDays, Ticket, ArrowDown } from 'lucide-react';
 import Countdown from './Countdown';
 import LiveStats from './LiveStats';
 import PrizeValue from './PrizeValue';
@@ -117,6 +117,28 @@ export default function Hero({ t, locale }) {
 
               <p className="mt-5 text-center text-[11px] leading-relaxed text-muted/80">{d.disclaimer}</p>
             </div>
+
+            {/*
+              Sotto la scheda del montepremi, la scorciatoia per chi ha già pagato: chi arriva
+              dal negozio con lo scontrino in mano non deve cercare il modulo, e il riquadro
+              intero è cliccabile, non solo la riga finale.
+            */}
+            <a
+              href="#partecipa"
+              className="group mt-4 flex items-center gap-4 rounded-2xl border border-gold/25 bg-gold/[0.06] p-5 transition hover:border-gold/50 hover:bg-gold/[0.1]"
+            >
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gold-gradient text-ink-deep shadow-gold-sm">
+                <Upload className="h-5 w-5" strokeWidth={2.2} />
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-bold text-white">{d.entryBoxTitle}</span>
+                <span className="mt-0.5 block text-xs leading-relaxed text-muted">{d.entryBoxText}</span>
+              </span>
+              <span className="ml-auto inline-flex shrink-0 items-center gap-1 text-xs font-semibold text-gold">
+                {d.entryBoxCta}
+                <ArrowDown className="h-4 w-4 transition-transform group-hover:translate-y-0.5" />
+              </span>
+            </a>
           </div>
         </div>
       </div>

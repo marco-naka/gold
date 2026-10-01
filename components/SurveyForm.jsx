@@ -63,14 +63,22 @@ const readDraft = () => {
   }
 };
 
-export default function SurveyForm({ locked }) {
+export default function SurveyForm({ locked, pinHint }) {
   const [unlocked, setUnlocked] = useState(!locked);
+  // Nome di chi è entrato col proprio PIN. Vuoto = accesso condiviso o aperto: in quel
+  // caso il nome resta un campo da compilare.
+  const [operator, setOperator] = useState('');
   // La lingua è del rilevatore, non del negozio: resta su questo telefono.
   const [locale, setLocale] = useState('it');
 
   useEffect(() => {
     const saved = localStorage.getItem(LOCALE_KEY);
     if (SURVEY_LOCALES.includes(saved)) setLocale(saved);
+    // Il cookie dura trenta giorni: chi riapre l'app è già riconosciuto.
+    fetch('/api/rilevazioni?me=1')
+      .then((r) => r.json())
+      .then((d) => d.operator && setOperator(d.operator))
+      .catch(() => {});
   }, []);
 
   const change = (next) => {
@@ -82,8 +90,20 @@ export default function SurveyForm({ locked }) {
     }
   };
 
-  if (!unlocked) return <CodeGate onUnlock={() => setUnlocked(true)} locale={locale} onLocale={change} />;
-  return <Survey locale={locale} onLocale={change} />;
+  if (!unlocked) {
+    return (
+      <CodeGate
+        onUnlock={(name) => {
+          setOperator(name || '');
+          setUnlocked(true);
+        }}
+        locale={locale}
+        onLocale={change}
+        pinHint={pinHint}
+      />
+    );
+  }
+  return <Survey locale={locale} onLocale={change} operator={operator} />;
 }
 
 /** Interruttore IT/EN, due pulsanti e nessun menu: si cambia con un pollice. */
@@ -110,7 +130,7 @@ function LocaleSwitch({ locale, onLocale }) {
 
 /* ---------------------------------------------------------------- accesso */
 
-function CodeGate({ onUnlock, locale, onLocale }) {
+function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
   const t = ui(locale);
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
@@ -124,8 +144,9 @@ function CodeGate({ onUnlock, locale, onLocale }) {
     body.append('intent', 'unlock');
     body.append('code', code);
     const res = await fetch('/api/rilevazioni', { method: 'POST', body });
+    const json = await res.json().catch(() => ({}));
     setBusy(false);
-    if (res.ok) onUnlock();
+    if (res.ok) onUnlock(json.operator);
     else setError(t.gateWrong);
   }
 
@@ -143,7 +164,7 @@ function CodeGate({ onUnlock, locale, onLocale }) {
         <form onSubmit={submit} className="mt-6">
           <input
             type="password"
-            inputMode="text"
+            inputMode="numeric"
             autoComplete="off"
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -152,6 +173,13 @@ function CodeGate({ onUnlock, locale, onLocale }) {
             aria-invalid={Boolean(error)}
           />
           {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
+
+          {/* Compare solo finché i PIN sono quelli di prova: con i PIN veri sparisce da sé. */}
+          {pinHint && (
+            <p className="mt-3 rounded-lg border border-gold/25 bg-gold/[0.07] px-3 py-2 text-xs text-muted">
+              {t.pinHint} <span className="font-mono font-bold text-gold">{pinHint}</span>
+            </p>
+          )}
           <Button type="submit" disabled={busy || !code} className="mt-4 w-full">
             {busy ? t.gateChecking : t.gateSubmit}
           </Button>
@@ -163,7 +191,7 @@ function CodeGate({ onUnlock, locale, onLocale }) {
 
 /* ------------------------------------------------------------- rilevazione */
 
-function Survey({ locale, onLocale }) {
+function Survey({ locale, onLocale, operator }) {
   const t = ui(locale);
   const [step, setStep] = useState(0);
   const [surveyor, setSurveyor] = useState('');
@@ -221,6 +249,12 @@ function Survey({ locale, onLocale }) {
   useEffect(() => {
     setStep((s) => Math.min(s, steps.length - 1));
   }, [steps.length]);
+
+  // Con il PIN per persona il nome lo decide il server: il campo scompare e non può
+  // più essere scritto storto o attribuito a un collega.
+  useEffect(() => {
+    if (operator) setSurveyor(operator);
+  }, [operator]);
 
   const setAnswer = useCallback((id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -296,6 +330,8 @@ function Survey({ locale, onLocale }) {
           onPick={setMerchant}
           surveyor={surveyor}
           onSurveyor={setSurveyor}
+          operator={operator}
+          onAnswers={setAnswers}
           error={errors.merchantName || errors.surveyor}
           photos={photos}
           setPhotos={setPhotos}
@@ -390,11 +426,13 @@ function Progress({ step, total, merchant, locale, onLocale }) {
   );
 }
 
-function MerchantStep({ merchant, onPick, surveyor, onSurveyor, error, photos, setPhotos, locale }) {
+function MerchantStep({ merchant, onPick, surveyor, onSurveyor, operator, onAnswers, error, photos, setPhotos, locale }) {
   const t = ui(locale);
   const [q, setQ] = useState('');
   const [hits, setHits] = useState([]);
   const [history, setHistory] = useState([]);
+  const [last, setLast] = useState(null);
+  const [ripreso, setRipreso] = useState(false);
   const [visited, setVisited] = useState({});
 
   // Si scarica una volta sola: chi ha già una visita alle spalle va segnalato *dentro* i
@@ -425,13 +463,21 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, error, photos, s
 
   // Visite precedenti allo stesso negozio: evita di ripetere un giro già fatto dal collega.
   useEffect(() => {
-    if (!merchant) return setHistory([]);
+    setRipreso(false);
+    if (!merchant) {
+      setHistory([]);
+      setLast(null);
+      return;
+    }
     const params = new URLSearchParams();
     if (merchant.id) params.set('merchantId', merchant.id);
     else params.set('merchantName', merchant.name);
     fetch(`/api/rilevazioni?${params}`)
       .then((r) => r.json())
-      .then((d) => setHistory(d.visits ?? []))
+      .then((d) => {
+        setHistory(d.visits ?? []);
+        setLast(d.last ?? null);
+      })
       .catch(() => {});
   }, [merchant]);
 
@@ -439,18 +485,29 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, error, photos, s
     <section>
       <h2 className="text-xl font-bold">{t.stepMerchant}</h2>
 
-      <label htmlFor="surveyor" className="mt-6 block text-sm font-semibold text-white">
-        {t.yourName}
-      </label>
-      <input
-        id="surveyor"
-        value={surveyor}
-        onChange={(e) => onSurveyor(e.target.value)}
-        placeholder={t.yourNamePlaceholder}
-        autoComplete="name"
-        className="field mt-2"
-      />
-      <p className="mt-1.5 text-xs text-muted">{t.yourNameHint}</p>
+      {operator ? (
+        <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-gold/25 bg-gold/[0.07] px-4 py-2.5 text-sm">
+          <Check className="h-4 w-4 text-gold" />
+          <span className="text-muted">
+            {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
+          </span>
+        </p>
+      ) : (
+        <>
+          <label htmlFor="surveyor" className="mt-6 block text-sm font-semibold text-white">
+            {t.yourName}
+          </label>
+          <input
+            id="surveyor"
+            value={surveyor}
+            onChange={(e) => onSurveyor(e.target.value)}
+            placeholder={t.yourNamePlaceholder}
+            autoComplete="name"
+            className="field mt-2"
+          />
+          <p className="mt-1.5 text-xs text-muted">{t.yourNameHint}</p>
+        </>
+      )}
 
       <h3 className="mt-8 text-sm font-semibold text-white">{t.shop}</h3>
       {merchant ? (
@@ -483,6 +540,31 @@ function MerchantStep({ merchant, onPick, surveyor, onSurveyor, error, photos, s
               {t.fromMap} {merchant.assets.join(' · ')}
               {merchant.phone ? ` · ${merchant.phone}` : ''}
             </p>
+          )}
+
+          {last && Object.keys(last.answers ?? {}).length > 0 && (
+            <div className="mt-3 border-t border-white/10 pt-3">
+              {/*
+                Chi torna riparte da quello che il collega ha già rilevato: dieci risposte
+                identiche non si ridigitano, e quello che è cambiato salta all'occhio.
+                Le foto no: sono file, vanno riscattate.
+              */}
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  onAnswers((prev) => ({ ...last.answers, ...prev }));
+                  setRipreso(true);
+                }}
+                disabled={ripreso}
+                className="w-full"
+              >
+                <RotateCcw className="h-4 w-4" />
+                {ripreso
+                  ? t.resumed
+                  : t.resumeFrom(last.surveyor || '—', new Date(last.at).toLocaleDateString('it-CH'))}
+              </Button>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{t.resumeHint}</p>
+            </div>
           )}
 
           {history.length > 0 && (

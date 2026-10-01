@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ALL_MERCHANTS } from '@/lib/merchants';
 import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
 import { pickAnswers, validatePhoto, validateVisit } from '@/lib/survey-validation';
-import { isAuthorized, isValidCode, sessionCookie } from '@/lib/server/rilevazioni-auth';
+import { currentOperator, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
 import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
 import { clientIp } from '@/lib/server/client-ip';
@@ -19,6 +19,10 @@ export async function GET(request) {
 
   const params = request.nextUrl.searchParams;
 
+  if (params.get('me') === '1') {
+    return NextResponse.json({ operator: currentOperator(request) ?? '' });
+  }
+
   if (params.get('visited') === '1') {
     // Una riga per negozio, con l'ultima visita: serve a non rifare un giro già fatto,
     // e il campo pesa pochi byte anche con tutti e 336 gli esercenti visitati.
@@ -32,9 +36,9 @@ export async function GET(request) {
           at: v.createdAt,
           surveyor: v.surveyor,
           outcome: v.outcome,
-          // Un ripasso fissato tiene il negozio «da completare» anche se la visita è andata
-          // bene: la transazione di prova è ancora da fare.
-          ripasso: v.answers?.pos_test_quando ?? null,
+          // Un ritorno fissato tiene il negozio «da completare» anche se la visita è andata
+          // bene: qualcosa è rimasto da fare.
+          ripasso: v.answers?.ritorno_quando ?? null,
           count: (prev?.count ?? 0) + 1,
         };
       } else {
@@ -52,8 +56,13 @@ export async function GET(request) {
   if (!id && !name) return NextResponse.json({ visits: [] });
 
   const previous = await visitsForMerchant(id, name);
+  const latest = previous[previous.length - 1];
   return NextResponse.json({
     visits: previous.map((v) => ({ id: v.id, at: v.createdAt, surveyor: v.surveyor, outcome: v.outcome })),
+    // Le risposte dell'ultima visita, per chi torna sul posto: ripartire da quello che
+    // il collega ha già rilevato evita di ridigitare dieci risposte identiche, e fa
+    // risaltare quello che nel frattempo è cambiato.
+    last: latest ? { id: latest.id, at: latest.createdAt, surveyor: latest.surveyor, answers: latest.answers } : null,
   });
 }
 
@@ -81,11 +90,12 @@ export async function POST(request) {
     if (hit(`unlock:${ip}`, UNLOCK_TRIES)) {
       return NextResponse.json({ code: 'rate_limited' }, { status: 429 });
     }
-    if (!isValidCode(form.get('code'))) {
+    const operator = identify(form.get('code'));
+    if (operator === null) {
       return NextResponse.json({ code: 'wrong_code' }, { status: 401 });
     }
-    const res = NextResponse.json({ ok: true });
-    res.cookies.set(sessionCookie());
+    const res = NextResponse.json({ ok: true, operator });
+    res.cookies.set(sessionCookie(operator));
     return res;
   }
 
@@ -101,7 +111,9 @@ export async function POST(request) {
   const data = {
     merchantId: (form.get('merchantId') || '').trim() || null,
     merchantName: (form.get('merchantName') || '').trim(),
-    surveyor: (form.get('surveyor') || '').trim(),
+    // Con i PIN per persona il nome arriva dal cookie: è l'unico che non si può sbagliare
+    // né attribuire a un collega. Col codice condiviso resta quello digitato.
+    surveyor: currentOperator(request) || (form.get('surveyor') || '').trim(),
     answers,
   };
 
