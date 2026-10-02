@@ -242,7 +242,10 @@ export default function BestSocialContent({ locale }) {
             align="left"
             eyebrow={t.socialEyebrow}
             title={t.socialTitle}
-            subtitle={t.socialSubtitle}
+            subtitle={t.socialSubtitle(
+              formatDate(SOCIAL_CONTEST.publishDeadline, locale, { weekday: 'long', day: 'numeric', month: 'long' }),
+              formatDateTime(CONTEST.validTo, locale, { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }),
+            )}
           />
         </section>
 

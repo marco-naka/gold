@@ -1,0 +1,38 @@
+import Link from 'next/link';
+import { MapPin, Home } from 'lucide-react';
+import { CONTEST } from '@/lib/constants';
+import { getDictionary } from '@/lib/i18n';
+
+const dict = getDictionary('en');
+const t = dict.notFound;
+const contestTitle = dict.meta.contestTitle;
+
+export const metadata = { title: 'Page not found | NAKA' };
+
+export default function NotFound() {
+  return (
+    <main className="flex min-h-dvh items-center justify-center px-5 py-24">
+      <div className="glass w-full max-w-lg p-10 text-center">
+        <p className="text-6xl font-black text-gold-gradient">404</p>
+        <h1 className="mt-4 text-2xl font-bold">{t.title}</h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted">{t.text(contestTitle)}</p>
+        <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+          <Link
+            href="/en"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-gold-gradient px-5 py-3 text-sm font-bold text-ink-deep transition hover:brightness-110"
+          >
+            <Home className="h-4 w-4" />
+            {t.home}
+          </Link>
+          <Link
+            href="/en#mappa"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-gold/40 bg-gold/5 px-5 py-3 text-sm font-semibold text-gold transition hover:bg-gold/10"
+          >
+            <MapPin className="h-4 w-4" />
+            {t.map}
+          </Link>
+        </div>
+      </div>
+    </main>
+  );
+}

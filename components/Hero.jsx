@@ -8,7 +8,7 @@ import Button from './ui/Button';
 import { PoweredBadge } from './Brand';
 import { CONTEST, EVENT } from '@/lib/constants';
 import { POOLS } from '@/lib/campaigns';
-import { formatDate } from '@/lib/i18n';
+import { formatDate, formatTime } from '@/lib/i18n';
 
 export default function Hero({ t, locale }) {
   const d = t.hero;
@@ -18,7 +18,14 @@ export default function Hero({ t, locale }) {
   // dove, con cosa si paga, cosa si vince e quando si estrae.
   // Il numero dei negozi non compare: "328" si legge come un tetto massimo, mentre l'elenco
   // cresce con le adesioni. Il conteggio vero sta nel contatore qui sotto.
-  const week = locale === 'en' ? CONTEST.weekLabelEn : CONTEST.weekLabel;
+  // La settimana dell'iniziativa si scrive dalle date di gara: se cambiano, il testo le segue.
+  const weekday = { weekday: 'long', day: 'numeric', month: 'long' };
+  const week = d.week(
+    formatDate(CONTEST.validFrom, locale, weekday),
+    formatTime(CONTEST.validFrom, locale),
+    formatDate(CONTEST.validTo, locale, weekday),
+    formatTime(CONTEST.validTo, locale),
+  );
   // Solo il giorno: l'ora la decide la rete Bitcoin, nella finestra dichiarata nel regolamento.
   const drawDate = formatDate(CONTEST.drawDate, locale);
   // Il premio più alto della quota clienti: la lista è ordinata per importo decrescente.
@@ -47,7 +54,7 @@ export default function Hero({ t, locale }) {
               </span>
               <span className="chip">
                 <CalendarDays className="h-3.5 w-3.5 text-btc" />
-                {locale === 'en' ? CONTEST.weekLabelEn : CONTEST.weekLabel}
+                {week}
               </span>
             </div>
 

@@ -150,17 +150,36 @@ test('un vincitore escluso lascia il premio alla prima riserva, senza rimescolar
 import { computeAll, isSpritzEntry } from '../scripts/draw.mjs';
 import { zurichLocalToIso } from '../lib/time.js';
 
-test('Spritz: conta il locale e l’ora del pagamento; senza dato POS, l’ora di registrazione entro la notte', () => {
+test('Spritz: conta il locale e l’ora del pagamento sul POS, non quella di registrazione', () => {
   const venues = ['lug-cioccaro-1'];
   const at = (s) => zurichLocalToIso(s);
-  const base = { merchantId: 'lug-cioccaro-1', createdAt: at('2026-10-24 10:00') };
-  assert.equal(isSpritzEntry({ ...base, paidAt: at('2026-10-22 19:30') }, venues), true);
-  assert.equal(isSpritzEntry({ ...base, paidAt: at('2026-10-22 17:59') }, venues), false, 'prima della serata');
-  assert.equal(isSpritzEntry({ ...base, paidAt: at('2026-10-22 23:01') }, venues), false, 'dopo la serata');
-  assert.equal(isSpritzEntry({ merchantId: 'lug-cioccaro-1', createdAt: at('2026-10-22 23:40') }, venues), true, 'pagato alle 22:50, registrato dopo');
-  assert.equal(isSpritzEntry({ merchantId: 'lug-cioccaro-1', createdAt: at('2026-10-23 09:00') }, venues), false);
+  const late = { merchantId: 'lug-cioccaro-1', createdAt: at('2026-10-24 15:30') }; // registrata sabato
+  assert.equal(isSpritzEntry({ ...late, paidAt: at('2026-10-22 19:30') }, venues), true);
+  assert.equal(isSpritzEntry({ ...late, paidAt: at('2026-10-22 17:59') }, venues), false, 'prima della serata');
+  assert.equal(isSpritzEntry({ ...late, paidAt: at('2026-10-22 23:01') }, venues), false, 'dopo la serata');
+  assert.equal(isSpritzEntry({ ...late, paidAt: at('2026-10-23 12:00') }, venues), false, 'giorno dopo');
+  assert.equal(isSpritzEntry(late, venues), true, 'ora POS non ancora caricata: entra, si verifica se vince');
+  assert.equal(
+    isSpritzEntry({ merchantId: 'lug-cioccaro-1', createdAt: at('2026-10-22 12:00') }, venues),
+    false,
+    'registrata prima della serata: non può essere stata pagata lì',
+  );
   assert.equal(isSpritzEntry({ merchantId: 'lug-altrove', paidAt: at('2026-10-22 19:30') }, venues), false, 'fuori dalla piazza');
   assert.equal(isSpritzEntry({ merchantId: null, paidAt: at('2026-10-22 19:30') }, venues), false);
+});
+
+test('esclusa solo dallo Spritz, la giocata resta in gara nel generale', () => {
+  const pool = ids.slice(0, 20);
+  const lists = { users: pool, spritz: pool, merchants: merchantIds };
+  const first = computeAll(lists, SEED);
+  const spritzWinner = first.spritz.winners[0].winnerId;
+  const after = computeAll(lists, SEED, [{ id: spritzWinner, reason: 'fuori orario', only: 'spritz' }]);
+  assert.notEqual(after.spritz.winners[0].winnerId, spritzWinner, 'lo Spritz passa alla riserva');
+  assert.deepEqual(after.users, first.users, 'il generale non cambia');
+  assert.ok(
+    computeAll(lists, SEED, [{ id: spritzWinner, reason: 'x' }]).users.reserves.every((r) => r.id !== spritzWinner),
+    'un’esclusione totale invece la toglie anche dalle riserve del generale',
+  );
 });
 
 test('una giocata vince al massimo un premio: lo Spritz salta chi ha vinto il generale', () => {

@@ -9,6 +9,7 @@
  *   node scripts/draw.mjs status                       a che punto è la catena
  *   node scripts/draw.mjs run                          estrae, quando il seme è definitivo
  *   node scripts/draw.mjs disqualify <ID> --reason "…" esclude un vincitore, entra la riserva
+ *                                     [--only spritz]  solo da un'estrazione (es. pagato fuori orario)
  *   node scripts/draw.mjs verify                       ricalcola tutto e confronta
  *
  * Senza rete (prove, test): `commit --tip <altezza>` e `run --seed <hash>`; `verify --offline`.
@@ -60,7 +61,7 @@ function report(result) {
   show('MERCHANT', result.merchants);
   if (result.disqualified?.length) {
     out('\n  Esclusi dopo la verifica:');
-    for (const d of result.disqualified) out(`    · ${d.id} — ${d.reason}`);
+    for (const d of result.disqualified) out(`    · ${d.id}${d.only ? ` (solo ${d.only})` : ''} — ${d.reason}`);
   }
   out('\n  Risultato: .data/draw/result.json (pubblicato su /vincitori)');
 }
@@ -99,8 +100,9 @@ async function disqualify(rest) {
   const id = rest.at(0);
   if (!id || id.startsWith('--')) throw new Error('Uso: disqualify <ID> --reason "motivo pubblicabile, senza dati personali"');
   const reason = flagOf(rest, 'reason');
-  const result = await disqualifyWinner(id, reason);
-  out(`✓ ${id} escluso: ${reason}`);
+  const only = flagOf(rest, 'only') ?? null;
+  const result = await disqualifyWinner(id, reason, { only });
+  out(`✓ ${id} escluso${only ? ` dall'estrazione "${only}"` : ''}: ${reason}`);
   report(result);
 }
 

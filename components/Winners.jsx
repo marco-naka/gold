@@ -152,7 +152,11 @@ export default async function Winners({ locale }) {
                   <ul className="mt-2 space-y-1 text-xs text-muted">
                     {result.disqualified.map((d) => (
                       <li key={d.id}>
-                        <span className="font-mono">{d.id}</span> — {d.reason}
+                        <span className="font-mono">{d.id}</span>
+                        {/* Un'esclusione può valere per un solo premio: chi ha pagato fuori orario
+                            perde lo Spritz, non il resto. */}
+                        {d.only && ` (${{ users: t.usersSection, spritz: t.spritzSection, merchants: t.merchantsSection }[d.only]})`}{' '}
+                        — {d.reason}
                       </li>
                     ))}
                   </ul>

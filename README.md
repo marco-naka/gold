@@ -454,9 +454,11 @@ catena al momento dell'impegno. Parametri in `DRAW` (`lib/constants.js`).
   ID che hanno già vinto lì. Se un'esclusione promuove nel generale una giocata che aveva vinto lo
   Spritz, lo Spritz passa da solo alla successiva del suo elenco.
 - **Satoshi Spritz**: entrano le giocate fatte nei locali della piazza (`SATOSHI_SPRITZ.venues`, o
-  tutti i negozi all'indirizzo della serata finché l'elenco non c'è) con l'ora di pagamento del POS
-  nella finestra; senza quel dato, registrate entro le 02:00 della notte. L'ora del POS si salva
-  con `npm run entries paid <ID> -- --at "2026-10-22 19:30"` (ora di Lugano).
+  tutti i negozi all'indirizzo della serata finché l'elenco non c'è) pagate durante la serata. Conta
+  l'ora del POS, non quella di registrazione: si registra fino alla chiusura del concorso. L'ora si
+  salva con `npm run entries paid <ID> -- --at "2026-10-22 19:30"` (ora di Lugano). Se all'impegno
+  manca ancora, la giocata entra purché registrata dopo l'inizio della serata; se vince e il POS dice
+  fuori orario: `npm run draw disqualify <ID> -- --only spritz --reason "…"`, e resta nel generale.
 
 Top Volume (classifica sui volumi POS) e Best Social Content (giuria) non passano dal sorteggio.
 

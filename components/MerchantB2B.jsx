@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { Mail, Zap, TrendingUp, Trophy, BookOpen } from 'lucide-react';
 import Button from './ui/Button';
 import GlassCard from './ui/GlassCard';
-import { CONTEST, MAILTO_MERCHANT, PRIZES, formatXaut } from '@/lib/constants';
+import { CONTEST, PRIZES, formatXaut } from '@/lib/constants';
 import { localePath } from '@/lib/i18n';
 
 export default function MerchantB2B({ t, locale }) {
@@ -10,6 +10,11 @@ export default function MerchantB2B({ t, locale }) {
   const joinMailto = `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(
     t.merchantJoin.subject,
   )}&body=${encodeURIComponent(t.merchantJoin.body.join('\n'))}`;
+  // L'adesione arriva all'assistenza, non a `merchantEmail`: quella casella è l'indirizzo da cui
+  // partono gli inviti, e nessuno la presidia in entrata. Testo nella lingua della pagina.
+  const adhesionMailto = `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(
+    t.adhesion.subject,
+  )}&body=${encodeURIComponent(t.adhesion.body.join('\n'))}`;
   const icons = [Zap, TrendingUp, Trophy];
   const perks = t
     .perks(formatXaut(PRIZES.merchants.pool))
@@ -42,7 +47,7 @@ export default function MerchantB2B({ t, locale }) {
             </ul>
 
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
-              <Button as="a" href={MAILTO_MERCHANT} size="lg">
+              <Button as="a" href={adhesionMailto} size="lg">
                 <Mail className="h-5 w-5" />
                 {t.cta}
               </Button>

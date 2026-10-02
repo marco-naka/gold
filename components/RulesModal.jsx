@@ -55,16 +55,11 @@ export default function RulesModal({ t, locale, open, onClose }) {
     },
     social: {
       deadline: formatDateTime(SOCIAL_CONTEST.publishDeadline, locale),
-      tags: SOCIAL_CONTEST.hashtagsUsers.join(' '),
+      tags: SOCIAL_CONTEST.hashtags.join(' '),
     },
     spritz: {
       from: formatDateTime(SATOSHI_SPRITZ.from, locale),
       to: formatTime(SATOSHI_SPRITZ.to, locale),
-      // «02:00 del 23 ottobre 2026»: l'ora prima della data, perché il testo dice «le ore …».
-      registeredUntil: `${formatTime(SATOSHI_SPRITZ.registeredUntil, locale)} ${locale === 'en' ? 'on' : 'del'} ${formatDate(
-        SATOSHI_SPRITZ.registeredUntil,
-        locale,
-      )}`,
       area: SATOSHI_SPRITZ.area,
       url: SATOSHI_SPRITZ.url,
     },

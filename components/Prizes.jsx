@@ -100,7 +100,7 @@ export default function Prizes({ t, locale }) {
                           <ChevronDown className="h-3.5 w-3.5 transition-transform group-open:rotate-180" />
                         </summary>
                         <p className="mt-1.5 text-xs leading-relaxed text-muted">
-                          {t.socialHow(SOCIAL_CONTEST.hashtagsUsers.join(' '))}
+                          {t.socialHow(SOCIAL_CONTEST.hashtags.join(' '))}
                         </p>
                       </details>
                     </>

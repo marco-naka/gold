@@ -81,6 +81,7 @@ export function ogCard(locale = 'it') {
         >
           {`${formatSats(DECLARED.sats, locale)} · ${t.prizes.poolLabel}`}
         </div>
+        {/* USDt e non USD₮: il generatore dell'immagine non ha un font con il ₮ e lo disegnerebbe come un quadratino. */}
         <div style={{ fontSize: 24, color: '#A1A1AA' }}>Bitcoin · USDt · XAUT</div>
       </div>
     </div>,

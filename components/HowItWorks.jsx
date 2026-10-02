@@ -133,7 +133,7 @@ export default function HowItWorks({ t, locale = 'it' }) {
                           {w.name}
                           <ExternalLink className="h-3 w-3 shrink-0 text-muted transition group-hover:text-btc" />
                         </span>
-                        <span className="mt-0.5 block text-xs leading-relaxed text-muted">{w.desc}</span>
+                        <span className="mt-0.5 block text-xs leading-relaxed text-muted">{t.walletNotes[w.name] ?? w.desc}</span>
                       </span>
                     </a>
                   </li>
