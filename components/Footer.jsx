@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { Mail, ArrowUp, ExternalLink } from 'lucide-react';
 import { NakaLogo, PlanBLogo, PoweredBadge } from './Brand';
 import { CONTEST, EVENT, OFFICIAL_CHANNELS } from '@/lib/constants';
-import { OFFICIAL_GUIDE } from '@/lib/wallets';
 import { getDictionary, localePath } from '@/lib/i18n';
 
 /**
@@ -103,17 +102,6 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                   className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-btc"
                 >
                   {d.linkedin}
-                  <ExternalLink className="h-3 w-3" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href={OFFICIAL_GUIDE[locale] ?? OFFICIAL_GUIDE.it}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-sm text-muted transition hover:text-btc"
-                >
-                  {d.payGuide}
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </li>

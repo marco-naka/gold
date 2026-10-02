@@ -1,7 +1,5 @@
 'use client';
 
-import { ExternalLink } from 'lucide-react';
-import { XAUT_PRICE_URL } from '@/lib/constants';
 import { formatSats } from '@/lib/bitcoin';
 import { DECLARED, POOLS } from '@/lib/campaigns';
 import { useRates, usdOf } from './FiatValue';
@@ -41,18 +39,7 @@ export default function PrizeValue({ t, locale }) {
         </span>
       </div>
 
-      <p className="text-center text-[11px] leading-relaxed text-muted/80">
-        {t.valueNote}{' '}
-        <a
-          href={XAUT_PRICE_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-btc/90 underline underline-offset-2 hover:text-btc"
-        >
-          {t.valueLink}
-          <ExternalLink className="h-3 w-3" />
-        </a>
-      </p>
+      <p className="text-center text-[11px] leading-relaxed text-muted/80">{t.valueNote}</p>
     </>
   );
 }
