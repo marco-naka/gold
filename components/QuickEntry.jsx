@@ -1,10 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Clock } from 'lucide-react';
 import EntryForm from './EntryForm';
+import RulesModal from './RulesModal';
 import LiveStats from './LiveStats';
+import SourceTracker from './SourceTracker';
 import LanguageSwitch from './LanguageSwitch';
 import { NakaLogo } from './Brand';
 import { CONTEST } from '@/lib/constants';
@@ -19,21 +21,13 @@ import { formatDate, getDictionary, localePath } from '@/lib/i18n';
  */
 export default function QuickEntry({ locale }) {
   const t = getDictionary(locale);
-
-  // Conteggio anonimo per sorgente (?s= stampato sui QR): nessun cookie, solo un contatore.
-  useEffect(() => {
-    const source = new URLSearchParams(window.location.search).get('s');
-    if (!source) return;
-    fetch('/api/track', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ source }),
-      keepalive: true,
-    }).catch(() => {});
-  }, []);
+  // Il modulo chiede di accettare il regolamento: deve potersi aprire anche qui, non solo in home.
+  // Chi arriva dal QR stampato non passa mai dalla home.
+  const [rulesOpen, setRulesOpen] = useState(false);
 
   return (
     <div className="min-h-dvh">
+      <SourceTracker />
       <header className="border-b border-white/10 bg-ink-deep/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-2xl items-center justify-between px-5">
           <Link href={localePath(locale)} aria-label={t.nav.home}>
@@ -54,7 +48,7 @@ export default function QuickEntry({ locale }) {
           <LiveStats t={t.stats} locale={locale} className="mt-5" />
         </div>
 
-        <EntryForm t={t.form} locale={locale} compact />
+        <EntryForm t={t.form} locale={locale} compact onOpenRules={() => setRulesOpen(true)} />
 
         <div className="mt-10 text-center">
           <Link
@@ -66,6 +60,7 @@ export default function QuickEntry({ locale }) {
           </Link>
         </div>
       </main>
+      <RulesModal t={t} locale={locale} open={rulesOpen} onClose={() => setRulesOpen(false)} />
     </div>
   );
 }

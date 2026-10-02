@@ -308,8 +308,17 @@ avvisa se viene lanciato prima della data prevista.
 
 ## Misurazione senza cookie
 
-I QR stampati portano un parametro sorgente (`?s=volantino-cliente`, `locandina`, `vetrina`,
-`volantino-merchant`, `linkedin`). `/api/track` conta le aperture per etichetta in `.data/visits.json`
+I QR stampati portano un parametro sorgente, uno per materiale:
+
+| Etichetta | Materiale |
+|---|---|
+| `locandina` | locandina A3, in italiano (`/p`) e in inglese (`/en/p`) |
+| `banco` | cartoncino A6 accanto al POS |
+| `vetrina` | vetrofanie e bollino della porta |
+| `volantino-cliente` · `volantino-merchant` | volantini A5 |
+| `linkedin` · `sito` · `altro` | canali digitali |
+
+`/api/track` conta le aperture per etichetta in `.data/visits.json`
 e la sorgente viene salvata sulla giocata: `npm run entries stats` mostra la conversione per
 materiale. Nessun cookie, nessun IP, nessun identificatore — niente da far consentire sotto LPD.
 Le etichette fuori elenco vengono scartate.

@@ -28,6 +28,7 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import FiatValue from './FiatValue';
+import SourceTracker from './SourceTracker';
 import GlassCard from './ui/GlassCard';
 import Button from './ui/Button';
 import SectionTitle from './ui/SectionTitle';
@@ -73,6 +74,7 @@ export default function BestSocialContent({ locale }) {
 
   return (
     <>
+      <SourceTracker />
       {/* Header essenziale: questa pagina si raggiunge dalla landing, non è una home */}
       <header className="border-b border-white/10 bg-ink-deep/80 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-5xl items-center justify-between gap-4 px-5 sm:px-8">
