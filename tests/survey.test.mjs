@@ -413,3 +413,12 @@ test('lo schema è coerente: id unici, opzioni dove servono, condizioni risolvib
   assert.equal(new Set(PHOTOS.map((p) => p.id)).size, PHOTOS.length);
   assert.ok(OUTCOMES.some((o) => o.excludes), 'nessun esito toglie il negozio dall’elenco');
 });
+
+test('chi non ha mai usato il POS non deve dare un voto', () => {
+  const voto = ALL_QUESTIONS.find((q) => q.id === 'naka_esperienza');
+  const recensione = ALL_QUESTIONS.find((q) => q.id === 'naka_recensione');
+  assert.equal(isVisible(voto, { con_chi: 'Titolare' }), true);
+  assert.equal(isVisible(voto, { con_chi: 'Titolare', naka_mai_usato: true }), false);
+  // Senza voto non compaiono nemmeno QR e domanda sulla recensione.
+  assert.equal(isVisible(recensione, { con_chi: 'Titolare', naka_mai_usato: true }), false);
+});
