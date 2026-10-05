@@ -1,0 +1,475 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import {
+  AlertTriangle,
+  CalendarClock,
+  Camera,
+  ChevronRight,
+  Download,
+  MessageSquare,
+  RefreshCw,
+  Search,
+  Store,
+} from 'lucide-react';
+import { OUTCOMES, PHOTOS, SECTIONS } from '@/lib/survey';
+import { cellFor } from '@/lib/survey-export';
+import { TIME_ZONE } from '@/lib/time';
+import { CodeGate } from './SurveyForm';
+import Button from './ui/Button';
+import Modal from './ui/Modal';
+import { cn } from './ui/cn';
+
+/*
+ * Pannello dell'admin delle rilevazioni.
+ *
+ * Risponde, nell'ordine, alle domande di chi coordina il giro:
+ * 1. come siamo messi — negozi visitati e il loro stato, contando l'ULTIMA visita a ogni
+ *    negozio (un «da ricontattare» seguito da un «aderisce» è un negozio che aderisce);
+ * 2. che cosa c'è da fare — ritorni fissati, terminali da sistemare, richieste per l'assistenza;
+ * 3. che cosa è stato rilevato — l'elenco di tutte le visite, filtrabile, con la scheda completa.
+ *
+ * Solo italiano: è uno strumento interno con un utente.
+ */
+
+const BROKEN = 'Terminale non funzionante — chiamare subito l’assistenza';
+
+const TONE = {
+  ok: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-300',
+  wait: 'border-btc/30 bg-btc/10 text-btc',
+  no: 'border-red-400/30 bg-red-400/10 text-red-300',
+};
+
+const outcomeOf = (id) => OUTCOMES.find((o) => o.id === id) ?? { id, label: id, tone: 'wait' };
+const shopKey = (v) => v.merchantId ?? v.merchantName.toLowerCase();
+const hasPosProblem = (v) => v.answers?.problema_flag === true || v.answers?.pos_stato === BROKEN;
+
+const fmt = (iso, withTime = true) =>
+  new Date(iso).toLocaleString('it-CH', {
+    timeZone: TIME_ZONE,
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    ...(withTime ? { hour: '2-digit', minute: '2-digit' } : {}),
+  });
+const dayKey = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(iso));
+const swissDate = (ymd) => (ymd ? ymd.split('-').reverse().join('.') : '');
+
+/* ------------------------------------------------------------------ accesso */
+
+export function AdminGate({ signedInAs, pinHint }) {
+  const router = useRouter();
+  const [retry, setRetry] = useState(false);
+
+  // Entrato con un PIN che non è da admin: lo si dice, invece di chiedere di nuovo il codice.
+  if (signedInAs && !retry) {
+    return (
+      <div className="mx-auto w-full max-w-sm px-5 py-24">
+        <div className="glass p-8">
+          <h1 className="text-xl font-bold">Pannello riservato</h1>
+          <p className="mt-2 text-sm text-muted">
+            Sei entrato come <span className="font-semibold text-white">{signedInAs}</span>: questo pannello è
+            riservato all’amministratore delle rilevazioni.
+          </p>
+          <div className="mt-6 flex flex-col gap-2">
+            <Button as="a" href="/rilevazioni" variant="secondary">
+              Torna alle rilevazioni
+            </Button>
+            <Button variant="ghost" onClick={() => setRetry(true)}>
+              Entra con un altro PIN
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return <CodeGate locale="it" onLocale={() => {}} pinHint={pinHint} onUnlock={() => router.refresh()} />;
+}
+
+/* ------------------------------------------------------------------ pannello */
+
+export default function RilevazioniAdmin({ visits, operator }) {
+  const router = useRouter();
+  const [refreshing, setRefreshing] = useState(false);
+  const [open, setOpen] = useState(null);
+  const [q, setQ] = useState('');
+  const [outcome, setOutcome] = useState('');
+  const [surveyor, setSurveyor] = useState('');
+  const [only, setOnly] = useState('');
+
+  const sorted = useMemo(() => [...visits].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [visits]);
+
+  // L'ultima visita a ogni negozio: è lo stato attuale del negozio.
+  const latest = useMemo(() => {
+    const map = new Map();
+    for (const v of sorted) if (!map.has(shopKey(v))) map.set(shopKey(v), v);
+    return [...map.values()];
+  }, [sorted]);
+
+  const today = dayKey(new Date().toISOString());
+
+  const stats = useMemo(() => {
+    const byOutcome = Object.fromEntries(OUTCOMES.map((o) => [o.id, 0]));
+    for (const v of latest) byOutcome[v.outcome] = (byOutcome[v.outcome] ?? 0) + 1;
+    const scores = sorted.map((v) => v.answers?.naka_esperienza).filter((n) => typeof n === 'number');
+    const bySurveyor = {};
+    for (const v of sorted) {
+      const s = (bySurveyor[v.surveyor || '—'] ??= { total: 0, today: 0 });
+      s.total += 1;
+      if (dayKey(v.createdAt) === today) s.today += 1;
+    }
+    return {
+      byOutcome,
+      bySurveyor,
+      todayCount: sorted.filter((v) => dayKey(v.createdAt) === today).length,
+      avg: scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '—',
+      scored: scores.length,
+    };
+  }, [latest, sorted, today]);
+
+  // Da fare: i ritorni fissati nell'ultima visita, i terminali con un problema, le richieste.
+  const agenda = useMemo(
+    () =>
+      latest
+        .filter((v) => v.answers?.ritorno_quando)
+        .sort((a, b) =>
+          `${a.answers.ritorno_quando} ${a.answers.ritorno_ora ?? ''}`.localeCompare(
+            `${b.answers.ritorno_quando} ${b.answers.ritorno_ora ?? ''}`
+          )
+        ),
+    [latest]
+  );
+  const posProblems = useMemo(() => latest.filter(hasPosProblem), [latest]);
+  const requests = useMemo(() => latest.filter((v) => v.answers?.naka_problemi), [latest]);
+
+  const surveyors = Object.keys(stats.bySurveyor).sort();
+
+  const filtered = sorted.filter((v) => {
+    if (outcome && v.outcome !== outcome) return false;
+    if (surveyor && (v.surveyor || '—') !== surveyor) return false;
+    if (only === 'pos' && !hasPosProblem(v)) return false;
+    if (only === 'ritorno' && !v.answers?.ritorno_quando) return false;
+    if (only === 'oggi' && dayKey(v.createdAt) !== today) return false;
+    if (q) {
+      const hay = `${v.merchantName} ${v.mapSnapshot?.address ?? ''} ${v.surveyor} ${v.id} ${v.answers?.note ?? ''}`;
+      if (!hay.toLowerCase().includes(q.toLowerCase())) return false;
+    }
+    return true;
+  });
+
+  const refresh = () => {
+    setRefreshing(true);
+    router.refresh();
+    setTimeout(() => setRefreshing(false), 800);
+  };
+
+  return (
+    <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-10">
+      <header className="flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-btc">Area rilevazioni · admin</p>
+          <h1 className="mt-2 text-2xl font-bold sm:text-3xl">Tutte le rilevazioni</h1>
+          <p className="mt-1 text-sm text-muted">
+            {operator ? `Sei entrato come ${operator}. ` : ''}I dati sono quelli salvati sul disco, aggiornati al
+            caricamento della pagina.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="ghost" size="sm" onClick={refresh} disabled={refreshing}>
+            <RefreshCw className={cn('h-4 w-4', refreshing && 'animate-spin')} /> Aggiorna
+          </Button>
+          <Button as="a" href="/api/rilevazioni?export=csv" variant="secondary" size="sm">
+            <Download className="h-4 w-4" /> CSV
+          </Button>
+          <Button as="a" href="/api/rilevazioni?export=json" variant="ghost" size="sm">
+            <Download className="h-4 w-4" /> Backup JSON
+          </Button>
+          <Button as="a" href="/rilevazioni" variant="ghost" size="sm">
+            Nuova rilevazione
+          </Button>
+        </div>
+      </header>
+
+      {/* Come siamo messi */}
+      <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <Kpi label="Rilevazioni" value={sorted.length} note={`${stats.todayCount} oggi`} />
+        <Kpi label="Negozi visitati" value={latest.length} note="contando l’ultima visita" />
+        <Kpi label="Voto medio NAKA" value={stats.avg} note={`su ${stats.scored} risposte · 1–5`} />
+        <Kpi
+          label="Da seguire"
+          value={agenda.length + posProblems.length}
+          note={`${agenda.length} ritorni · ${posProblems.length} POS`}
+        />
+      </section>
+
+      <section className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {OUTCOMES.map((o) => (
+          <button
+            key={o.id}
+            type="button"
+            onClick={() => setOutcome(outcome === o.id ? '' : o.id)}
+            className={cn(
+              'rounded-2xl border px-4 py-3 text-left transition',
+              TONE[o.tone],
+              outcome === o.id ? 'ring-2 ring-white/40' : 'hover:brightness-125'
+            )}
+          >
+            <span className="block text-2xl font-bold">{stats.byOutcome[o.id] ?? 0}</span>
+            <span className="block text-xs font-semibold">{o.label}</span>
+          </button>
+        ))}
+      </section>
+
+      {surveyors.length > 0 && (
+        <section className="mt-3 flex flex-wrap gap-2">
+          {surveyors.map((s) => (
+            <span key={s} className="chip">
+              <span className="font-semibold text-white">{s}</span> {stats.bySurveyor[s].total}{' '}
+              {stats.bySurveyor[s].total === 1 ? 'rilevazione' : 'rilevazioni'} · {stats.bySurveyor[s].today} oggi
+            </span>
+          ))}
+        </section>
+      )}
+
+      {/* Che cosa c'è da fare */}
+      <section className="mt-10 grid gap-4 lg:grid-cols-3">
+        <TodoCard icon={CalendarClock} title="Ritorni in agenda" empty="Nessun ritorno fissato.">
+          {agenda.map((v) => (
+            <TodoRow key={v.id} onClick={() => setOpen(v)} past={v.answers.ritorno_quando < today}>
+              <span className="font-semibold text-white">
+                {swissDate(v.answers.ritorno_quando)}
+                {v.answers.ritorno_ora ? `, ${v.answers.ritorno_ora}` : ''}
+              </span>{' '}
+              · {v.merchantName}
+              <span className="block text-xs text-muted">
+                {[].concat(v.answers.ritorno_motivo ?? []).join(', ') || 'motivo non indicato'} · {v.surveyor}
+              </span>
+            </TodoRow>
+          ))}
+        </TodoCard>
+        <TodoCard icon={AlertTriangle} title="POS da sistemare" empty="Nessun terminale segnalato.">
+          {posProblems.map((v) => (
+            <TodoRow key={v.id} onClick={() => setOpen(v)} past={v.answers?.pos_stato === BROKEN}>
+              <span className="font-semibold text-white">{v.merchantName}</span>
+              <span className="block text-xs text-muted">
+                {[].concat(v.answers?.problema_tipo ?? []).join(', ') ||
+                  (v.answers?.pos_stato === BROKEN ? 'Terminale non funzionante' : 'Problema segnalato')}
+                {v.answers?.problema_note ? ` — ${v.answers.problema_note}` : ''}
+              </span>
+            </TodoRow>
+          ))}
+        </TodoCard>
+        <TodoCard icon={MessageSquare} title="Richieste per l’assistenza" empty="Nessuna richiesta.">
+          {requests.map((v) => (
+            <TodoRow key={v.id} onClick={() => setOpen(v)}>
+              <span className="font-semibold text-white">{v.merchantName}</span>
+              <span className="block text-xs text-muted">{v.answers.naka_problemi}</span>
+            </TodoRow>
+          ))}
+        </TodoCard>
+      </section>
+
+      {/* Che cosa è stato rilevato */}
+      <section className="mt-10">
+        <h2 className="text-lg font-bold">Elenco delle visite</h2>
+        <div className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto]">
+          <label className="relative">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Cerca negozio, indirizzo, rilevatore, ID, note…"
+              className="field pl-9"
+            />
+          </label>
+          <select value={outcome} onChange={(e) => setOutcome(e.target.value)} className="field sm:w-48">
+            <option value="">Tutti gli esiti</option>
+            {OUTCOMES.map((o) => (
+              <option key={o.id} value={o.id}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <select value={surveyor} onChange={(e) => setSurveyor(e.target.value)} className="field sm:w-44">
+            <option value="">Tutti i rilevatori</option>
+            {surveyors.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <select value={only} onChange={(e) => setOnly(e.target.value)} className="field sm:w-44">
+            <option value="">Tutte le visite</option>
+            <option value="oggi">Solo di oggi</option>
+            <option value="ritorno">Con un ritorno</option>
+            <option value="pos">Con problemi POS</option>
+          </select>
+        </div>
+        <p className="mt-3 text-xs text-muted">
+          {filtered.length} di {sorted.length} visite
+        </p>
+
+        <ul className="mt-3 divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-ink-soft/60">
+          {filtered.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted">Nessuna visita.</li>}
+          {filtered.map((v) => {
+            const o = outcomeOf(v.outcome);
+            const nPhotos = Object.values(v.photos ?? {}).flat().length;
+            return (
+              <li key={v.id}>
+                <button
+                  type="button"
+                  onClick={() => setOpen(v)}
+                  className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-white/[0.03]"
+                >
+                  <Store className="hidden h-5 w-5 shrink-0 text-muted sm:block" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate font-semibold">{v.merchantName}</span>
+                    <span className="block truncate text-xs text-muted">
+                      {fmt(v.createdAt)} · {v.surveyor || '—'}
+                      {v.mapSnapshot?.address ? ` · ${v.mapSnapshot.address}` : ''}
+                    </span>
+                  </span>
+                  <span className="hidden items-center gap-2 text-muted sm:flex">
+                    {hasPosProblem(v) && <AlertTriangle className="h-4 w-4 text-red-300" aria-label="Problema POS" />}
+                    {v.answers?.ritorno_quando && <CalendarClock className="h-4 w-4 text-btc" aria-label="Ritorno" />}
+                    {nPhotos > 0 && (
+                      <span className="inline-flex items-center gap-1 text-xs">
+                        <Camera className="h-4 w-4" /> {nPhotos}
+                      </span>
+                    )}
+                  </span>
+                  <span className={cn('shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold', TONE[o.tone])}>
+                    {o.label}
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <VisitModal visit={open} onClose={() => setOpen(null)} />
+    </div>
+  );
+}
+
+function Kpi({ label, value, note }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-ink-soft/60 px-4 py-3">
+      <span className="block text-xs font-semibold text-muted">{label}</span>
+      <span className="mt-1 block text-2xl font-bold">{value}</span>
+      <span className="block text-xs text-muted">{note}</span>
+    </div>
+  );
+}
+
+function TodoCard({ icon: Icon, title, empty, children }) {
+  const items = [].concat(children ?? []).filter(Boolean);
+  return (
+    <div className="rounded-2xl border border-white/10 bg-ink-soft/60 p-5">
+      <h3 className="flex items-center gap-2 text-sm font-bold">
+        <Icon className="h-4 w-4 text-btc" /> {title}
+        <span className="ml-auto text-xs font-semibold text-muted">{items.length}</span>
+      </h3>
+      {items.length ? (
+        <ul className="mt-3 max-h-72 space-y-1 overflow-y-auto pr-1">{items}</ul>
+      ) : (
+        <p className="mt-3 text-sm text-muted">{empty}</p>
+      )}
+    </div>
+  );
+}
+
+function TodoRow({ children, onClick, past }) {
+  return (
+    <li>
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn(
+          'w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-white/[0.05]',
+          past && 'border-l-2 border-red-400/60'
+        )}
+      >
+        {children}
+      </button>
+    </li>
+  );
+}
+
+/* ------------------------------------------------------------------ scheda */
+
+function VisitModal({ visit, onClose }) {
+  if (!visit) return null;
+  const o = outcomeOf(visit.outcome);
+  const photos = PHOTOS.flatMap((p) =>
+    [].concat(visit.photos?.[p.id] ?? []).map((ph, i, all) => ({
+      ...ph,
+      label: all.length > 1 ? `${p.label} ${i + 1}` : p.label,
+    }))
+  );
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      size="lg"
+      title={visit.merchantName}
+      subtitle={`${fmt(visit.createdAt)} · ${visit.surveyor || '—'} · ${visit.id}`}
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <span className={cn('rounded-full border px-2.5 py-1 text-xs font-semibold', TONE[o.tone])}>{o.label}</span>
+        {visit.excludes && <span className="chip">Tolto dall’elenco pubblico</span>}
+        {!visit.merchantKnown && <span className="chip">Negozio non in elenco</span>}
+        {visit.mapSnapshot?.address && <span className="chip">{visit.mapSnapshot.address}</span>}
+        {visit.mapSnapshot?.category && <span className="chip">{visit.mapSnapshot.category}</span>}
+      </div>
+
+      {SECTIONS.map((section) => {
+        const rows = section.questions.filter(
+          (q) => q.type !== 'photo' && q.type !== 'qr' && visit.answers?.[q.id] !== undefined
+        );
+        if (!rows.length) return null;
+        return (
+          <div key={section.id} className="mt-6">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-btc">{section.title}</h4>
+            <dl className="mt-2 divide-y divide-white/5 rounded-xl border border-white/10">
+              {rows.map((q) => (
+                <div key={q.id} className="grid gap-1 px-4 py-2.5 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-4">
+                  <dt className="text-xs text-muted">{q.label}</dt>
+                  <dd className="whitespace-pre-wrap break-words text-sm text-white">{cellFor(q, visit.answers[q.id])}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        );
+      })}
+
+      {photos.length > 0 && (
+        <div className="mt-6">
+          <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-btc">Foto</h4>
+          <div className="mt-2 grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {photos.map((ph) => {
+              const src = `/api/rilevazioni/foto?key=${encodeURIComponent(ph.key)}`;
+              return (
+                <a key={ph.key} href={src} target="_blank" rel="noopener noreferrer" className="group block">
+                  {/* eslint-disable-next-line @next/next/no-img-element -- foto private, servite da un'API protetta */}
+                  <img
+                    src={src}
+                    alt={ph.label}
+                    loading="lazy"
+                    className="aspect-[4/3] w-full rounded-xl border border-white/10 object-cover transition group-hover:brightness-110"
+                  />
+                  <span className="mt-1 block text-xs text-muted">{ph.label}</span>
+                </a>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </Modal>
+  );
+}

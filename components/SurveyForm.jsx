@@ -69,6 +69,8 @@ export default function SurveyForm({ locked, pinHint }) {
   // Nome di chi è entrato col proprio PIN. Vuoto = accesso condiviso o aperto: in quel
   // caso il nome resta un campo da compilare.
   const [operator, setOperator] = useState('');
+  // L'admin vede anche il pannello con tutte le rilevazioni e le esportazioni.
+  const [admin, setAdmin] = useState(false);
   // La lingua è del rilevatore, non del negozio: resta su questo telefono.
   const [locale, setLocale] = useState('it');
 
@@ -78,7 +80,10 @@ export default function SurveyForm({ locked, pinHint }) {
     // Il cookie dura trenta giorni: chi riapre l'app è già riconosciuto.
     fetch('/api/rilevazioni?me=1')
       .then((r) => r.json())
-      .then((d) => d.operator && setOperator(d.operator))
+      .then((d) => {
+        if (d.operator) setOperator(d.operator);
+        setAdmin(Boolean(d.admin));
+      })
       .catch(() => {});
   }, []);
 
@@ -97,6 +102,11 @@ export default function SurveyForm({ locked, pinHint }) {
         onUnlock={(name) => {
           setOperator(name || '');
           setUnlocked(true);
+          // Il ruolo lo sa solo il server: lo si chiede appena il cookie c'è.
+          fetch('/api/rilevazioni?me=1')
+            .then((r) => r.json())
+            .then((d) => setAdmin(Boolean(d.admin)))
+            .catch(() => {});
         }}
         locale={locale}
         onLocale={change}
@@ -104,7 +114,7 @@ export default function SurveyForm({ locked, pinHint }) {
       />
     );
   }
-  return <Survey locale={locale} onLocale={change} operator={operator} />;
+  return <Survey locale={locale} onLocale={change} operator={operator} admin={admin} />;
 }
 
 /** Interruttore IT/EN, due pulsanti e nessun menu: si cambia con un pollice. */
@@ -131,7 +141,7 @@ function LocaleSwitch({ locale, onLocale }) {
 
 /* ---------------------------------------------------------------- accesso */
 
-function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
+export function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
   const t = ui(locale);
   const [code, setCode] = useState('');
   const [error, setError] = useState(null);
@@ -192,7 +202,7 @@ function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
 
 /* ------------------------------------------------------------- rilevazione */
 
-function Survey({ locale, onLocale, operator }) {
+function Survey({ locale, onLocale, operator, admin }) {
   const t = ui(locale);
   const [step, setStep] = useState(0);
   const [surveyor, setSurveyor] = useState('');
@@ -337,6 +347,7 @@ function Survey({ locale, onLocale, operator }) {
           surveyor={surveyor}
           onSurveyor={setSurveyor}
           operator={operator}
+          admin={admin}
           onAnswers={setAnswers}
           error={errors.merchantName || errors.surveyor}
           photos={photos}
@@ -455,6 +466,7 @@ function MerchantStep({
   surveyor,
   onSurveyor,
   operator,
+  admin,
   onAnswers,
   error,
   photos,
@@ -468,6 +480,7 @@ function MerchantStep({
   const [last, setLast] = useState(null);
   const [ripreso, setRipreso] = useState(false);
   const [visited, setVisited] = useState({});
+  const [mine, setMine] = useState(null);
 
   // Si scarica una volta sola: chi ha già una visita alle spalle va segnalato *dentro* i
   // risultati di ricerca, non dopo averlo scelto. Due persone sullo stesso elenco di 336
@@ -477,7 +490,30 @@ function MerchantStep({
       .then((r) => r.json())
       .then((d) => setVisited(d.visited ?? {}))
       .catch(() => {});
+    // Il proprio lavoro, per non chiedersi «questo l'ho già fatto?»: c'è solo con il PIN personale.
+    fetch('/api/rilevazioni?mine=1')
+      .then((r) => r.json())
+      .then((d) => setMine(d.visits ?? []))
+      .catch(() => {});
   }, []);
+
+  // Stato del negozio scelto: dall'elenco dei visitati (che sa se resta qualcosa da fare),
+  // altrimenti dall'ultima visita dello storico.
+  const seenNow = merchant
+    ? visited[merchant.id] ??
+      visited[merchant.name?.toLowerCase()] ??
+      (history.length
+        ? {
+            ...history[history.length - 1],
+            // Stessa regola del server: un ritorno fissato o un «da ricontattare» lasciano il
+            // negozio da completare.
+            status:
+              history[history.length - 1].ripasso || history[history.length - 1].outcome === 'da_ricontattare'
+                ? 'da_completare'
+                : 'completo',
+          }
+        : null)
+    : null;
 
   useEffect(() => {
     const term = q.trim();
@@ -527,16 +563,21 @@ function MerchantStep({
               {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
             </span>
           </p>
-          {/* La copia fuori da Render: a fine giornata, un tocco da qui. */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
-            <span>{t.exportHint}</span>
-            <a href="/api/rilevazioni?export=csv" className="font-semibold text-btc underline underline-offset-2">
-              {t.exportCsv}
-            </a>
-            <a href="/api/rilevazioni?export=json" className="font-semibold text-btc underline underline-offset-2">
-              {t.exportJson}
-            </a>
-          </div>
+          <MineList visits={mine} onPick={onPick} locale={locale} />
+          {/* Pannello ed esportazioni sono dell'admin: vedere tutto non serve a chi rileva. */}
+          {admin && (
+            <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+              <a href="/rilevazioni/admin" className="font-semibold text-btc underline underline-offset-2">
+                {t.adminPanel}
+              </a>
+              <a href="/api/rilevazioni?export=csv" className="font-semibold text-btc underline underline-offset-2">
+                {t.exportCsv}
+              </a>
+              <a href="/api/rilevazioni?export=json" className="font-semibold text-btc underline underline-offset-2">
+                {t.exportJson}
+              </a>
+            </div>
+          )}
         </>
       ) : (
         <>
@@ -578,6 +619,8 @@ function MerchantStep({
               {t.changeShop}
             </button>
           </div>
+
+          {seenNow && <AlreadyBanner seen={seenNow} locale={locale} />}
 
           {merchant.assets?.length > 0 && (
             <p className="mt-3 border-t border-white/10 pt-3 text-xs text-muted">
@@ -700,6 +743,88 @@ function MerchantStep({
         />
       </div>
     </section>
+  );
+}
+
+/**
+ * Avviso in cima al negozio scelto, quando qualcuno ci è già passato.
+ *
+ * Il distintivo nei risultati di ricerca si vede solo cercando; chi arriva al negozio da
+ * «Le tue rilevazioni», da una bozza o scrivendo il nome deve leggerlo comunque, e in
+ * grande: rifare una visita completa è tempo perso per il rilevatore e per il negozio.
+ */
+function AlreadyBanner({ seen, locale }) {
+  const t = ui(locale);
+  const completo = seen.status === 'completo';
+  const esito = outcomeIn(seen.outcome, OUTCOMES.find((o) => o.id === seen.outcome)?.label ?? seen.outcome, locale);
+  const quando = new Date(seen.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE });
+  return (
+    <div
+      role="status"
+      className={cn(
+        'mt-3 flex gap-3 rounded-xl border p-3.5',
+        completo ? 'border-green-500/40 bg-green-500/10' : 'border-btc/50 bg-btc/15',
+      )}
+    >
+      {completo ? (
+        <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-400" strokeWidth={3} />
+      ) : (
+        <RotateCcw className="mt-0.5 h-5 w-5 shrink-0 text-btc" />
+      )}
+      <div className="min-w-0">
+        <p className={cn('text-sm font-bold', completo ? 'text-green-300' : 'text-btc')}>
+          {completo ? t.alreadyDone(esito, seen.surveyor || '—', quando) : t.stillOpen(esito, seen.surveyor || '—', quando)}
+          {seen.ripasso
+            ? ` ${t.returnFixed(new Date(seen.ripasso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE }))}`
+            : ''}
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-muted">{completo ? t.alreadyDoneHint : t.stillOpenHint}</p>
+      </div>
+    </div>
+  );
+}
+
+/** Le rilevazioni salvate da chi è collegato: il proprio giro a colpo d'occhio. */
+function MineList({ visits, onPick, locale }) {
+  const t = ui(locale);
+  if (visits === null) return null;
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date());
+  const oggi = visits.filter((v) => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(v.at)) === today).length;
+  return (
+    <details className="mt-3 rounded-xl border border-white/10 bg-white/[0.03]">
+      <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-white">
+        {t.mineTitle(visits.length, oggi)}
+      </summary>
+      {visits.length === 0 ? (
+        <p className="px-4 pb-3 text-xs text-muted">{t.mineEmpty}</p>
+      ) : (
+        <>
+          <p className="px-4 text-[11px] text-muted">{t.mineHint}</p>
+          <ul className="mt-2 max-h-72 divide-y divide-white/5 overflow-y-auto border-t border-white/10">
+            {visits.map((v) => (
+              <li key={v.id}>
+                <button
+                  type="button"
+                  onClick={() => onPick(v.merchantId ? { id: v.merchantId, name: v.merchantName, address: v.address } : { name: v.merchantName })}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-white/5"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm text-white">{v.merchantName}</span>
+                    <span className="block text-[11px] text-muted">
+                      {new Date(v.at).toLocaleString('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                      {' · '}
+                      {outcomeIn(v.outcome, OUTCOMES.find((o) => o.id === v.outcome)?.label ?? v.outcome, locale)}
+                      {v.ripasso ? ` · ${t.returnOn} ${new Date(v.ripasso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE })}` : ''}
+                    </span>
+                  </span>
+                  <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </details>
   );
 }
 

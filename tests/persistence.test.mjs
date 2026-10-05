@@ -101,3 +101,21 @@ test('la data del file è quella di Lugano', () => {
   // 23:30 UTC del 4 ottobre è già il 5 a Lugano.
   assert.equal(todayInZurich(new Date('2026-10-04T23:30:00Z')), '2026-10-05');
 });
+
+test('il pannello è solo per i nomi in RILEVAZIONI_ADMIN', async () => {
+  const { isAdmin, sessionCookie } = await import('../lib/server/rilevazioni-auth.js');
+  const env = { RILEVAZIONI_OPERATORI: 'Marco:4321,Giulia:8765', RILEVAZIONI_ADMIN: 'marco', NODE_ENV: 'production' };
+  withEnv(env, () => {
+    const as = (name) => {
+      const c = sessionCookie(name);
+      return { cookies: { get: (k) => (k === c.name ? { value: c.value } : undefined) } };
+    };
+    assert.equal(isAdmin(as('Marco')), true);
+    assert.equal(isAdmin(as('Giulia')), false);
+    assert.equal(isAdmin({ cookies: { get: () => undefined } }), false);
+  });
+  // Senza PIN configurati, in produzione il pannello resta chiuso.
+  withEnv({ RILEVAZIONI_OPERATORI: undefined, RILEVAZIONI_CODE: undefined, NODE_ENV: 'production' }, () =>
+    assert.equal(isAdmin({ cookies: { get: () => undefined } }), false)
+  );
+});

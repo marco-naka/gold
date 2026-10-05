@@ -414,8 +414,11 @@ npm run visits exclude -- --yes          # aggiorna gli esclusi dall'elenco pubb
 
 `stats` segnala le rilevazioni senza foto e i negozi non presenti nello snapshot.
 
-Senza Shell: nell'area rilevazioni, chi è entrato con il proprio PIN trova **Scarica CSV** e
-**Backup completo** (JSON con tutte le risposte). Le foto restano sul disco, coperte dagli snapshot
+Senza Shell: **`/rilevazioni/admin`** è il pannello di tutte le rilevazioni — stato dei negozi
+(contando l'ultima visita), ritorni in agenda, POS da sistemare, richieste per l'assistenza, elenco
+filtrabile con la scheda completa e le foto. Da lì si scaricano **CSV** e **backup JSON**.
+Pannello, foto ed esportazioni sono riservati ai nomi elencati in `RILEVAZIONI_ADMIN` (gli stessi
+di `RILEVAZIONI_OPERATORI`, con il loro PIN). Le foto restano sul disco, coperte dagli snapshot
 giornalieri di Render.
 
 ### Dati

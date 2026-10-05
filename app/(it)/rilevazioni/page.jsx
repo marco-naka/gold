@@ -1,5 +1,6 @@
+import { cookies } from 'next/headers';
 import SurveyForm from '@/components/SurveyForm';
-import { isOpenAccess, placeholderPin } from '@/lib/server/rilevazioni-auth';
+import { isAuthorized, placeholderPin } from '@/lib/server/rilevazioni-auth';
 
 /**
  * Area interna per i rilevatori sul campo. Non è linkata da nessuna parte del sito, è esclusa
@@ -15,9 +16,12 @@ export const metadata = {
 export const dynamic = 'force-dynamic';
 
 export default function Page() {
+  // Il cookie dura trenta giorni: chi l'ha già, entra senza ridigitare il PIN. Prima la
+  // pagina chiedeva il codice a ogni apertura anche con il cookie valido.
+  const locked = !isAuthorized({ cookies: cookies() });
   return (
     <main className="min-h-screen">
-      <SurveyForm locked={!isOpenAccess()} pinHint={placeholderPin()} />
+      <SurveyForm locked={locked} pinHint={locked ? placeholderPin() : null} />
     </main>
   );
 }

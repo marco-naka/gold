@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { ALL_MERCHANTS } from '@/lib/merchants';
 import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
 import { pickAnswers, validatePhoto, validateVisit } from '@/lib/survey-validation';
-import { currentOperator, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
+import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
 import { persistentStorage } from '@/lib/server/persistence';
 import { visitsCsv } from '@/lib/survey-export';
@@ -23,13 +23,15 @@ export async function GET(request) {
   const params = request.nextUrl.searchParams;
 
   if (params.get('me') === '1') {
-    return NextResponse.json({ operator: currentOperator(request) ?? '' });
+    return NextResponse.json({ operator: currentOperator(request) ?? '', admin: isAdmin(request) });
   }
 
   // La copia da tenere fuori da Render: CSV per leggerla, JSON completo per poterla ricaricare.
   // Le foto restano sul disco, coperte dagli snapshot giornalieri di Render.
+  // Esportare vuol dire vedere tutto, quindi è dell'admin come il pannello.
   const format = params.get('export');
   if (format === 'csv' || format === 'json') {
+    if (!isAdmin(request)) return NextResponse.json({ code: 'forbidden' }, { status: 403 });
     const visits = await listVisits();
     const name = `rilevazioni-${todayInZurich()}.${format}`;
     const body =
@@ -43,6 +45,26 @@ export async function GET(request) {
         'Cache-Control': 'no-store',
       },
     });
+  }
+
+  // Le rilevazioni di chi è collegato: il rilevatore vede il proprio lavoro, non quello di tutti.
+  if (params.get('mine') === '1') {
+    const me = currentOperator(request);
+    if (!me) return NextResponse.json({ visits: [] });
+    const all = await listVisits();
+    const visits = all
+      .filter((v) => v.surveyor === me)
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .map((v) => ({
+        id: v.id,
+        at: v.createdAt,
+        merchantId: v.merchantId,
+        merchantName: v.merchantName,
+        address: v.mapSnapshot?.address ?? null,
+        outcome: v.outcome,
+        ripasso: v.answers?.ritorno_quando ?? null,
+      }));
+    return NextResponse.json({ visits });
   }
 
   if (params.get('visited') === '1') {
@@ -80,7 +102,13 @@ export async function GET(request) {
   const previous = await visitsForMerchant(id, name);
   const latest = previous[previous.length - 1];
   return NextResponse.json({
-    visits: previous.map((v) => ({ id: v.id, at: v.createdAt, surveyor: v.surveyor, outcome: v.outcome })),
+    visits: previous.map((v) => ({
+      id: v.id,
+      at: v.createdAt,
+      surveyor: v.surveyor,
+      outcome: v.outcome,
+      ripasso: v.answers?.ritorno_quando ?? null,
+    })),
     // Le risposte dell'ultima visita, per chi torna sul posto: ripartire da quello che
     // il collega ha già rilevato evita di ridigitare dieci risposte identiche, e fa
     // risaltare quello che nel frattempo è cambiato.
