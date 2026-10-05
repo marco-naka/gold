@@ -12,13 +12,14 @@ import {
   LocateFixed,
   ArrowDownAZ,
   Wallet,
+  Map as MapIcon,
 } from 'lucide-react';
 import { EVENT, PAYMENT_ASSETS } from '@/lib/constants';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
-import { formatDate } from '@/lib/i18n';
+import { formatDate, localePath } from '@/lib/i18n';
 import { MERCHANTS, distanceMeters, mapsUrl } from '@/lib/merchants';
 
 const PAGE_SIZE = 12;
@@ -108,6 +109,14 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
   return (
     <section id="mappa" className="section-pad">
       <SectionTitle eyebrow={t.eyebrow} title={t.title} subtitle={t.subtitle(EVENT.name)} />
+
+      {/* La mappa vera sta su una pagina sua: qui l'elenco, là le strade. */}
+      <div className="mt-6 flex justify-center">
+        <Button as="a" href={localePath(locale, '/mappa')} variant="secondary">
+          <MapIcon className="h-4 w-4" />
+          {t.openMap}
+        </Button>
+      </div>
 
       <div className="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div className="relative w-full lg:max-w-sm">

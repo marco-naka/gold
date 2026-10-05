@@ -79,6 +79,11 @@ export default function Footer({ locale = 'it', onOpenRules }) {
                 </a>
               </li>
               <li>
+                <Link href={localePath(locale, '/mappa')} className="text-sm text-muted transition hover:text-btc">
+                  {d.mapPage}
+                </Link>
+              </li>
+              <li>
                 <Link
                   href={localePath(locale, '/vincitori')}
                   className="text-sm text-muted transition hover:text-btc"

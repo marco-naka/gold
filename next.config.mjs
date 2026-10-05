@@ -36,7 +36,9 @@ const nextConfig = {
           { key: 'X-Frame-Options', value: 'DENY' },
           { key: 'X-Content-Type-Options', value: 'nosniff' },
           { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-          { key: 'Permissions-Policy', value: 'geolocation=(), microphone=(), payment=()' },
+          // La posizione serve alla mappa e al «vicino a te» dell'elenco negozi: `self` la consente
+          // alle nostre pagine e a nessun altro. Con `geolocation=()` il browser la negava sempre.
+          { key: 'Permissions-Policy', value: 'geolocation=(self), microphone=(), payment=()' },
           {
             key: 'Strict-Transport-Security',
             value: 'max-age=31536000; includeSubDomains',

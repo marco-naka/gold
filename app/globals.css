@@ -120,3 +120,65 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/*
+ * Mappa dei negozi (/mappa). Le tessere di OpenStreetMap sono chiare: un filtro le porta al
+ * tono scuro del sito senza un fornitore di mappe a pagamento. Il filtro sta solo sulle
+ * tessere, così i punti dei negozi restano nei loro colori.
+ */
+.naka-map .leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(0.92) contrast(0.88) saturate(0.6);
+}
+.naka-map.leaflet-container {
+  background: #16161b;
+  font-family: inherit;
+}
+.naka-map .leaflet-control-attribution {
+  background: rgba(13, 13, 13, 0.75);
+  color: #a1a1aa;
+}
+.naka-map .leaflet-control-attribution a {
+  color: #f7931a;
+}
+.naka-map .leaflet-bar a {
+  background: #16161b;
+  color: #fff;
+  border-color: #26262e;
+}
+.naka-map .leaflet-popup-content-wrapper,
+.naka-map .leaflet-popup-tip {
+  background: #16161b;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+.naka-map .leaflet-popup-content {
+  margin: 12px 14px;
+}
+.naka-map .leaflet-popup-close-button {
+  color: #a1a1aa;
+}
+.naka-pop {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #a1a1aa;
+}
+.naka-pop strong {
+  font-size: 14px;
+  color: #fff;
+}
+.naka-pop-meta {
+  color: #d4d4d8;
+}
+.naka-pop-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+.naka-map .naka-pop-links a {
+  color: #f7931a;
+  font-weight: 600;
+}

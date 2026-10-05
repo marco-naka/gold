@@ -320,6 +320,7 @@ I QR stampati portano un parametro sorgente, uno per materiale:
 | `banco` | cartoncino A6 accanto al POS |
 | `vetrina` | vetrofanie e bollino della porta |
 | `volantino-cliente` · `volantino-merchant` | volantini A5 |
+| `mappa` | pulsante «Registra il pagamento» della mappa dei negozi |
 | `linkedin` · `sito` · `altro` | canali digitali |
 
 `/api/track` conta le aperture per etichetta in `.data/visits.json`
