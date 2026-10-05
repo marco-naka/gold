@@ -1,33 +1,32 @@
 # Blueprint Render — https://render.com/docs/blueprint-spec
 #
-# PROFILO ATTUALE: demo (gratuito, senza disco persistente)
-# Il sito è completamente navigabile ma NON accetta giocate: il form mostra lo stato
-# "anteprima" e l'API risponde 503. Nessun dato viene scritto, quindi il filesystem
-# effimero del piano free non può causare perdite silenziose.
+# PROFILO ATTUALE: demo su piano starter, CON disco persistente
+# Le giocate dei clienti restano chiuse fino al 19 ottobre (il form mostra lo stato
+# "anteprima" e l'API risponde 503). Le rilevazioni in negozio invece sono attive: si
+# salvano su /var/data, che sopravvive a deploy e riavvii. Senza DATA_DIR le rilevazioni
+# vengono rifiutate (lib/server/persistence.js): meglio un errore che dati persi.
 #
-# PER ANDARE IN PRODUZIONE (prima dell'apertura del concorso, 19 ottobre):
-#   1. plan: free                 -> plan: starter
-#   2. togliere il commento al blocco `disk:`
-#   3. DEPLOY_PROFILE: demo       -> production
-#   4. aggiungere la variabile DATA_DIR = /var/data
-# Senza disco e con profilo production il health check risponde 503 e il deploy risulta
-# degradato: è voluto, meglio un allarme che giocate perse.
+# PER APRIRE IL CONCORSO (19 ottobre):
+#   NEXT_PUBLIC_DEPLOY_PROFILE: demo -> production
+# Il disco c'è già. Con profilo production e disco non scrivibile il health check risponde
+# 503 e il deploy risulta degradato: è voluto, meglio un allarme che giocate perse.
+
 services:
   - type: web
     name: naka-paga-in-crypto
     runtime: node
     region: frankfurt # il più vicino alla Svizzera tra quelli disponibili
-    plan: free
+    plan: starter # il disco persistente non esiste sul piano free
     branch: main
     buildCommand: npm ci && npm run build
     startCommand: npm run start
     healthCheckPath: /api/health
     autoDeploy: true
 
-    # disk:
-    #   name: data
-    #   mountPath: /var/data
-    #   sizeGB: 5 # scontrini ~1 MB l'uno: 5 GB coprono ampiamente l'evento
+    disk:
+      name: data
+      mountPath: /var/data
+      sizeGB: 5 # foto di rilevazioni e scontrini ~1 MB l'una: 5 GB coprono ampiamente l'evento
 
     envVars:
       - key: NODE_VERSION
@@ -37,9 +36,9 @@ services:
       - key: TZ
         value: Europe/Zurich
       - key: NEXT_PUBLIC_DEPLOY_PROFILE
-        value: demo # -> production quando c'è il disco
-      # - key: DATA_DIR
-      #   value: /var/data # deve coincidere con disk.mountPath
+        value: demo # -> production il 19 ottobre, all'apertura del concorso
+      - key: DATA_DIR
+        value: /var/data # deve coincidere con disk.mountPath
       - key: NEXT_PUBLIC_SITE_URL
         sync: false # URL pubblico definitivo
       - key: MAIL_PROVIDER_API_KEY

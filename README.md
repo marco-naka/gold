@@ -265,6 +265,10 @@ Variabili da impostare a mano (`sync: false` nel blueprint):
 senza disco il servizio parte lo stesso ma **perde tutti i dati a ogni riavvio o deploy**; il health
 check lo segnala restituendo 503.
 
+Le rilevazioni non aspettano il 19 ottobre: si raccolgono anche con il profilo `demo`, ma solo se
+`DATA_DIR` è impostata. Senza, `/api/rilevazioni` rifiuta l'invio (`storage_unavailable`) e la
+bozza resta sul telefono; `/api/health` dice in che stato sono alla voce `rilevazioni`.
+
 I comandi di back-office ed estrazione si eseguono dalla **Shell** del servizio Render, dove il
 disco è montato.
 
@@ -409,6 +413,10 @@ npm run visits exclude -- --yes          # aggiorna gli esclusi dall'elenco pubb
 ```
 
 `stats` segnala le rilevazioni senza foto e i negozi non presenti nello snapshot.
+
+Senza Shell: nell'area rilevazioni, chi è entrato con il proprio PIN trova **Scarica CSV** e
+**Backup completo** (JSON con tutte le risposte). Le foto restano sul disco, coperte dagli snapshot
+giornalieri di Render.
 
 ### Dati
 

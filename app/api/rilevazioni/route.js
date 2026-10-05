@@ -4,6 +4,9 @@ import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
 import { pickAnswers, validatePhoto, validateVisit } from '@/lib/survey-validation';
 import { currentOperator, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
+import { persistentStorage } from '@/lib/server/persistence';
+import { visitsCsv } from '@/lib/survey-export';
+import { todayInZurich } from '@/lib/time';
 import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
 import { clientIp } from '@/lib/server/client-ip';
 
@@ -21,6 +24,25 @@ export async function GET(request) {
 
   if (params.get('me') === '1') {
     return NextResponse.json({ operator: currentOperator(request) ?? '' });
+  }
+
+  // La copia da tenere fuori da Render: CSV per leggerla, JSON completo per poterla ricaricare.
+  // Le foto restano sul disco, coperte dagli snapshot giornalieri di Render.
+  const format = params.get('export');
+  if (format === 'csv' || format === 'json') {
+    const visits = await listVisits();
+    const name = `rilevazioni-${todayInZurich()}.${format}`;
+    const body =
+      format === 'csv'
+        ? `\uFEFF${visitsCsv(visits)}` // BOM: Excel apre gli accenti giusti
+        : `${JSON.stringify({ exportedAt: new Date().toISOString(), visits }, null, 2)}\n`;
+    return new NextResponse(body, {
+      headers: {
+        'Content-Type': format === 'csv' ? 'text/csv; charset=utf-8' : 'application/json; charset=utf-8',
+        'Content-Disposition': `attachment; filename="${name}"`,
+        'Cache-Control': 'no-store',
+      },
+    });
   }
 
   if (params.get('visited') === '1') {
@@ -100,6 +122,10 @@ export async function POST(request) {
   }
 
   if (!isAuthorized(request)) return NextResponse.json({ code: 'unauthorized' }, { status: 401 });
+
+  // Meglio rifiutare che salvare su una cartella che il prossimo deploy cancella: il rilevatore
+  // vede subito il problema e la bozza resta sul telefono.
+  if (!persistentStorage()) return NextResponse.json({ code: 'storage_unavailable' }, { status: 503 });
 
   let answers = {};
   try {

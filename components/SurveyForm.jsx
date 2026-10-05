@@ -520,12 +520,24 @@ function MerchantStep({
       <h2 className="text-xl font-bold">{t.stepMerchant}</h2>
 
       {operator ? (
-        <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-btc/25 bg-btc/[0.07] px-4 py-2.5 text-sm">
-          <Check className="h-4 w-4 text-btc" />
-          <span className="text-muted">
-            {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
-          </span>
-        </p>
+        <>
+          <p className="mt-6 inline-flex items-center gap-2 rounded-xl border border-btc/25 bg-btc/[0.07] px-4 py-2.5 text-sm">
+            <Check className="h-4 w-4 text-btc" />
+            <span className="text-muted">
+              {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
+            </span>
+          </p>
+          {/* La copia fuori da Render: a fine giornata, un tocco da qui. */}
+          <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
+            <span>{t.exportHint}</span>
+            <a href="/api/rilevazioni?export=csv" className="font-semibold text-btc underline underline-offset-2">
+              {t.exportCsv}
+            </a>
+            <a href="/api/rilevazioni?export=json" className="font-semibold text-btc underline underline-offset-2">
+              {t.exportJson}
+            </a>
+          </div>
+        </>
       ) : (
         <>
           <label htmlFor="surveyor" className="mt-6 block text-sm font-semibold text-white">
@@ -1052,7 +1064,9 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
       </div>
 
       {generic && (
-        <p className="mt-5 text-sm text-red-400">{generic === 'network' ? t.offline : t.genericError}</p>
+        <p className="mt-5 text-sm text-red-400">
+          {generic === 'network' ? t.offline : generic === 'storage_unavailable' ? t.storageOff : t.genericError}
+        </p>
       )}
     </section>
   );

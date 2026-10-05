@@ -13,8 +13,9 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { ALL_QUESTIONS, OUTCOMES, PHOTOS } from '../lib/survey.js';
+import { ALL_QUESTIONS, OUTCOMES } from '../lib/survey.js';
 import { TIME_ZONE } from '../lib/time.js';
+import { answerText, visitsCsv } from '../lib/survey-export.js';
 
 const DATA_DIR = process.env.DATA_DIR || join(process.cwd(), '.data');
 const FILE = join(DATA_DIR, 'rilevazioni.json');
@@ -39,14 +40,7 @@ async function load() {
 const label = (id) => OUTCOMES.find((o) => o.id === id)?.label ?? id;
 const day = (iso) => new Date(iso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE });
 
-/** Risposta leggibile: gli array diventano una lista, i sì/no restano parole. */
-function show(value) {
-  if (value === true) return 'sì';
-  if (Array.isArray(value)) return value.join('; ');
-  if (value === 'si') return 'sì';
-  if (value === 'na') return 'n/a';
-  return String(value ?? '');
-}
+const show = answerText;
 
 const visits = await load();
 
@@ -158,41 +152,7 @@ if (command === 'stats') {
   }
   console.log();
 } else if (command === 'export') {
-  const cols = [
-    'id',
-    'data',
-    'rilevatore',
-    'negozio',
-    'id_negozio',
-    'in_snapshot',
-    'esito',
-    ...ALL_QUESTIONS.map((q) => q.id),
-    ...PHOTOS.map((p) => `foto_${p.id}`),
-  ];
-  const esc = (s) => `"${String(s ?? '').replace(/"/g, '""')}"`;
-  console.log(cols.map(esc).join(','));
-  for (const v of visits) {
-    console.log(
-      [
-        v.id,
-        v.createdAt,
-        v.surveyor,
-        v.merchantName,
-        v.merchantId ?? '',
-        v.merchantKnown ? 'sì' : 'no',
-        label(v.outcome),
-        ...ALL_QUESTIONS.map((q) => show(v.answers?.[q.id])),
-        // Per gli slot multipli la colonna porta il numero di scatti, non un sì.
-        ...PHOTOS.map((p) => {
-          const got = v.photos?.[p.id];
-          if (!got) return '';
-          return Array.isArray(got) ? String(got.length) : 'sì';
-        }),
-      ]
-        .map(esc)
-        .join(',')
-    );
-  }
+  process.stdout.write(visitsCsv(visits));
 } else if (command === 'agenda') {
   // I ritorni fissati, per qualunque motivo: prova da fare, titolare assente, materiale da
   // consegnare. È la lista con cui si organizza il secondo giro, ed è il motivo per cui la

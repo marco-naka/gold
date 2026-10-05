@@ -5,6 +5,7 @@ import { submissionWindow } from '@/lib/contest';
 import { DEPLOY_PROFILE, IS_DEMO } from '@/lib/deploy';
 import { hasCommitment, hasResult } from '@/lib/server/draw';
 import { drawAutomationEnabled } from '@/lib/server/draw-scheduler';
+import { persistentStorage } from '@/lib/server/persistence';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -39,6 +40,8 @@ export async function GET() {
       storage,
       dataDir: DATA_DIR,
       submissions: IS_DEMO ? 'disattivate (anteprima)' : window.open ? 'aperte' : window.reason,
+      // Le rilevazioni non dipendono dal profilo: si salvano solo su un disco che resta.
+      rilevazioni: persistentStorage() ? `attive, su ${DATA_DIR}` : 'bloccate: manca il disco (DATA_DIR)',
       mailer: process.env.MAIL_PROVIDER_API_KEY ? 'provider configurato' : 'outbox locale',
       draw: {
         automatic: drawAutomationEnabled(),
