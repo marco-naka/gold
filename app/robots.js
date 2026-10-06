@@ -2,8 +2,8 @@ import { SITE_URL } from '@/lib/site';
 
 export default function robots() {
   return {
-    // /rilevazioni è l'area interna dei rilevatori: non va indicizzata.
-    rules: { userAgent: '*', allow: '/', disallow: ['/api/', '/rilevazioni'] },
+    // /rilevazioni e /admin sono aree interne: non vanno indicizzate.
+    rules: { userAgent: '*', allow: '/', disallow: ['/api/', '/rilevazioni', '/admin'] },
     sitemap: `${SITE_URL}/sitemap.xml`,
   };
 }
