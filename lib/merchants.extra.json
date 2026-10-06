@@ -1,0 +1,33 @@
+{
+  "_comment": "Negozi con POS NAKA che non sono nella Crypto Map della Città: aggiunti a mano su indicazione di NAKA. L'importazione dalla Crypto Map non tocca questo file.",
+  "merchants": [
+    {
+      "id": "lug-stand-l-angolino",
+      "name": "L'angolino",
+      "category": "food",
+      "address": "Piazza Cioccaro (stand vicino al Club G.), 6900 Lugano",
+      "assets": ["BTC", "USDT", "XAUT"],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "phone": null,
+      "lat": 46.00422,
+      "lng": 8.95029,
+      "addedBy": "NAKA, 6 ottobre 2026"
+    },
+    {
+      "id": "lug-stand-la-foresta",
+      "name": "La Foresta",
+      "category": "food",
+      "address": "Piazza Cioccaro (stand vicino al Club G.), 6900 Lugano",
+      "assets": ["BTC", "USDT", "XAUT"],
+      "posActive": true,
+      "verified": false,
+      "website": null,
+      "phone": null,
+      "lat": 46.00437,
+      "lng": 8.95005,
+      "addedBy": "NAKA, 6 ottobre 2026"
+    }
+  ]
+}

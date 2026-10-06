@@ -24,6 +24,7 @@ import {
   Mail,
   ScrollText,
   CheckCircle2,
+  Send,
   ChevronDown,
   Scale,
   Lock,
@@ -38,6 +39,7 @@ import SectionTitle from './ui/SectionTitle';
 import { NakaLogo, PlanBLogo } from './Brand';
 import Footer from './Footer';
 import LanguageSwitch from './LanguageSwitch';
+import SocialSubmit from './SocialSubmit';
 import {
   CONTEST,
   EVENT,
@@ -53,11 +55,12 @@ import { ANCHOR } from '@/lib/anchor';
 import { POOLS } from '@/lib/campaigns';
 import { formatSats } from '@/lib/bitcoin';
 import { formatNumber } from '@/lib/number-format';
+import { MERCHANTS, MERCHANT_BOUNDS } from '@/lib/merchants';
 
 /** I 2.00 XAUT dei negozi in satoshi, all'equivalenza dichiarata (lib/anchor.js). */
 const PRIZES_SATS = POOLS.merchants.satsEquivalent;
 
-const STEP_ICONS = [Video, Hash, Mail];
+const STEP_ICONS = [Video, Hash, Send];
 
 /** Un'icona per modo di assegnazione: classifica, giuria, sorteggio. */
 const ASSIGNMENT_ICONS = { transactions: Medal, jury: Gavel, draw: Dices };
@@ -83,6 +86,8 @@ export default function BestSocialContent({ locale }) {
   const submitMailto = mail(t.mailSubject, t.mailBody);
   const joinMailto = mail(t.join.subject, t.join.body);
   const askMailto = mail(t.join.missingSubject, t.join.missingBody);
+  // Per il modulo dei link social: solo quello che serve a cercare e mostrare il negozio.
+  const shops = MERCHANTS.map(({ id, name, address, lat, lng }) => ({ id, name, address, lat, lng }));
 
   const period = `${formatDateTime(CONTEST.validFrom, locale)} – ${formatDateTime(CONTEST.validTo, locale)}`;
   const value = t.value.items({
@@ -145,16 +150,23 @@ export default function BestSocialContent({ locale }) {
               </ol>
             </GlassCard>
 
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Button as="a" href="#adesione">
-                <CheckCircle2 className="h-4 w-4" />
-                {t.ctaJoin}
+            {/* L'adesione è un'email: il pulsante la apre già compilata, senza passare da altre sezioni */}
+            <div id="adesione" className="mt-6 flex scroll-mt-24 flex-col gap-3 sm:flex-row">
+              <Button as="a" href={joinMailto}>
+                <Mail className="h-4 w-4" />
+                {t.join.cta}
               </Button>
               <Button as="a" href="#premi" variant="secondary-gold">
                 <Trophy className="h-4 w-4" />
                 {t.ctaPrizes}
               </Button>
             </div>
+            <p className="mt-3 text-xs leading-relaxed text-muted">
+              {t.join.note} {t.join.missingQuestion}{' '}
+              <a href={askMailto} className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm">
+                {t.join.missingCta}
+              </a>
+            </p>
           </div>
 
           <GlassCard hover={false} className="h-fit p-7">
@@ -192,27 +204,6 @@ export default function BestSocialContent({ locale }) {
             </dl>
           </GlassCard>
         </div>
-
-        {/* Adesione: era solo in home, ora sta dove il commerciante la cerca */}
-        <section id="adesione" className="mt-16 scroll-mt-24">
-          <GlassCard hover={false} className="p-7 sm:p-9">
-            <span className="chip border-gold/30 bg-gold/10 text-gold">{t.join.eyebrow}</span>
-            <h2 className="mt-4 text-2xl font-bold">{t.join.title}</h2>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted">{t.join.text}</p>
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button as="a" href={joinMailto}>
-                <Mail className="h-4 w-4" />
-                {t.join.cta}
-              </Button>
-              <p className="text-sm text-muted">
-                {t.join.missingQuestion}{' '}
-                <a href={askMailto} className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm">
-                  {t.join.missingCta}
-                </a>
-              </p>
-            </div>
-          </GlassCard>
-        </section>
 
         {/* I premi */}
         <section id="premi" className="mt-16 scroll-mt-24">
@@ -539,13 +530,19 @@ export default function BestSocialContent({ locale }) {
             </div>
           </details>
 
-          <GlassCard hover={false} className="mt-8 flex flex-col items-center gap-4 p-8 text-center">
-            <h3 className="text-xl font-bold">{t.finalTitle}</h3>
-            <p className="max-w-lg text-sm leading-relaxed text-muted">{t.finalText}</p>
-            <Button as="a" href={submitMailto} size="lg">
-              <Mail className="h-5 w-5" />
-              {t.ctaSubmit}
-            </Button>
+          {/* La segnalazione: negozio dalla mappa e link, salvati per l'admin */}
+          <GlassCard hover={false} id="segnala" className="mt-8 scroll-mt-24 p-6 sm:p-8">
+            <h3 className="text-xl font-bold">{t.form.title}</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">{t.form.text}</p>
+            <div className="mt-6">
+              <SocialSubmit
+                shops={shops}
+                bounds={MERCHANT_BOUNDS}
+                locale={locale}
+                fallbackHref={submitMailto}
+                fallbackEmail={CONTEST.merchantSupportEmail}
+              />
+            </div>
           </GlassCard>
         </section>
 

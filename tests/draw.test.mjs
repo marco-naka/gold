@@ -232,8 +232,9 @@ test('l’ora del POS si legge come ora di Lugano, con l’ora legale giusta', (
 test('i locali dello Satoshi Spritz sono negozi dell’elenco, con un nome pubblicato', async () => {
   const { SATOSHI_SPRITZ } = await import('../lib/bitcoin.js');
   const { default: data } = await import('../lib/merchants.data.json', { with: { type: 'json' } });
+  const { default: extra } = await import('../lib/merchants.extra.json', { with: { type: 'json' } });
   if (!SATOSHI_SPRITZ.venues) return;
-  const ids = new Set(data.merchants.map((m) => m.id));
+  const ids = new Set([...data.merchants, ...extra.merchants].map((m) => m.id));
   for (const id of SATOSHI_SPRITZ.venues) assert.ok(ids.has(id), `${id} non è nell'elenco dei negozi: un pagamento lì non entrerebbe nello Spritz`);
   assert.ok(SATOSHI_SPRITZ.venueNames?.length, 'i nomi dei locali vanno pubblicati sul sito (art. 6-ter)');
 });

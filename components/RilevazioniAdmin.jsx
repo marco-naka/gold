@@ -277,6 +277,10 @@ export default function RilevazioniAdmin({ visits, operator }) {
           <Button as="a" href="/api/rilevazioni?export=json" variant="ghost" size="sm">
             <Download className="h-4 w-4" /> {t.backup}
           </Button>
+          {/* «Link social» è uguale in italiano e in inglese */}
+          <Button as="a" href="/admin/social" variant="ghost" size="sm">
+            Link social
+          </Button>
           <Button as="a" href="/rilevazioni" variant="ghost" size="sm">
             {t.newSurvey}
           </Button>
