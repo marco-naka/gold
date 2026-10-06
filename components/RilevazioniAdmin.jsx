@@ -20,6 +20,7 @@ import { TIME_ZONE } from '@/lib/time';
 import { CodeGate, LOCALE_KEY, LocaleSwitch } from './SurveyForm';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
+import RilevazioniTable from './RilevazioniTable';
 import { cn } from './ui/cn';
 
 /*
@@ -58,6 +59,8 @@ const fmt = (iso, locale, withTime = true) =>
 const dayKey = (iso) => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(iso));
 const swissDate = (ymd) => (ymd ? ymd.split('-').reverse().join('.') : '');
 const Q = (id) => ALL_QUESTIONS.find((q) => q.id === id);
+const VIEW_KEY = 'naka-admin-vista';
+const LIVE_MS = 30_000;
 
 /** Lingua del pannello: la stessa scelta nel questionario, ricordata su questo dispositivo. */
 function useLocale() {
@@ -128,6 +131,39 @@ export default function RilevazioniAdmin({ visits, operator }) {
   const [outcome, setOutcome] = useState('');
   const [surveyor, setSurveyor] = useState('');
   const [only, setOnly] = useState('');
+  // Schede o tabella: la scelta resta su questo dispositivo.
+  const [view, setView] = useState('list');
+  // Tempo reale: la pagina si ricarica dal server ogni 30 secondi, finché non la si mette in
+  // pausa o la scheda del browser non è nascosta. I filtri e la scheda aperta restano.
+  const [live, setLive] = useState(true);
+  const [updatedAt, setUpdatedAt] = useState(null);
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(VIEW_KEY) === 'table') setView('table');
+    } catch {
+      /* navigazione privata */
+    }
+  }, []);
+  const changeView = (next) => {
+    setView(next);
+    try {
+      localStorage.setItem(VIEW_KEY, next);
+    } catch {
+      /* vedi sopra */
+    }
+  };
+
+  // Ogni volta che arrivano dati nuovi dal server, l'ora dell'ultimo aggiornamento.
+  useEffect(() => setUpdatedAt(new Date()), [visits]);
+
+  useEffect(() => {
+    if (!live) return undefined;
+    const id = setInterval(() => {
+      if (document.visibilityState === 'visible') router.refresh();
+    }, LIVE_MS);
+    return () => clearInterval(id);
+  }, [live, router]);
 
   const sorted = useMemo(() => [...visits].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [visits]);
 
@@ -166,10 +202,10 @@ export default function RilevazioniAdmin({ visits, operator }) {
         .filter((v) => v.answers?.ritorno_quando)
         .sort((a, b) =>
           `${a.answers.ritorno_quando} ${a.answers.ritorno_ora ?? ''}`.localeCompare(
-            `${b.answers.ritorno_quando} ${b.answers.ritorno_ora ?? ''}`
-          )
+            `${b.answers.ritorno_quando} ${b.answers.ritorno_ora ?? ''}`,
+          ),
         ),
-    [latest]
+    [latest],
   );
   const posProblems = useMemo(() => latest.filter(hasPosProblem), [latest]);
   const requests = useMemo(() => latest.filter((v) => v.answers?.naka_problemi), [latest]);
@@ -196,7 +232,8 @@ export default function RilevazioniAdmin({ visits, operator }) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-10">
+    // In tabella servono tutte le colonne che lo schermo concede: la pagina si allarga.
+    <div className={cn('mx-auto w-full px-5 pb-24 pt-10', view === 'table' ? 'max-w-[1800px]' : 'max-w-6xl')}>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
@@ -208,6 +245,21 @@ export default function RilevazioniAdmin({ visits, operator }) {
             {operator ? t.signedIn(operator) : ''}
             {t.dataNote}
           </p>
+          {updatedAt && (
+            <p className="mt-2 inline-flex items-center gap-2 text-xs text-muted">
+              <span className={cn('h-2 w-2 rounded-full', live ? 'animate-pulse bg-emerald-400' : 'bg-muted/50')} />
+              {(live ? t.live : t.paused)(
+                updatedAt.toLocaleTimeString(locale === 'en' ? 'en-GB' : 'it-CH', { timeZone: TIME_ZONE }),
+              )}
+              <button
+                type="button"
+                onClick={() => setLive((x) => !x)}
+                className="font-semibold text-btc underline underline-offset-2"
+              >
+                {live ? t.pause : t.resume}
+              </button>
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="ghost" size="sm" onClick={refresh} disabled={refreshing}>
@@ -246,7 +298,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
             className={cn(
               'rounded-2xl border px-4 py-3 text-left transition',
               TONE[o.tone],
-              outcome === o.id ? 'ring-2 ring-white/40' : 'hover:brightness-125'
+              outcome === o.id ? 'ring-2 ring-white/40' : 'hover:brightness-125',
             )}
           >
             <span className="block text-2xl font-bold">{stats.byOutcome[o.id] ?? 0}</span>
@@ -277,8 +329,10 @@ export default function RilevazioniAdmin({ visits, operator }) {
               </span>{' '}
               · {v.merchantName}
               <span className="block text-xs text-muted">
-                {v.answers.ritorno_motivo ? answerIn(Q('ritorno_motivo'), v.answers.ritorno_motivo, locale) : t.noReason} ·{' '}
-                {v.surveyor}
+                {v.answers.ritorno_motivo
+                  ? answerIn(Q('ritorno_motivo'), v.answers.ritorno_motivo, locale)
+                  : t.noReason}{' '}
+                · {v.surveyor}
               </span>
             </TodoRow>
           ))}
@@ -307,7 +361,28 @@ export default function RilevazioniAdmin({ visits, operator }) {
 
       {/* Che cosa è stato rilevato */}
       <section className="mt-10">
-        <h2 className="text-lg font-bold">{t.listTitle}</h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-bold">{t.listTitle}</h2>
+          <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-0.5 text-sm">
+            {[
+              ['list', t.viewList],
+              ['table', t.viewTable],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => changeView(id)}
+                aria-pressed={view === id}
+                className={cn(
+                  'rounded-full px-4 py-1.5 font-semibold transition',
+                  view === id ? 'bg-btc/15 text-btc' : 'text-muted hover:text-white',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto_auto_auto]">
           <label className="relative">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
@@ -341,48 +416,54 @@ export default function RilevazioniAdmin({ visits, operator }) {
             <option value="pos">{t.withPos}</option>
           </select>
         </div>
-        <p className="mt-3 text-xs text-muted">
-          {t.countOf(filtered.length, sorted.length)}
-        </p>
+        <p className="mt-3 text-xs text-muted">{t.countOf(filtered.length, sorted.length)}</p>
 
-        <ul className="mt-3 divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-ink-soft/60">
-          {filtered.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted">{t.empty}</li>}
-          {filtered.map((v) => {
-            const o = outcomeOf(v.outcome);
-            const nPhotos = Object.values(v.photos ?? {}).flat().length;
-            return (
-              <li key={v.id}>
-                <button
-                  type="button"
-                  onClick={() => setOpen(v)}
-                  className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-white/[0.03]"
-                >
-                  <Store className="hidden h-5 w-5 shrink-0 text-muted sm:block" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold">{v.merchantName}</span>
-                    <span className="block truncate text-xs text-muted">
-                      {fmt(v.createdAt, locale)} · {v.surveyor || '—'}
-                      {v.mapSnapshot?.address ? ` · ${v.mapSnapshot.address}` : ''}
-                    </span>
-                  </span>
-                  <span className="hidden items-center gap-2 text-muted sm:flex">
-                    {hasPosProblem(v) && <AlertTriangle className="h-4 w-4 text-red-300" aria-label={t.posIcon} />}
-                    {v.answers?.ritorno_quando && <CalendarClock className="h-4 w-4 text-btc" aria-label={t.returnIcon} />}
-                    {nPhotos > 0 && (
-                      <span className="inline-flex items-center gap-1 text-xs">
-                        <Camera className="h-4 w-4" /> {nPhotos}
+        {view === 'table' ? (
+          <RilevazioniTable visits={filtered} locale={locale} t={t} onOpen={setOpen} />
+        ) : (
+          <ul className="mt-3 divide-y divide-white/5 overflow-hidden rounded-2xl border border-white/10 bg-ink-soft/60">
+            {filtered.length === 0 && <li className="px-5 py-8 text-center text-sm text-muted">{t.empty}</li>}
+            {filtered.map((v) => {
+              const o = outcomeOf(v.outcome);
+              const nPhotos = Object.values(v.photos ?? {}).flat().length;
+              return (
+                <li key={v.id}>
+                  <button
+                    type="button"
+                    onClick={() => setOpen(v)}
+                    className="flex w-full items-center gap-4 px-5 py-4 text-left transition hover:bg-white/[0.03]"
+                  >
+                    <Store className="hidden h-5 w-5 shrink-0 text-muted sm:block" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate font-semibold">{v.merchantName}</span>
+                      <span className="block truncate text-xs text-muted">
+                        {fmt(v.createdAt, locale)} · {v.surveyor || '—'}
+                        {v.mapSnapshot?.address ? ` · ${v.mapSnapshot.address}` : ''}
                       </span>
-                    )}
-                  </span>
-                  <span className={cn('shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold', TONE[o.tone])}>
-                    {outcomeLabel(o)}
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+                    </span>
+                    <span className="hidden items-center gap-2 text-muted sm:flex">
+                      {hasPosProblem(v) && <AlertTriangle className="h-4 w-4 text-red-300" aria-label={t.posIcon} />}
+                      {v.answers?.ritorno_quando && (
+                        <CalendarClock className="h-4 w-4 text-btc" aria-label={t.returnIcon} />
+                      )}
+                      {nPhotos > 0 && (
+                        <span className="inline-flex items-center gap-1 text-xs">
+                          <Camera className="h-4 w-4" /> {nPhotos}
+                        </span>
+                      )}
+                    </span>
+                    <span
+                      className={cn('shrink-0 rounded-full border px-2.5 py-1 text-xs font-semibold', TONE[o.tone])}
+                    >
+                      {outcomeLabel(o)}
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
 
       <VisitModal visit={open} onClose={() => setOpen(null)} locale={locale} />
@@ -425,7 +506,7 @@ function TodoRow({ children, onClick, past }) {
         onClick={onClick}
         className={cn(
           'w-full rounded-xl px-3 py-2 text-left text-sm transition hover:bg-white/[0.05]',
-          past && 'border-l-2 border-red-400/60'
+          past && 'border-l-2 border-red-400/60',
         )}
       >
         {children}
@@ -444,7 +525,7 @@ function VisitModal({ visit, onClose, locale }) {
     [].concat(visit.photos?.[p.id] ?? []).map((ph, i, all) => ({
       ...ph,
       label: all.length > 1 ? `${photoIn(p, locale).label} ${i + 1}` : photoIn(p, locale).label,
-    }))
+    })),
   );
 
   return (
@@ -468,12 +549,14 @@ function VisitModal({ visit, onClose, locale }) {
 
       {SECTIONS.map((section) => {
         const rows = section.questions.filter(
-          (q) => q.type !== 'photo' && q.type !== 'qr' && visit.answers?.[q.id] !== undefined
+          (q) => q.type !== 'photo' && q.type !== 'qr' && visit.answers?.[q.id] !== undefined,
         );
         if (!rows.length) return null;
         return (
           <div key={section.id} className="mt-6">
-            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-btc">{sectionIn(section, locale).title}</h4>
+            <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-btc">
+              {sectionIn(section, locale).title}
+            </h4>
             <dl className="mt-2 divide-y divide-white/5 rounded-xl border border-white/10">
               {rows.map((q) => (
                 <div key={q.id} className="grid gap-1 px-4 py-2.5 sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:gap-4">
