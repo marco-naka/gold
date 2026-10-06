@@ -20,6 +20,7 @@ export default function sitemap() {
           languages: {
             it: `${SITE_URL}${itSlug}`,
             en: `${SITE_URL}/en${enSlug}`,
+            'x-default': `${SITE_URL}/en${enSlug}`,
           },
         },
       };

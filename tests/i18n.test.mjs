@@ -76,3 +76,8 @@ test('getDictionary ricade sull’italiano per lingue sconosciute', () => {
   assert.equal(getDictionary('en'), en);
   assert.deepEqual(LOCALES, ['it', 'en']);
 });
+
+test('le chiavi usate dai componenti condivisi esistono in entrambe le lingue', () => {
+  // EntryForm e RulesModal leggono modal.close dal dizionario: se manca, la home non si genera.
+  for (const dict of [it, en]) assert.equal(typeof dict.modal?.close, 'string');
+});

@@ -231,6 +231,20 @@ export default async function Winners({ locale }) {
             ))}
           </div>
 
+          {/* Gli stessi controlli della home, con il comando: qui è dove si scaricano i file. */}
+          <GlassCard hover={false} className="mt-4 p-6">
+            <h3 className="text-base font-bold">{dict.draw.techTitle}</h3>
+            <div className="mt-3 space-y-3 text-sm leading-relaxed text-muted">
+              {dict.draw.tech(DRAW.blocksAhead).map((p) => (
+                <p key={p}>{p}</p>
+              ))}
+              <p className="pt-1 text-xs font-semibold text-white">{dict.draw.techCodeLabel}</p>
+              <pre className="overflow-x-auto rounded-xl border border-white/10 bg-ink-deep p-4 text-[11px] leading-relaxed text-btc">
+                <code>{dict.draw.techCode}</code>
+              </pre>
+            </div>
+          </GlassCard>
+
           {/* L'orario non è un dettaglio da nascondere: è la conseguenza diretta del metodo. */}
           <GlassCard hover={false} className="mt-4 flex items-start gap-4 p-6">
             <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-btc/30 bg-btc/10 text-btc">

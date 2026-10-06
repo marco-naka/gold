@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LOCALES, getDictionary, switchLocalePath } from '@/lib/i18n';
 import { cn } from './ui/cn';
@@ -28,10 +27,18 @@ export default function LanguageSwitch({ locale, className }) {
       {LOCALES.map((target) => {
         const active = target === locale;
         return (
-          <Link
+          // Un <a> semplice e non <Link>: il cambio di lingua ricarica la pagina, così il
+          // middleware legge subito il cookie. Con <Link> Next precarica la pagina prima del
+          // clic, quando il cookie ancora non c'è, e riusa il rinvio alla lingua del telefono.
+          <a
             key={target}
             href={hrefFor(target)}
             hrefLang={target}
+            // La scelta vince sulla lingua del dispositivo (middleware.js): chi passa
+            // all'italiano su un telefono inglese non deve essere rimandato all'inglese.
+            onClick={() => {
+              document.cookie = `naka-lang=${target}; path=/; max-age=31536000; samesite=lax`;
+            }}
             aria-current={active ? 'true' : undefined}
             aria-label={getDictionary(target).meta.languageName}
             className={cn(
@@ -43,7 +50,7 @@ export default function LanguageSwitch({ locale, className }) {
               {FLAGS[target]}
             </span>
             {target.toUpperCase()}
-          </Link>
+          </a>
         );
       })}
     </div>
