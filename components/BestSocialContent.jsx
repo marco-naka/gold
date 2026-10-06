@@ -85,7 +85,6 @@ export default function BestSocialContent({ locale }) {
     `mailto:${CONTEST.merchantSupportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body.join('\n'))}`;
   const submitMailto = mail(t.mailSubject, t.mailBody);
   const joinMailto = mail(t.join.subject, t.join.body);
-  const askMailto = mail(t.join.missingSubject, t.join.missingBody);
   // Per il modulo dei link social: solo quello che serve a cercare e mostrare il negozio.
   const shops = MERCHANTS.map(({ id, name, address, lat, lng }) => ({ id, name, address, lat, lng }));
 
@@ -150,23 +149,18 @@ export default function BestSocialContent({ locale }) {
               </ol>
             </GlassCard>
 
-            {/* L'adesione è un'email: il pulsante la apre già compilata, senza passare da altre sezioni */}
-            <div id="adesione" className="mt-6 flex scroll-mt-24 flex-col gap-3 sm:flex-row">
-              <Button as="a" href={joinMailto}>
-                <Mail className="h-4 w-4" />
-                {t.join.cta}
-              </Button>
-              <Button as="a" href="#premi" variant="secondary-gold">
+            {/* Nessuna iscrizione: si partecipa dal primo pagamento registrato da un cliente */}
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Button as="a" href="#premi">
                 <Trophy className="h-4 w-4" />
                 {t.ctaPrizes}
               </Button>
+              <Button as="a" href={joinMailto} variant="secondary-gold">
+                <Mail className="h-4 w-4" />
+                {t.join.cta}
+              </Button>
             </div>
-            <p className="mt-3 text-xs leading-relaxed text-muted">
-              {t.join.note} {t.join.missingQuestion}{' '}
-              <a href={askMailto} className="font-semibold text-gold underline underline-offset-2 hover:text-gold-warm">
-                {t.join.missingCta}
-              </a>
-            </p>
+            <p className="mt-3 text-xs leading-relaxed text-muted">{t.join.note}</p>
           </div>
 
           <GlassCard hover={false} className="h-fit p-7">
