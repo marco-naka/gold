@@ -50,7 +50,7 @@ import { TIME_ZONE } from '@/lib/time';
 
 const DRAFT_KEY = 'naka-rilevazione-bozza';
 const SURVEYOR_KEY = 'naka-rilevatore';
-const LOCALE_KEY = 'naka-rilevazioni-lingua';
+export const LOCALE_KEY = 'naka-rilevazioni-lingua';
 
 const YESNO = [
   { value: 'si', label: 'Sì' },
@@ -120,7 +120,7 @@ export default function SurveyForm({ locked, pinHint }) {
 }
 
 /** Interruttore IT/EN, due pulsanti e nessun menu: si cambia con un pollice. */
-function LocaleSwitch({ locale, onLocale }) {
+export function LocaleSwitch({ locale, onLocale }) {
   return (
     <div className="inline-flex items-center gap-0.5 rounded-lg border border-white/10 bg-white/5 p-0.5">
       {SURVEY_LOCALES.map((code) => (

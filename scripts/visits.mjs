@@ -16,6 +16,7 @@ import { join } from 'node:path';
 import { ALL_QUESTIONS, OUTCOMES } from '../lib/survey.js';
 import { TIME_ZONE } from '../lib/time.js';
 import { answerText, visitsCsv } from '../lib/survey-export.js';
+import { signedPhotoUrl } from '../lib/server/photo-links.js';
 
 const DATA_DIR = process.env.DATA_DIR || join(process.cwd(), '.data');
 const FILE = join(DATA_DIR, 'rilevazioni.json');
@@ -152,7 +153,7 @@ if (command === 'stats') {
   }
   console.log();
 } else if (command === 'export') {
-  process.stdout.write(visitsCsv(visits));
+  process.stdout.write(visitsCsv(visits, { photoUrl: signedPhotoUrl }));
 } else if (command === 'agenda') {
   // I ritorni fissati, per qualunque motivo: prova da fare, titolare assente, materiale da
   // consegnare. È la lista con cui si organizza il secondo giro, ed è il motivo per cui la

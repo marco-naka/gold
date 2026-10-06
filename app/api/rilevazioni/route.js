@@ -6,6 +6,7 @@ import { sniffImage } from '@/lib/server/image-sniff';
 import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
 import { persistentStorage } from '@/lib/server/persistence';
+import { signedPhotoUrl } from '@/lib/server/photo-links';
 import { visitsCsv } from '@/lib/survey-export';
 import { todayInZurich } from '@/lib/time';
 import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
@@ -37,7 +38,7 @@ export async function GET(request) {
     const name = `rilevazioni-${todayInZurich()}.${format}`;
     const body =
       format === 'csv'
-        ? `\uFEFF${visitsCsv(visits)}` // BOM: Excel apre gli accenti giusti
+        ? `\uFEFF${visitsCsv(visits, { photoUrl: signedPhotoUrl })}` // BOM: Excel apre gli accenti giusti
         : `${JSON.stringify({ exportedAt: new Date().toISOString(), visits }, null, 2)}\n`;
     return new NextResponse(body, {
       headers: {

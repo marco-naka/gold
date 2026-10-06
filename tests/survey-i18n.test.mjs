@@ -83,3 +83,20 @@ test('le opzioni derivate restano valori italiani anche in inglese', () => {
     [{ value: 'BTC · Lightning', label: 'BTC · Lightning' }]
   );
 });
+
+test('il pannello admin ha gli stessi testi in italiano e in inglese', async () => {
+  const { ADMIN_IT, ADMIN_EN } = await import('../lib/admin-i18n.js');
+  assert.deepEqual(Object.keys(ADMIN_IT).sort(), Object.keys(ADMIN_EN).sort());
+  for (const key of Object.keys(ADMIN_IT)) assert.equal(typeof ADMIN_IT[key], typeof ADMIN_EN[key], key);
+});
+
+test('le risposte salvate in italiano si leggono in inglese nel pannello', async () => {
+  const { answerIn } = await import('../lib/survey-i18n.js');
+  const q = (id) => ALL_QUESTIONS.find((x) => x.id === id);
+  assert.equal(answerIn(q('con_chi'), 'Titolare', 'en'), 'Owner');
+  assert.equal(answerIn(q('con_chi'), 'Titolare', 'it'), 'Titolare');
+  assert.equal(answerIn(q('cassa_sistema'), 'si', 'en'), 'Yes');
+  assert.equal(answerIn(q('sim_sunrise'), true, 'en'), 'Yes');
+  assert.equal(answerIn(q('ritorno_quando'), '2026-10-09', 'en'), '09.10.2026');
+  assert.equal(answerIn(q('note'), 'scritto a mano', 'en'), 'scritto a mano');
+});

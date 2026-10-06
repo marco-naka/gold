@@ -82,15 +82,22 @@ test('nel CSV finisce ogni risposta, nella sua colonna, e niente colonne doppie'
   assert.equal(new Set(head).size, head.length, `colonne doppie: ${head.filter((h, i) => head.indexOf(h) !== i)}`);
 
   const cell = (name) => row[head.indexOf(name)];
-  assert.equal(cell('Data e ora (Lugano)'), '05.10.2026, 10:30');
+  assert.equal(cell('Data (Lugano)'), '05.10.2026');
+  assert.equal(cell('Ora (Lugano)'), '10:30:00');
+  assert.equal(cell('Timestamp UTC (ISO 8601)'), '2026-10-05T08:30:00Z');
+  assert.equal(cell('Numero di foto'), '3');
   assert.equal(cell('Negozio'), 'Bar "Sole", Lugano');
   assert.equal(cell('Indirizzo'), 'Via Nassa 1');
   assert.equal(cell('Esito'), 'Aderisce');
   assert.equal(cell('Quando si torna?'), '09.10.2026');
-  assert.equal(cell('Foto: Ricevute e QR'), 'rilevazioni/2026/RV-2026-AAAAAA-ricevuta-1.jpg; rilevazioni/2026/RV-2026-AAAAAA-ricevuta-2.jpg');
+  // Una colonna per foto: un link per cella è quello che un foglio rende cliccabile.
+  assert.equal(cell('Foto: Vetrina'), 'rilevazioni/2026/RV-2026-AAAAAA-vetrina.jpg');
+  assert.equal(cell('Foto: Ricevute e QR 1'), 'rilevazioni/2026/RV-2026-AAAAAA-ricevuta-1.jpg');
+  assert.equal(cell('Foto: Ricevute e QR 2'), 'rilevazioni/2026/RV-2026-AAAAAA-ricevuta-2.jpg');
+  assert.equal(cell('Foto: Altre foto 1'), '');
 
   // Ogni domanda ha la sua colonna, e ci trova esattamente la sua risposta.
-  const fixed = 10;
+  const fixed = 12;
   answerable.forEach((q, i) => {
     assert.equal(row[fixed + i], cellFor(q, answers[q.id]), `colonna di ${q.id}`);
     assert.ok(head[fixed + i].startsWith(q.label), `intestazione di ${q.id}`);
@@ -118,4 +125,25 @@ test('il pannello è solo per i nomi in RILEVAZIONI_ADMIN', async () => {
   withEnv({ RILEVAZIONI_OPERATORI: undefined, RILEVAZIONI_CODE: undefined, NODE_ENV: 'production' }, () =>
     assert.equal(isAdmin({ cookies: { get: () => undefined } }), false)
   );
+});
+
+test('i link delle foto nel CSV si aprono senza PIN, solo firmati e non scaduti', async () => {
+  const { signedPhotoUrl, validPhotoSignature, LINK_DAYS } = await import('../lib/server/photo-links.js');
+  withEnv({ RILEVAZIONI_OPERATORI: 'Marco:4321', RILEVAZIONI_LINK_SECRET: undefined }, () => {
+    const key = 'rilevazioni/2026/RV-2026-AAAAAA-vetrina.jpg';
+    const url = new URL(signedPhotoUrl(key, Date.parse('2026-10-06T08:00:00Z')));
+    const [exp, sig] = [url.searchParams.get('exp'), url.searchParams.get('sig')];
+    assert.equal(url.searchParams.get('key'), key);
+    assert.equal(validPhotoSignature(key, exp, sig, Date.parse('2026-10-07T08:00:00Z')), true);
+    // Scaduto, per un'altra foto, o con la firma ritoccata: no.
+    assert.equal(validPhotoSignature(key, exp, sig, Date.parse('2026-10-06T08:00:00Z') + (LINK_DAYS + 1) * 864e5), false);
+    assert.equal(validPhotoSignature(key.replace('vetrina', 'altro-1'), exp, sig), false);
+    assert.equal(validPhotoSignature(key, exp, sig.replace(/.$/, (c) => (c === '0' ? '1' : '0'))), false);
+  });
+});
+
+test('un testo che sembra una formula resta testo nel CSV', () => {
+  const csv = visitsCsv([{ id: 'RV-2026-BBBBBB', createdAt: '2026-10-05T08:30:00Z', surveyor: 'Anna', merchantName: '=HYPERLINK("x")', outcome: 'aderisce', answers: { note: '+41 91 000 00 00' }, photos: {} }]);
+  assert.match(csv, /"'=HYPERLINK\(""x""\)"/);
+  assert.match(csv, /"'\+41 91 000 00 00"/);
 });
