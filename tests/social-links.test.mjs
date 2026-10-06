@@ -41,3 +41,15 @@ test('le segnalazioni chiudono alla scadenza di pubblicazione', () => {
   assert.equal(socialOpen(new Date('2026-10-23T23:59:00+02:00')), true);
   assert.equal(socialOpen(new Date('2026-10-24T00:00:01+02:00')), false);
 });
+
+test('segnalazione di un cliente: link ed email obbligatori, ID facoltativo ma nel formato giusto', async () => {
+  const { validateCustomerLink } = await import('../lib/social-links.js');
+  assert.deepEqual(validateCustomerLink({ url: '', email: '' }).errors, { url: 'required', email: 'required' });
+  assert.equal(validateCustomerLink({ url: 'tiktok.com/@a/video/1', email: 'a@b.ch', entryId: 'ABC' }).errors.entryId, 'invalid');
+  assert.deepEqual(validateCustomerLink({ url: 'tiktok.com/@a/video/1', email: 'Mario@Example.CH', entryId: 'nk-2026-7kq2xm' }).value, {
+    url: 'https://tiktok.com/@a/video/1',
+    platform: 'TikTok',
+    email: 'mario@example.ch',
+    entryId: 'NK-2026-7KQ2XM',
+  });
+});

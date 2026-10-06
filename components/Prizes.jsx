@@ -3,6 +3,7 @@ import { Trophy, Users, Store, ArrowUpRight, ChevronDown } from 'lucide-react';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import FiatValue from './FiatValue';
+import CustomerSocialSubmit from './CustomerSocialSubmit';
 import { CONTEST, SOCIAL_CONTEST } from '@/lib/constants';
 import { DECLARED, POOLS, formatPrize } from '@/lib/campaigns';
 import { SATOSHI_SPRITZ, formatSats } from '@/lib/bitcoin';
@@ -102,6 +103,7 @@ export default function Prizes({ t, locale }) {
                           {t.socialHow(SOCIAL_CONTEST.hashtags.join(' '))}
                         </p>
                       </details>
+                      <CustomerSocialSubmit locale={locale} />
                     </>
                   )}
 

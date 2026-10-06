@@ -1,9 +1,8 @@
 import { cookies } from 'next/headers';
 import { AdminGate } from '@/components/RilevazioniAdmin';
 import SocialLinksAdmin from '@/components/SocialLinksAdmin';
-import { MERCHANTS } from '@/lib/merchants';
 import { currentOperator, isAdmin, placeholderPin } from '@/lib/server/rilevazioni-auth';
-import { listSocialLinks } from '@/lib/server/social';
+import { adminSocialLinks } from '@/lib/server/social';
 
 /**
  * I link social segnalati dai commercianti. Stesso accesso del pannello rilevazioni: un PIN
@@ -25,10 +24,7 @@ export default async function Page() {
       </main>
     );
   }
-  const byId = new Map(MERCHANTS.map((m) => [m.id, m]));
-  const links = (await listSocialLinks())
-    .map((l) => ({ ...l, merchantName: byId.get(l.merchantId)?.name ?? l.merchantId, address: byId.get(l.merchantId)?.address ?? '' }))
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const links = await adminSocialLinks();
   return (
     <main className="min-h-screen">
       <SocialLinksAdmin initial={links} />

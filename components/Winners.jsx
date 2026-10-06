@@ -9,6 +9,11 @@ import { CONTEST, DRAW } from '@/lib/constants';
 import { POOLS, formatPrize } from '@/lib/campaigns';
 import { formatDate, formatDateTime, formatTime, getDictionary, localePath } from '@/lib/i18n';
 import { readArchive, readCommitment, readDrawResult } from '@/lib/server/draw-result';
+import { ALL_MERCHANTS } from '@/lib/merchants';
+
+// Nell'estrazione dei negozi l'ID è quello del negozio: si mostra il nome, e l'ID resta sotto
+// per chi confronta con l'elenco pubblicato.
+const SHOP_NAMES = new Map(ALL_MERCHANTS.map((m) => [m.id, m.name]));
 
 /** I tre elenchi impegnati, nell'ordine in cui si mostrano. */
 const SCOPES = ['users', 'spritz', 'merchants'];
@@ -121,7 +126,16 @@ export default async function Winners({ locale }) {
                           <tr key={`${w.rank}-${w.winnerId}`} className="border-b border-white/5">
                             <td className="py-2.5 pr-3">{prizeLabel(w.place)}</td>
                             <td className={`py-2.5 pr-3 font-semibold ${accent}`}>{formatPrize(w, locale)}</td>
-                            <td className="py-2.5 font-mono text-xs">{w.winnerId}</td>
+                            <td className="py-2.5">
+                              {key === 'merchants' && SHOP_NAMES.has(w.winnerId) ? (
+                                <>
+                                  <span className="font-semibold text-white">{SHOP_NAMES.get(w.winnerId)}</span>
+                                  <span className="block font-mono text-[11px] text-muted">{w.winnerId}</span>
+                                </>
+                              ) : (
+                                <span className="font-mono text-xs">{w.winnerId}</span>
+                              )}
+                            </td>
                           </tr>
                         ))}
                       </tbody>
@@ -136,7 +150,7 @@ export default async function Winners({ locale }) {
                         <ol className="mt-2 grid gap-1 font-mono text-xs text-muted sm:grid-cols-2">
                           {result[key].reserves.map((r) => (
                             <li key={r.id}>
-                              {r.rank}. {r.id}
+                              {r.rank}. {key === 'merchants' && SHOP_NAMES.has(r.id) ? `${SHOP_NAMES.get(r.id)} (${r.id})` : r.id}
                             </li>
                           ))}
                         </ol>

@@ -8,15 +8,19 @@ import { LOCALE_KEY, LocaleSwitch } from './SurveyForm';
 import { TIME_ZONE } from '@/lib/time';
 
 /*
- * I link social segnalati dai commercianti, per l'admin: chi ha mandato che cosa, quando e
- * da quale negozio. Si aggiorna da solo ogni minuto; il CSV è la copia da passare alla giuria.
+ * I link social segnalati per i due premi Social, per l'admin: commercianti (dall'area
+ * commercianti, con il negozio) e clienti (dalla home, con l'email della partecipazione).
+ * Si aggiorna da solo ogni minuto; il CSV è la copia da passare alla giuria.
  */
 
 const UI = {
   it: {
-    kicker: 'Area commercianti',
+    kicker: 'Premi Social',
     title: 'Link social segnalati',
-    note: 'Inviati dal modulo dell’area commercianti. Il negozio è quello scelto da chi ha inviato: va verificato che il profilo sia davvero il suo.',
+    note: 'Commercianti: il negozio è quello scelto da chi ha inviato, va verificato che il profilo sia davvero il suo. Clienti: vale solo con almeno una partecipazione registrata con la stessa email.',
+    tabs: { merchant: 'Commercianti', customer: 'Clienti' },
+    customerCols: ['Data', 'Email', 'Partecipazioni', 'Piattaforma', 'Link'],
+    entries: (n, match) => (n ? `${n} con questa email${match === false ? ' · ID diverso' : ''}` : 'Nessuna: non ammesso'),
     refresh: 'Aggiorna',
     surveys: 'Rilevazioni',
     kpiLinks: 'Link',
@@ -29,9 +33,12 @@ const UI = {
     open: 'Apri',
   },
   en: {
-    kicker: 'Merchant area',
+    kicker: 'Social prizes',
     title: 'Submitted social links',
-    note: 'Sent from the merchant area form. The shop is the one picked by the sender: check that the profile really belongs to it.',
+    note: 'Merchants: the shop is the one picked by the sender, check that the profile really belongs to it. Customers: valid only with at least one entry registered with the same email.',
+    tabs: { merchant: 'Merchants', customer: 'Customers' },
+    customerCols: ['Date', 'Email', 'Entries', 'Platform', 'Link'],
+    entries: (n, match) => (n ? `${n} with this email${match === false ? ' · different ID' : ''}` : 'None: not eligible'),
     refresh: 'Refresh',
     surveys: 'Surveys',
     kpiLinks: 'Links',
@@ -49,6 +56,7 @@ export default function SocialLinksAdmin({ initial }) {
   const [locale, setLocale] = useState('it');
   const [links, setLinks] = useState(initial);
   const [q, setQ] = useState('');
+  const [kind, setKind] = useState('merchant');
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
   const t = UI[locale];
@@ -89,14 +97,17 @@ export default function SocialLinksAdmin({ initial }) {
     return () => clearInterval(id);
   }, []);
 
+  const ofKind = useMemo(() => links.filter((l) => (l.kind ?? 'merchant') === kind), [links, kind]);
   const shown = useMemo(() => {
     const needle = q.trim().toLowerCase();
     return needle
-      ? links.filter((l) => `${l.merchantName} ${l.platform} ${l.address}`.toLowerCase().includes(needle))
-      : links;
-  }, [links, q]);
+      ? ofKind.filter((l) => `${l.merchantName ?? ''} ${l.platform} ${l.address ?? ''} ${l.email ?? ''}`.toLowerCase().includes(needle))
+      : ofKind;
+  }, [ofKind, q]);
 
-  const byPlatform = links.reduce((acc, l) => ({ ...acc, [l.platform]: (acc[l.platform] ?? 0) + 1 }), {});
+  const byPlatform = ofKind.reduce((acc, l) => ({ ...acc, [l.platform]: (acc[l.platform] ?? 0) + 1 }), {});
+  const count = (k) => links.filter((l) => (l.kind ?? 'merchant') === k).length;
+  const isCustomer = kind === 'customer';
   const when = (iso) =>
     new Date(iso).toLocaleString(locale === 'en' ? 'en-GB' : 'it-CH', {
       timeZone: TIME_ZONE,
@@ -130,14 +141,34 @@ export default function SocialLinksAdmin({ initial }) {
         </div>
       </header>
 
-      <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+      <div className="mt-8 flex gap-2" role="tablist">
+        {['merchant', 'customer'].map((k) => (
+          <button
+            key={k}
+            type="button"
+            role="tab"
+            aria-selected={kind === k}
+            onClick={() => setKind(k)}
+            className={cn(
+              'rounded-full border px-4 py-1.5 text-sm font-semibold transition',
+              kind === k ? 'border-gold/40 bg-gold/10 text-gold' : 'border-white/10 text-muted hover:text-white',
+            )}
+          >
+            {t.tabs[k]} · {count(k)}
+          </button>
+        ))}
+      </div>
+
+      <section className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
         <div className="glass p-4">
           <p className="text-xs text-muted">{t.kpiLinks}</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">{links.length}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">{ofKind.length}</p>
         </div>
         <div className="glass p-4">
-          <p className="text-xs text-muted">{t.kpiShops}</p>
-          <p className="mt-1 text-2xl font-bold tabular-nums">{new Set(links.map((l) => l.merchantId)).size}</p>
+          <p className="text-xs text-muted">{isCustomer ? t.tabs.customer : t.kpiShops}</p>
+          <p className="mt-1 text-2xl font-bold tabular-nums">
+            {new Set(ofKind.map((l) => (isCustomer ? l.email : l.merchantId))).size}
+          </p>
         </div>
         <div className="glass col-span-2 p-4 sm:col-span-1">
           <p className="text-xs text-muted">{t.kpiPlatforms}</p>
@@ -162,7 +193,7 @@ export default function SocialLinksAdmin({ initial }) {
         <table className="min-w-full text-sm">
           <thead className="text-left text-xs text-muted">
             <tr>
-              {t.cols.map((c) => (
+              {(isCustomer ? t.customerCols : t.cols).map((c) => (
                 <th key={c} className="whitespace-nowrap border-b border-white/10 px-4 py-3 font-semibold">
                   {c}
                 </th>
@@ -180,10 +211,22 @@ export default function SocialLinksAdmin({ initial }) {
             {shown.map((l) => (
               <tr key={l.id} className="border-b border-white/5 last:border-0">
                 <td className="whitespace-nowrap px-4 py-3 tabular-nums text-muted">{when(l.createdAt)}</td>
-                <td className="px-4 py-3">
-                  <span className="font-semibold text-white">{l.merchantName}</span>
-                  <span className="block text-xs text-muted">{l.address}</span>
-                </td>
+                {isCustomer ? (
+                  <>
+                    <td className="px-4 py-3">
+                      <span className="font-semibold text-white">{l.email}</span>
+                      {l.entryId && <span className="block font-mono text-xs text-muted">{l.entryId}</span>}
+                    </td>
+                    <td className={cn('px-4 py-3 text-xs font-semibold', l.entries ? 'text-emerald-300' : 'text-red-300')}>
+                      {t.entries(l.entries, l.entryMatches)}
+                    </td>
+                  </>
+                ) : (
+                  <td className="px-4 py-3">
+                    <span className="font-semibold text-white">{l.merchantName}</span>
+                    <span className="block text-xs text-muted">{l.address}</span>
+                  </td>
+                )}
                 <td className="whitespace-nowrap px-4 py-3">{l.platform}</td>
                 <td className="max-w-[320px] px-4 py-3">
                   <a
@@ -197,7 +240,7 @@ export default function SocialLinksAdmin({ initial }) {
                     <ExternalLink className="h-3.5 w-3.5 shrink-0" />
                   </a>
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 text-muted">{l.email ?? '—'}</td>
+                {!isCustomer && <td className="whitespace-nowrap px-4 py-3 text-muted">{l.email ?? '—'}</td>}
               </tr>
             ))}
           </tbody>
