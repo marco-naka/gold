@@ -110,6 +110,9 @@ export default function Prizes({ t, locale }) {
                       <p className="mt-2 text-xs font-semibold text-btc">
                         {t.spritzWhen(spritz.day, spritz.from, spritz.to, SATOSHI_SPRITZ.area)}
                       </p>
+                      {SATOSHI_SPRITZ.venueNames?.length > 0 && (
+                        <p className="mt-1 text-xs text-muted">{t.spritzVenues(SATOSHI_SPRITZ.venueNames.join(', '))}</p>
+                      )}
                       <details className="group mt-2">
                         <summary className="flex cursor-pointer list-none items-center gap-1 text-xs font-semibold text-btc [&::-webkit-details-marker]:hidden">
                           {t.spritzDetails}

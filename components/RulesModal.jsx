@@ -63,6 +63,7 @@ export default function RulesModal({ t, locale, open, onClose }) {
       to: formatTime(SATOSHI_SPRITZ.to, locale),
       area: SATOSHI_SPRITZ.area,
       url: SATOSHI_SPRITZ.url,
+      venues: SATOSHI_SPRITZ.venueNames?.length ? SATOSHI_SPRITZ.venueNames.join(', ') : null,
     },
   });
 
