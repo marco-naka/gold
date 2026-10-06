@@ -1,14 +1,13 @@
 import Link from 'next/link';
-import { Trophy, Users, Store, Video, TrendingUp, Gift, ArrowUpRight, ChevronDown } from 'lucide-react';
+import { Trophy, Users, Store, ArrowUpRight, ChevronDown } from 'lucide-react';
 import GlassCard from './ui/GlassCard';
 import SectionTitle from './ui/SectionTitle';
 import FiatValue from './FiatValue';
 import { CONTEST, SOCIAL_CONTEST } from '@/lib/constants';
-import { DECLARED, POOLS, TOTAL_WINNERS, formatPrize } from '@/lib/campaigns';
+import { DECLARED, POOLS, formatPrize } from '@/lib/campaigns';
 import { SATOSHI_SPRITZ, formatSats } from '@/lib/bitcoin';
 import { formatDate, formatTime, localePath } from '@/lib/i18n';
 
-const MERCHANT_ICONS = [TrendingUp, Video, Gift];
 
 /**
  * L'importo di un premio: quanto vale una vincita, per quante se ne estraggono, e quanto fa in
@@ -48,10 +47,10 @@ export default function Prizes({ t, locale }) {
       <SectionTitle
         eyebrow={t.eyebrow}
         title={t.title(formatSats(DECLARED.sats, locale))}
-        subtitle={t.subtitle(TOTAL_WINNERS)}
+        subtitle={t.subtitle(POOLS.users.winners)}
       />
 
-      <div className="mt-14 grid gap-6 lg:grid-cols-2">
+      <div className="mx-auto mt-14 max-w-3xl">
         {/* Montepremi clienti */}
         <GlassCard className="p-7 sm:p-9">
           <Header
@@ -135,51 +134,22 @@ export default function Prizes({ t, locale }) {
           </ul>
         </GlassCard>
 
-        {/* Montepremi merchant */}
-        <GlassCard className="p-7 sm:p-9">
-          <Header
-            icon={Store}
-            kicker={t.merchantsKicker}
-            pool={POOLS.merchants.format(POOLS.merchants.total, locale)}
-            poolLabel={t.poolLabel}
-            note={t.merchantsNote}
-            asset={POOLS.merchants.asset}
-            poolAmount={POOLS.merchants.total}
-            locale={locale}
-          />
-          <ul className="mt-8 space-y-3">
-            {POOLS.merchants.items.map((item, i) => {
-              const Icon = MERCHANT_ICONS[i] ?? Gift;
-              return (
-                <li
-                  key={item.place}
-                  className="flex items-start gap-4 rounded-xl border border-white/5 bg-white/[0.03] p-4 transition hover:border-gold/30"
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-gold/25 bg-gold/10 text-gold">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-baseline justify-between gap-2">
-                      <p className="text-sm font-semibold text-white">{label(item).place}</p>
-                      <Amount item={item} locale={locale} t={t} accent="text-gold" />
-                    </div>
-                    <p className="mt-1 text-xs leading-relaxed text-muted">{label(item).desc}</p>
-                    {item.place === 'Best Social Content' && (
-                      <Link
-                        href={localePath(locale, '/commercianti')}
-                        className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-gold underline underline-offset-2 hover:text-gold-warm"
-                      >
-                        {t.videoLink}
-                        <ArrowUpRight className="h-3.5 w-3.5" />
-                      </Link>
-                    )}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        </GlassCard>
       </div>
+
+      {/* I negozi hanno la loro quota e la loro pagina: qui solo il rimando. */}
+      <Link
+        href={localePath(locale, '/commercianti')}
+        className="group mx-auto mt-6 flex max-w-3xl items-center gap-4 rounded-2xl border border-gold/25 bg-gold/[0.06] p-5 transition hover:border-gold/50"
+      >
+        <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl border border-gold/25 bg-gold/10 text-gold">
+          <Store className="h-5 w-5" />
+        </span>
+        <span className="min-w-0 flex-1 text-sm text-muted">
+          <span className="block font-semibold text-white">{t.merchantsRefTitle}</span>
+          {t.merchantsRefText}
+        </span>
+        <ArrowUpRight className="h-5 w-5 shrink-0 text-gold transition group-hover:translate-x-0.5" />
+      </Link>
 
       <p className="mx-auto mt-8 max-w-3xl text-center text-xs leading-relaxed text-muted/80">
         {t.note(formatDate(CONTEST.drawDate, locale))}

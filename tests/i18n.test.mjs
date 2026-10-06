@@ -34,9 +34,13 @@ test('i tipi corrispondono: una funzione non diventa una stringa', () => {
 
 test('le liste di pari ruolo hanno la stessa lunghezza', () => {
   assert.equal(it.faq.items.length, en.faq.items.length);
-  assert.equal(it.b2b.checklist.length, en.b2b.checklist.length);
   assert.equal(it.how.steps('x').length, en.how.steps('x').length);
-  assert.equal(it.dual.users.points('x').length, en.dual.users.points('x').length);
+  assert.equal(it.video.todo.length, en.video.todo.length);
+  assert.equal(it.video.faq.length, en.video.faq.length);
+  assert.equal(it.video.join.body.length, en.video.join.body.length);
+  const anchor = { at: 'x', btcUsd: '1', xautUsd: '1', source: 'x' };
+  assert.equal(it.video.value.items(anchor).length, en.video.value.items(anchor).length);
+  assert.equal(it.video.steps({}).length, en.video.steps({}).length);
 });
 
 test('nessun testo inglese è rimasto in italiano nelle voci chiave', () => {

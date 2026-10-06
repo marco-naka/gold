@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { Upload, MapPin, CalendarDays, Ticket, ArrowDown } from 'lucide-react';
 import AssetMark from './AssetMark';
 import FiatValue from './FiatValue';
@@ -8,7 +9,8 @@ import Button from './ui/Button';
 import { PoweredBadge } from './Brand';
 import { CONTEST, EVENT } from '@/lib/constants';
 import { POOLS } from '@/lib/campaigns';
-import { formatDate, formatTime } from '@/lib/i18n';
+import { formatSats } from '@/lib/bitcoin';
+import { formatDate, formatTime, localePath } from '@/lib/i18n';
 
 export default function Hero({ t, locale }) {
   const d = t.hero;
@@ -149,10 +151,15 @@ export default function Hero({ t, locale }) {
                   accent="btc"
                   fiat={<FiatValue asset="BTC" amount={POOLS.users.total} locale={locale} />}
                 />
+                {/* Dei negozi qui basta la quota: l'oro e come si vince stanno su /commercianti. */}
                 <Row
                   label={d.rowMerchants}
-                  value={POOLS.merchants.format(POOLS.merchants.total, locale)}
-                  fiat={<FiatValue asset="XAUT" amount={POOLS.merchants.total} locale={locale} />}
+                  value={formatSats(POOLS.merchants.satsEquivalent, locale)}
+                  fiat={
+                    <Link href={localePath(locale, '/commercianti')} className="text-gold underline underline-offset-2 hover:text-gold-warm">
+                      {d.merchantsLink}
+                    </Link>
+                  }
                 />
                 <Row label={d.rowAsset} value={d.rowAssetValue} accent="neutral" />
               </div>

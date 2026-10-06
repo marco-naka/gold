@@ -7,8 +7,8 @@ import { CONTEST, EVENT, OFFICIAL_CHANNELS } from '@/lib/constants';
 import { getDictionary, localePath } from '@/lib/i18n';
 
 /**
- * Il regolamento è una modale che vive nella home: fuori dalla home il link ci riporta,
- * così la voce non resta un pulsante inerte.
+ * Il regolamento è una modale che vive nella home: fuori dalla home il link ci riporta con
+ * ?regolamento, e la home la apre da sé.
  */
 function RulesLink({ onOpenRules, locale = 'it', children }) {
   const className = 'text-sm text-muted transition hover:text-btc';
@@ -20,7 +20,7 @@ function RulesLink({ onOpenRules, locale = 'it', children }) {
     );
   }
   return (
-    <Link href={`${localePath(locale)}#faq`} className={className}>
+    <Link href={`${localePath(locale)}?regolamento`} className={className}>
       {children}
     </Link>
   );
