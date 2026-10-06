@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Users, Trophy, Store } from 'lucide-react';
-import { intlLocale } from '@/lib/i18n';
+import { formatNumber } from '@/lib/number-format';
 import { cn } from './ui/cn';
 
 /**
@@ -28,7 +28,7 @@ export default function LiveStats({ t, className, locale = 'it' }) {
 
   const items = [
     stats.collecting
-      ? { icon: Users, value: stats.entries.toLocaleString(intlLocale(locale)), label: t.entries }
+      ? { icon: Users, value: formatNumber(stats.entries, locale), label: t.entries }
       : null,
     { icon: Trophy, value: stats.prizes, label: t.prizes },
     { icon: Store, value: stats.merchants, label: t.merchants },

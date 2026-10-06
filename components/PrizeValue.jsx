@@ -3,7 +3,7 @@
 import { formatSats } from '@/lib/bitcoin';
 import { DECLARED, POOLS } from '@/lib/campaigns';
 import { useRates, usdOf } from './FiatValue';
-import { intlLocale } from '@/lib/i18n';
+import { formatNumber } from '@/lib/number-format';
 
 /**
  * Montepremi complessivo con il controvalore in dollari.
@@ -22,11 +22,7 @@ export default function PrizeValue({ t, locale }) {
 
   const usd =
     btc && xaut
-      ? new Intl.NumberFormat(intlLocale(locale), {
-          style: 'currency',
-          currency: 'USD',
-          maximumFractionDigits: 0,
-        }).format(btc + xaut)
+      ? formatNumber(btc + xaut, locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 })
       : null;
 
   return (

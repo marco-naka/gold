@@ -8,7 +8,8 @@ import { ANCHOR } from '@/lib/anchor';
 import { DECLARED, POOLS, formatPrize } from '@/lib/campaigns';
 import { SATOSHI_SPRITZ, formatSats } from '@/lib/bitcoin';
 import { anchoredMerchantsSats } from '@/lib/anchor';
-import { formatDate, formatDateTime, formatTime, intlLocale } from '@/lib/i18n';
+import { formatDate, formatDateTime, formatTime } from '@/lib/i18n';
+import { formatNumber } from '@/lib/number-format';
 
 /** "1° Premio — 5'000'000 sat; Estrazione Riservata Merchant — 0.25 XAUT ×2; …" */
 const listPrizes = (pool, t, locale) =>
@@ -45,12 +46,12 @@ export default function RulesModal({ t, locale, open, onClose }) {
     // L'ancoraggio va citato per esteso: è il conto che rende vero il numero dichiarato.
     anchor: {
       at: formatDateTime(ANCHOR.at, locale),
-      btcUsd: ANCHOR.btcUsd.toLocaleString(intlLocale(locale)),
-      xautUsd: ANCHOR.xautUsd.toLocaleString(intlLocale(locale)),
+      btcUsd: formatNumber(ANCHOR.btcUsd, locale),
+      xautUsd: formatNumber(ANCHOR.xautUsd, locale),
       ratio: DECLARED.ratio,
       // Il valore vero a quelle quotazioni: 10'000'120, non un tondo 10 milioni. Scriverlo
       // esatto è ciò che permette a chiunque di rifare il conto e trovarci d'accordo.
-      merchantsSats: anchoredMerchantsSats().toLocaleString(intlLocale(locale)),
+      merchantsSats: formatNumber(anchoredMerchantsSats(), locale),
       source: locale === 'en' ? ANCHOR.sourceEn : ANCHOR.source,
     },
     social: {

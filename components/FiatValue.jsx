@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { XAUT_FALLBACK } from '@/lib/constants';
 import { BTC_FALLBACK, SATS_PER_BTC } from '@/lib/bitcoin';
-import { intlLocale } from '@/lib/i18n';
+import { formatNumber } from '@/lib/number-format';
 
 /**
  * Il controvalore in dollari di un premio, accanto alla quantità.
@@ -60,11 +60,7 @@ export default function FiatValue({ asset, amount, locale = 'it', className = ''
   const usd = usdOf(asset, amount, rates);
   if (!usd) return null;
 
-  const money = new Intl.NumberFormat(intlLocale(locale), {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(usd);
+  const money = formatNumber(usd, locale, { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
 
   return (
     <span className={className}>
