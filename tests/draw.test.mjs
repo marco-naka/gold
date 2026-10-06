@@ -145,6 +145,24 @@ test('un vincitore escluso lascia il premio alla prima riserva, senza rimescolar
   assert.equal(after.reserves[0].id, before.reserves[1].id);
 });
 
+test('la riserva prende proprio il premio dell’escluso, e gli altri tengono il loro (art. 7 d)', () => {
+  const before = drawWinners(ids, SEED, userTiers, 'users', { reserves: 3 });
+  const prizeOf = (r, id) => r.winners.find((w) => w.winnerId === id)?.amount;
+  for (const slot of [0, 1, before.winners.length - 1]) {
+    const out = before.winners[slot];
+    const after = drawWinners(ids, SEED, userTiers, 'users', { exclude: [out.winnerId], reserves: 3 });
+    assert.equal(after.winners.length, before.winners.length);
+    assert.equal(after.winners[slot].winnerId, before.reserves[0].id, 'la prima riserva entra nello stesso posto');
+    assert.equal(after.winners[slot].amount, out.amount, 'con lo stesso premio');
+    for (const w of before.winners) if (w !== out) assert.equal(prizeOf(after, w.winnerId), w.amount, 'nessuno cambia premio');
+  }
+  // Due esclusioni: entrano la prima e la seconda riserva, ciascuna nel posto lasciato libero, in ordine.
+  const [a, b] = [before.winners[0], before.winners[2]];
+  const after = drawWinners(ids, SEED, userTiers, 'users', { exclude: [a.winnerId, b.winnerId], reserves: 3 });
+  assert.equal(after.winners[0].winnerId, before.reserves[0].id);
+  assert.equal(after.winners[2].winnerId, before.reserves[1].id);
+});
+
 /* ---------- Satoshi Spritz e premio unico ---------- */
 
 import { computeAll, isSpritzEntry } from '../scripts/draw.mjs';

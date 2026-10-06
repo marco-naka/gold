@@ -32,6 +32,13 @@ test('rifiuta il numero di transazione duplicato', async () => {
   assert.equal((await store.listEntries()).length, 1);
 });
 
+test('rifiuta un ID già usato: due giocate non possono avere lo stesso biglietto', async () => {
+  const taken = await store.saveEntry(entry('NK-1', 'tx-other'));
+  assert.equal(taken.ok, false);
+  assert.equal(taken.reason, 'id_taken');
+  assert.equal((await store.listEntries()).length, 1);
+});
+
 test('scritture concorrenti sullo stesso TX: ne passa una sola', async () => {
   const results = await Promise.all([
     store.saveEntry(entry('NK-3', 'tx-race')),

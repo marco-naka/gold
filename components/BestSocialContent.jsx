@@ -274,6 +274,14 @@ export default function BestSocialContent({ locale }) {
         <section id="valore" className="mt-16 scroll-mt-24">
           <SectionTitle accent="gold" align="left" eyebrow={t.value.eyebrow} title={t.value.title} />
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
+            {/* Prima di dire quanto vale, che cos'è: la sigla XAUT da sola non dice niente a nessuno */}
+            <GlassCard className="border-gold/30 p-6 sm:col-span-2">
+              <h3 className="flex items-center gap-2 text-base font-bold">
+                <Coins className="h-4 w-4 text-gold" />
+                {t.value.what.title}
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted">{t.value.what.text}</p>
+            </GlassCard>
             {value.map((item, i) => {
               const Icon = [Scale, Lock, Wallet, Clock][i] ?? Coins;
               return (

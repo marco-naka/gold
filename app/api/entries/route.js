@@ -1,3 +1,4 @@
+import { randomInt } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
 import { MAX_MERCHANT_LENGTH, parseAmount, txKind, txSuffix, validateEntry } from '@/lib/validation';
@@ -135,49 +136,60 @@ export async function POST(request) {
   const tx = `${suffix}|${cents}`;
   const merchant = matchMerchant(data.merchant);
   const createdAt = new Date();
-  const id = `NK-${yearInZurich(createdAt)}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
 
+  // L'ID è il biglietto dell'estrazione: due giocate con lo stesso ID varrebbero un biglietto
+  // solo, e la seconda foto sovrascriverebbe la prima. Generatore crittografico, sempre sei
+  // caratteri; se l'ID è già preso (da una foto o da una giocata) se ne genera un altro.
+  let entry = null;
   let stored = null;
-  try {
-    stored = await storeReceipt(hasFile ? file : null, id);
-  } catch {
-    return NextResponse.json(
-      { code: 'storage_error' },
-      { status: 500 }
-    );
-  }
+  for (let attempt = 0; attempt < 5 && !entry; attempt += 1) {
+    const id = `NK-${yearInZurich(createdAt)}-${newIdSuffix()}`;
+    try {
+      stored = await storeReceipt(hasFile ? file : null, id);
+    } catch (err) {
+      if (err?.code === 'EEXIST') continue;
+      return NextResponse.json(
+        { code: 'storage_error' },
+        { status: 500 }
+      );
+    }
 
-  const entry = {
-    id,
-    email: data.email,
-    locale: data.locale,
-    source: data.source,
-    merchant: merchant?.name ?? null,
-    merchantId: merchant?.id ?? null,
-    merchantKnown: merchant?.known ?? null,
-    proof: 'tx_and_receipt', // codice: il testo lo risolve il client
-    txNormalized: tx,
-    txSuffix: suffix,
-    amountCents: cents,
-    amountLabel: `CHF ${(cents / 100).toFixed(2)}`,
-    txIdMasked: suffix.toUpperCase(),
-    txKind: txKind(data.txId),
-    receipt: stored,
-    status: 'pending_verification',
-    createdAt: createdAt.toISOString(),
-    createdAtLabel: formatDateTime(createdAt, data.locale, { dateStyle: 'medium', timeStyle: 'short' }),
-  };
-
-  // 5. Unicità del numero di transazione, verificata e applicata nella stessa transazione di scrittura.
-  const saved = await saveEntry(entry);
-  if (!saved.ok) {
+    // 5. Unicità del numero di transazione e dell'ID, verificate e applicate nella stessa
+    //    transazione di scrittura.
+    const saved = await saveEntry({
+      id,
+      email: data.email,
+      locale: data.locale,
+      source: data.source,
+      merchant: merchant?.name ?? null,
+      merchantId: merchant?.id ?? null,
+      merchantKnown: merchant?.known ?? null,
+      proof: 'tx_and_receipt', // codice: il testo lo risolve il client
+      txNormalized: tx,
+      txSuffix: suffix,
+      amountCents: cents,
+      amountLabel: `CHF ${(cents / 100).toFixed(2)}`,
+      txIdMasked: suffix.toUpperCase(),
+      txKind: txKind(data.txId),
+      receipt: stored,
+      status: 'pending_verification',
+      createdAt: createdAt.toISOString(),
+      createdAtLabel: formatDateTime(createdAt, data.locale, { dateStyle: 'medium', timeStyle: 'short' }),
+    });
+    if (saved.ok) {
+      entry = saved.entry;
+      break;
+    }
     // La giocata non è stata accettata: niente scontrini orfani sullo storage.
     await deleteReceipt(stored).catch(() => {});
-    return NextResponse.json(
-      { code: 'duplicate_tx', errors: { txId: 'tx_duplicate' } },
-      { status: 409 }
-    );
+    if (saved.reason !== 'id_taken') {
+      return NextResponse.json(
+        { code: 'duplicate_tx', errors: { txId: 'tx_duplicate' } },
+        { status: 409 }
+      );
+    }
   }
+  if (!entry) return NextResponse.json({ code: 'storage_error' }, { status: 500 });
 
   // 6. Conferma via email. L'invio non deve far fallire la giocata: se il provider non risponde
   //    il messaggio resta in coda e la partecipazione è comunque registrata.
@@ -201,3 +213,7 @@ export async function POST(request) {
     { status: 201 }
   );
 }
+
+const ID_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+/** Sei caratteri da un generatore crittografico: 36^6, oltre due miliardi di combinazioni. */
+const newIdSuffix = () => Array.from({ length: 6 }, () => ID_ALPHABET[randomInt(ID_ALPHABET.length)]).join('');

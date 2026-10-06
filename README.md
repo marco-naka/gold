@@ -62,7 +62,7 @@ lib/
   seed di fallback se lo snapshot non è presente.
 - **Loghi**: `components/Brand.jsx` contiene wordmark segnaposto; sostituire con gli asset ufficiali
   NAKA / Plan ₿ Forum / Tether Gold prima del go-live.
-- **Email**: `CONTEST.supportEmail` e `CONTEST.merchantEmail` (usata dal mailto di adesione B2B).
+- **Email**: un solo indirizzo, `assistenza@naka.com` (`CONTEST.supportEmail`): clienti, commercianti, privacy e mittente delle email.
 
 ## Form di partecipazione
 

@@ -44,7 +44,7 @@ services:
       - key: MAIL_PROVIDER_API_KEY
         sync: false # chiave provider email (serve solo in production)
       - key: MAIL_FROM
-        sync: false # es. "NAKA <contest@naka.com>"
+        sync: false # es. "NAKA <assistenza@naka.com>"
       - key: RILEVAZIONI_OPERATORI
         sync: false # "Nome:PIN,Nome:PIN" — senza, l'area /rilevazioni resta aperta
       - key: RILEVAZIONI_ADMIN
