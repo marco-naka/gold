@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { ALL_MERCHANTS } from '@/lib/merchants';
 import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
-import { pickAnswers, validatePhoto, validateVisit } from '@/lib/survey-validation';
+import { MAX_PHOTO_BYTES, pickAnswers, validateVisit } from '@/lib/survey-validation';
+import { sniffImage } from '@/lib/server/image-sniff';
 import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
 import { persistentStorage } from '@/lib/server/persistence';
@@ -179,9 +180,16 @@ export async function POST(request) {
   for (const photo of PHOTOS) {
     const picked = form.getAll(`photo_${photo.id}`).filter((f) => f && typeof f !== 'string' && f.size);
     for (const file of photo.multiple ? picked : picked.slice(0, 1)) {
-      const code = validatePhoto(file);
-      if (code) errors[`photo_${photo.id}`] = code;
-      else files.push([photo.id, file]);
+      // Il tipo si riconosce dai byte, non da quello che il telefono dichiara: un HEIF di
+      // Android arriva come `image/heif` o senza tipo, e veniva rifiutato.
+      if (file.size > MAX_PHOTO_BYTES) {
+        errors[`photo_${photo.id}`] = 'photo_size';
+        continue;
+      }
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const kind = sniffImage(buffer);
+      if (!kind) errors[`photo_${photo.id}`] = 'photo_type';
+      else files.push([photo.id, { buffer, kind }]);
     }
   }
 
@@ -196,10 +204,10 @@ export async function POST(request) {
   const id = newVisitId();
   const photos = {};
   const counters = {};
-  for (const [slot, file] of files) {
+  for (const [slot, image] of files) {
     const index = (counters[slot] = (counters[slot] ?? 0) + 1);
     const multiple = PHOTOS.find((p) => p.id === slot)?.multiple;
-    const stored = await storeVisitPhoto(file, id, multiple ? `${slot}-${index}` : slot);
+    const stored = await storeVisitPhoto(image, id, multiple ? `${slot}-${index}` : slot);
     if (!stored) continue;
     // Uno slot multiplo tiene sempre un array, anche con una foto sola: chi legge
     // dopo non deve indovinare la forma del dato.
@@ -229,5 +237,7 @@ export async function POST(request) {
     photos,
   });
 
-  return NextResponse.json({ ok: true, id });
+  // Quante foto sono finite sul disco: il rilevatore lo vede subito, invece di scoprirlo dopo.
+  const saved = Object.values(photos).flat().length;
+  return NextResponse.json({ ok: true, id, photos: saved });
 }

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Camera,
+  ImagePlus,
   QrCode,
   Check,
   ChevronLeft,
@@ -29,6 +30,7 @@ import {
 } from '@/lib/survey-i18n';
 import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
 import { compressAll } from '@/lib/compress-image';
+import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { TIME_ZONE } from '@/lib/time';
@@ -215,6 +217,7 @@ function Survey({ locale, onLocale, operator, admin }) {
   // Ricominciare cancella risposte e foto: si chiede conferma, non si fa al primo tocco.
   const [askReset, setAskReset] = useState(false);
   const restored = useRef(false);
+  const photosRestored = useRef(false);
 
   // Bozza: si rilegge all'apertura e si riscrive a ogni modifica. Le foto restano fuori,
   // sono troppo pesanti per localStorage e si riscattano in un attimo.
@@ -229,7 +232,24 @@ function Survey({ locale, onLocale, operator, admin }) {
     const saved = localStorage.getItem(SURVEYOR_KEY);
     if (saved && !draft?.surveyor) setSurveyor(saved);
     restored.current = true;
+    // Le foto tornano dalla bozza in IndexedDB: sui telefoni la pagina si ricarica spesso
+    // dopo la fotocamera, e prima tornavano solo le risposte. Senza bozza non c'è niente da
+    // riprendere, e le foto rimaste di un giro precedente si buttano.
+    if (draft) {
+      loadDraftPhotos().then((stored) => {
+        setPhotos((current) => ({ ...stored, ...current }));
+        photosRestored.current = true;
+      });
+    } else {
+      clearDraftPhotos();
+      photosRestored.current = true;
+    }
   }, []);
+
+  useEffect(() => {
+    if (!photosRestored.current || done) return;
+    saveDraftPhotos(photos);
+  }, [photos, done]);
 
   useEffect(() => {
     if (!restored.current || done) return;
@@ -278,6 +298,7 @@ function Survey({ locale, onLocale, operator, admin }) {
 
   function reset() {
     localStorage.removeItem(DRAFT_KEY);
+    clearDraftPhotos();
     setSurveyor(localStorage.getItem(SURVEYOR_KEY) || '');
     setMerchant(null);
     setAnswers({});
@@ -323,14 +344,15 @@ function Survey({ locale, onLocale, operator, admin }) {
         return;
       }
       localStorage.removeItem(DRAFT_KEY);
-      setDone(json.id);
+      clearDraftPhotos();
+      setDone({ id: json.id, photos: json.photos ?? 0 });
     } catch {
       setErrors({ _: 'network' });
     }
     setSending(false);
   }
 
-  if (done) return <Done id={done} merchant={merchant} onNext={reset} locale={locale} />;
+  if (done) return <Done id={done.id} photos={done.photos} merchant={merchant} onNext={reset} locale={locale} />;
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
@@ -1273,26 +1295,37 @@ function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
       )}
 
       {(photo.multiple || files.length === 0) && (
-        <label
-          className={cn(
-            'mt-3 flex cursor-pointer items-center justify-center gap-2.5 rounded-lg border border-dashed border-white/20 text-sm text-muted transition hover:border-btc/40 hover:text-white',
-            files.length ? 'h-14' : 'h-24',
-          )}
-        >
-          <Camera className="h-5 w-5" />
-          {working ? t.preparing : files.length ? t.addMore : t.take}
-          <input
-            type="file"
-            accept="image/*"
-            capture="environment"
-            multiple={photo.multiple}
-            className="sr-only"
-            onChange={(e) => {
-              add(Array.from(e.target.files ?? []));
-              e.target.value = '';
-            }}
-          />
-        </label>
+        // Due ingressi: la fotocamera per lo scatto sul posto, la galleria per una foto già
+        // fatta (o mandata da un collega). Con `capture` il telefono apre solo la fotocamera,
+        // senza `capture` lascia scegliere dalla galleria: servono entrambi, e si vedono.
+        <div className={cn('mt-3 grid grid-cols-2 gap-2', working && 'pointer-events-none opacity-60')}>
+          {[
+            { id: 'camera', icon: Camera, label: files.length ? t.addMore : t.take, capture: 'environment' },
+            { id: 'gallery', icon: ImagePlus, label: files.length ? t.uploadMore : t.upload, capture: undefined },
+          ].map((way) => (
+            <label
+              key={way.id}
+              className={cn(
+                'flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-dashed border-white/20 px-2 text-center text-sm text-muted transition hover:border-btc/40 hover:text-white',
+                files.length ? 'h-14' : 'h-24',
+              )}
+            >
+              <way.icon className="h-5 w-5 shrink-0" />
+              {working ? t.preparing : way.label}
+              <input
+                type="file"
+                accept="image/*"
+                capture={way.capture}
+                multiple={photo.multiple}
+                className="sr-only"
+                onChange={(e) => {
+                  add(Array.from(e.target.files ?? []));
+                  e.target.value = '';
+                }}
+              />
+            </label>
+          ))}
+        </div>
       )}
 
       {error && (
@@ -1304,7 +1337,7 @@ function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
   );
 }
 
-function Done({ id, merchant, onNext, locale }) {
+function Done({ id, photos, merchant, onNext, locale }) {
   const t = ui(locale);
   return (
     <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
@@ -1314,6 +1347,11 @@ function Done({ id, merchant, onNext, locale }) {
       <h1 className="mt-6 text-2xl font-bold">{t.savedTitle}</h1>
       <p className="mt-2 text-sm text-muted">
         {merchant?.name} · <span className="font-mono text-btc">{id}</span>
+      </p>
+      {/* Conferma di quello che è arrivato davvero sul disco, non di quello che si è scattato. */}
+      <p className="mt-3 inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-muted">
+        <Camera className="h-3.5 w-3.5 text-btc" />
+        {t.savedPhotos(photos)}
       </p>
       <Button onClick={onNext} size="lg" className="mt-8 w-full">
         {t.nextShop}
