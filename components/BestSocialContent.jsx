@@ -50,7 +50,7 @@ import { formatDate, formatDateTime, getDictionary, localePath } from '@/lib/i18
 const STEP_ICONS = [Video, Hash, AtSign, Mail];
 
 /** Un'icona per modo di assegnazione: classifica, giuria, sorteggio. */
-const ASSIGNMENT_ICONS = { volume: Medal, jury: Gavel, draw: Dices };
+const ASSIGNMENT_ICONS = { transactions: Medal, jury: Gavel, draw: Dices };
 
 export default function BestSocialContent({ locale }) {
   const dict = getDictionary(locale);

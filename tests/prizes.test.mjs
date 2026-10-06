@@ -31,7 +31,7 @@ test('ogni premio ha asset, importo e numero di vincitori validi', () => {
       assert.ok(typeof item.amount === 'number' && item.amount > 0, `${item.place}: importo non valido`);
       assert.ok(Number.isInteger(item.count) && item.count > 0, `${item.place}: vincitori non validi`);
       assert.ok(item.place && item.desc, `${item.place}: testi mancanti`);
-      assert.ok(['draw', 'volume', 'jury'].includes(item.assignment), `${item.place}: assegnazione ignota`);
+      assert.ok(['draw', 'transactions', 'jury'].includes(item.assignment), `${item.place}: assegnazione ignota`);
     }
   }
 });

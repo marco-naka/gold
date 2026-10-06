@@ -78,7 +78,7 @@ comunque il suffisso.
 Le 6 cifre da sole però collidono — su 2.000 giocate c'è l'11% di probabilità che due finiscano
 uguali, e un cliente onesto si vedrebbe rifiutare la giocata come duplicata. La chiave di unicità è
 quindi **suffisso + importo**, che porta quella probabilità sotto lo 0,1%: l'importo è già stampato
-sulla ricevuta, si copia in un attimo e serve anche al riscontro del premio Top Volume.
+sulla ricevuta, si copia in un attimo e serve anche al riscontro del premio Top Numero di Transazioni.
 
 **L'indirizzo wallet non è più chiesto in fase di giocata**: viene richiesto via email ai soli
 vincitori. Regolamento (art. 4, 7, 8) e FAQ sono allineati a questo flusso.
@@ -481,7 +481,7 @@ catena al momento dell'impegno. Parametri in `DRAW` (`lib/constants.js`).
   manca ancora, la giocata entra purché registrata dopo l'inizio della serata; se vince e il POS dice
   fuori orario: `npm run draw disqualify <ID> -- --only spritz --reason "…"`, e resta nel generale.
 
-Top Volume (classifica sui volumi POS) e Best Social Content (giuria) non passano dal sorteggio.
+Top Numero di Transazioni (classifica sul numero di pagamenti registrati dal POS) e Best Social Content (giuria) non passano dal sorteggio.
 
 ## Note legali
 Il testo del regolamento in `components/RulesModal.jsx` è una bozza operativa completa

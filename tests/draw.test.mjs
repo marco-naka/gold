@@ -49,7 +49,7 @@ test('i due sorteggi sono indipendenti: stesso seme, ordinamenti scorrelati', ()
 
 test('i premi non sorteggiabili restano fuori dall’estrazione', () => {
   const places = merchantTiers.map((t) => t.place);
-  assert.ok(!places.includes('Top Volume Transazioni'), 'Top Volume è una classifica, non un sorteggio');
+  assert.ok(!places.includes('Top Numero Transazioni'), 'Top Numero di Transazioni è una classifica, non un sorteggio');
   assert.ok(!places.includes('Best Social Content'), 'Best Social Content è deciso dalla giuria');
 });
 
