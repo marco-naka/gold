@@ -97,7 +97,7 @@ test('nel CSV finisce ogni risposta, nella sua colonna, e niente colonne doppie'
   assert.equal(cell('Foto: Altre foto 1'), '');
 
   // Ogni domanda ha la sua colonna, e ci trova esattamente la sua risposta.
-  const fixed = 12;
+  const fixed = 15;
   answerable.forEach((q, i) => {
     assert.equal(row[fixed + i], cellFor(q, answers[q.id]), `colonna di ${q.id}`);
     assert.ok(head[fixed + i].startsWith(q.label), `intestazione di ${q.id}`);

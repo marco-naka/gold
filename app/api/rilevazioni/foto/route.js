@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { isAdmin } from '@/lib/server/rilevazioni-auth';
+import { currentOperator, isAdmin } from '@/lib/server/rilevazioni-auth';
+import { findVisit } from '@/lib/server/visits';
 import { validPhotoSignature } from '@/lib/server/photo-links';
 
 export const runtime = 'nodejs';
@@ -16,12 +17,19 @@ const TYPES = { jpg: 'image/jpeg', png: 'image/png', webp: 'image/webp', heic: '
 
 /**
  * Le foto delle rilevazioni: dentro ci sono vetrine, terminali e ricevute.
- * Le vede l'admin collegato, oppure chi ha un link firmato e non scaduto, preso dal CSV.
+ * Le vede l'admin collegato, chi ha fatto la visita, oppure chi ha un link firmato e non scaduto
+ * preso dal CSV.
  */
 export async function GET(request) {
   const params = request.nextUrl.searchParams;
   const key = params.get('key') || '';
-  const allowed = isAdmin(request) || validPhotoSignature(key, params.get('exp'), params.get('sig'));
+  // Chi ha fatto la visita vede le proprie foto nella sua scheda; le altre restano dell'admin.
+  const own = async () => {
+    const me = currentOperator(request);
+    const visitId = /RV-\d{4}-[A-Z0-9]{6}/.exec(key)?.[0];
+    return Boolean(me && visitId && (await findVisit(visitId))?.surveyor === me);
+  };
+  const allowed = isAdmin(request) || validPhotoSignature(key, params.get('exp'), params.get('sig')) || (await own());
   if (!allowed) {
     // Chi apre un link dal foglio lo legge nel browser: una frase, non un JSON.
     return new NextResponse(

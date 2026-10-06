@@ -4,7 +4,17 @@ import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
 import { MAX_PHOTO_BYTES, pickAnswers, validateVisit } from '@/lib/survey-validation';
 import { sniffImage } from '@/lib/server/image-sniff';
 import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
-import { listVisits, newVisitId, saveVisit, storeVisitPhoto, visitsForMerchant } from '@/lib/server/visits';
+import {
+  findVisit,
+  listVisits,
+  newVisitId,
+  saveVisit,
+  storeVisitPhoto,
+  updateVisit,
+  visitsForMerchant,
+} from '@/lib/server/visits';
+import { applyAmend, applyReschedule, canEdit, reschedules } from '@/lib/visit-history';
+import { visitIcs } from '@/lib/server/visit-ics';
 import { persistentStorage } from '@/lib/server/persistence';
 import { signedPhotoUrl } from '@/lib/server/photo-links';
 import { visitsCsv } from '@/lib/survey-export';
@@ -49,23 +59,34 @@ export async function GET(request) {
     });
   }
 
+  // Il ritorno nel calendario del telefono: un file .ics, per chi ha fatto la visita o per l'admin.
+  if (params.get('ics')) {
+    const visit = await findVisit(params.get('ics'));
+    const me = currentOperator(request);
+    if (!visit || !(isAdmin(request) || (me && visit.surveyor === me))) {
+      return NextResponse.json({ code: 'not_found' }, { status: 404 });
+    }
+    const ics = visitIcs(visit);
+    if (!ics) return NextResponse.json({ code: 'no_return' }, { status: 404 });
+    return new NextResponse(ics, {
+      headers: {
+        'Content-Type': 'text/calendar; charset=utf-8',
+        'Content-Disposition': `attachment; filename="ritorno-${visit.id}.ics"`,
+        'Cache-Control': 'no-store',
+      },
+    });
+  }
+
   // Le rilevazioni di chi è collegato: il rilevatore vede il proprio lavoro, non quello di tutti.
   if (params.get('mine') === '1') {
     const me = currentOperator(request);
     if (!me) return NextResponse.json({ visits: [] });
     const all = await listVisits();
+    const admin = isAdmin(request);
     const visits = all
       .filter((v) => v.surveyor === me)
       .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-      .map((v) => ({
-        id: v.id,
-        at: v.createdAt,
-        merchantId: v.merchantId,
-        merchantName: v.merchantName,
-        address: v.mapSnapshot?.address ?? null,
-        outcome: v.outcome,
-        ripasso: v.answers?.ritorno_quando ?? null,
-      }));
+      .map((v) => ownVisit(v, all, { operator: me, admin }));
     return NextResponse.json({ visits });
   }
 
@@ -157,6 +178,10 @@ export async function POST(request) {
   // vede subito il problema e la bozza resta sul telefono.
   if (!persistentStorage()) return NextResponse.json({ code: 'storage_unavailable' }, { status: 503 });
 
+  // Dopo l'invio una visita si integra o si riprogramma, non si riscrive (lib/visit-history.js).
+  const intent = form.get('intent');
+  if (intent === 'amend' || intent === 'reschedule') return changeVisit(request, form, intent);
+
   let answers = {};
   try {
     answers = JSON.parse(form.get('answers') || '{}');
@@ -175,24 +200,7 @@ export async function POST(request) {
 
   const errors = validateVisit(data);
 
-  // Le foto sono facoltative, ma se ci sono devono essere immagini di peso ragionevole.
-  // Gli slot multipli arrivano come più valori con la stessa chiave.
-  const files = [];
-  for (const photo of PHOTOS) {
-    const picked = form.getAll(`photo_${photo.id}`).filter((f) => f && typeof f !== 'string' && f.size);
-    for (const file of photo.multiple ? picked : picked.slice(0, 1)) {
-      // Il tipo si riconosce dai byte, non da quello che il telefono dichiara: un HEIF di
-      // Android arriva come `image/heif` o senza tipo, e veniva rifiutato.
-      if (file.size > MAX_PHOTO_BYTES) {
-        errors[`photo_${photo.id}`] = 'photo_size';
-        continue;
-      }
-      const buffer = Buffer.from(await file.arrayBuffer());
-      const kind = sniffImage(buffer);
-      if (!kind) errors[`photo_${photo.id}`] = 'photo_type';
-      else files.push([photo.id, { buffer, kind }]);
-    }
-  }
+  const files = await readPhotos(form, errors);
 
   if (Object.keys(errors).length) {
     return NextResponse.json({ code: 'invalid_fields', errors }, { status: 422 });
@@ -241,4 +249,112 @@ export async function POST(request) {
   // Quante foto sono finite sul disco: il rilevatore lo vede subito, invece di scoprirlo dopo.
   const saved = Object.values(photos).flat().length;
   return NextResponse.json({ ok: true, id, photos: saved });
+}
+
+/**
+ * Le foto allegate, lette e riconosciute dai byte. Facoltative, ma se ci sono devono essere
+ * immagini di peso ragionevole; gli slot multipli arrivano come più valori con la stessa chiave.
+ * Il tipo dichiarato dal telefono non conta: un HEIF di Android arriva come `image/heif` o
+ * senza tipo, e veniva rifiutato.
+ */
+async function readPhotos(form, errors) {
+  const files = [];
+  for (const photo of PHOTOS) {
+    const picked = form.getAll(`photo_${photo.id}`).filter((f) => f && typeof f !== 'string' && f.size);
+    for (const file of photo.multiple ? picked : picked.slice(0, 1)) {
+      if (file.size > MAX_PHOTO_BYTES) {
+        errors[`photo_${photo.id}`] = 'photo_size';
+        continue;
+      }
+      const buffer = Buffer.from(await file.arrayBuffer());
+      const kind = sniffImage(buffer);
+      if (!kind) errors[`photo_${photo.id}`] = 'photo_type';
+      else files.push([photo.id, { buffer, kind }]);
+    }
+  }
+  return files;
+}
+
+const shopKey = (v) => v.merchantId ?? v.merchantName.toLowerCase();
+
+/** Una visita come la vede chi l'ha fatta: tutta, più lo stato che serve all'agenda. */
+function ownVisit(v, all, who) {
+  return {
+    ...v,
+    at: v.createdAt,
+    address: v.mapSnapshot?.address ?? null,
+    ripasso: v.answers?.ritorno_quando ?? null,
+    // Una visita più recente allo stesso negozio, di chiunque, chiude il ritorno di questa.
+    superseded: all.some((o) => o.id !== v.id && shopKey(o) === shopKey(v) && o.createdAt > v.createdAt),
+    editable: canEdit(v, who),
+    reschedules: reschedules(v),
+  };
+}
+
+const fail = (code, status, errors) => NextResponse.json({ code, ...(errors ? { errors } : {}) }, { status });
+
+/** Integrazione o riprogrammazione di una visita già inviata. */
+async function changeVisit(request, form, intent) {
+  const operator = currentOperator(request);
+  const admin = isAdmin(request);
+  const id = String(form.get('visitId') || '');
+  const visit = await findVisit(id);
+  if (!visit) return fail('not_found', 404);
+  if (!canEdit(visit, { operator, admin })) return fail('forbidden', 403);
+
+  const by = operator || 'admin';
+  const at = new Date().toISOString();
+  const allowed = (v) => canEdit(v, { operator, admin });
+
+  if (intent === 'reschedule') {
+    const input = {
+      date: String(form.get('date') || ''),
+      time: String(form.get('time') || ''),
+      reason: String(form.get('reason') || '').slice(0, 300),
+      by,
+      at,
+    };
+    const result = await updateVisit(id, (v) => (allowed(v) ? applyReschedule(v, input) : { errors: { _: 'forbidden' } }));
+    if (result.errors) return fail('invalid_fields', 422, result.errors);
+    return NextResponse.json({ ok: true, visit: ownVisit(result.visit, await listVisits(), { operator, admin }) });
+  }
+
+  let changes = {};
+  try {
+    changes = JSON.parse(form.get('changes') || '{}');
+  } catch {
+    return fail('bad_request', 400);
+  }
+  const note = String(form.get('note') || '').slice(0, 1000);
+  const reason = String(form.get('reason') || '').slice(0, 300);
+
+  const errors = {};
+  const files = await readPhotos(form, errors);
+  // La vetrina è una sola: si aggiunge se manca, non si sostituisce.
+  if (files.some(([slot]) => slot === 'vetrina') && visit.photos?.vetrina) errors.photo_vetrina = 'exists';
+  if (Object.keys(errors).length) return fail('invalid_fields', 422, errors);
+
+  // Prova a vuoto prima di scrivere le foto: un'integrazione rifiutata non lascia file orfani.
+  const dry = applyAmend(visit, { changes, note, reason, photosAdded: files.map(([slot]) => ({ slot, key: '' })), by, at });
+  if (dry.errors) return fail('invalid_fields', 422, dry.errors);
+
+  const photosAdded = [];
+  const counters = {};
+  for (const [slot, image] of files) {
+    const multiple = PHOTOS.find((p) => p.id === slot)?.multiple;
+    const already = [].concat(visit.photos?.[slot] ?? []).length;
+    const index = already + (counters[slot] = (counters[slot] ?? 0) + 1);
+    const stored = await storeVisitPhoto(image, id, multiple ? `${slot}-${index}` : slot);
+    if (stored) photosAdded.push({ slot, ...stored });
+  }
+
+  const result = await updateVisit(id, (v) =>
+    allowed(v) ? applyAmend(v, { changes, note, reason, photosAdded, by, at }) : { errors: { _: 'forbidden' } }
+  );
+  if (result.errors) return fail('invalid_fields', 422, result.errors);
+  return NextResponse.json({
+    ok: true,
+    photos: photosAdded.length,
+    visit: ownVisit(result.visit, await listVisits(), { operator, admin }),
+  });
 }

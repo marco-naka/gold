@@ -31,6 +31,7 @@ import {
 import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
 import { compressAll } from '@/lib/compress-image';
 import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
+import { Agenda, MyVisits } from './MyVisits';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { TIME_ZONE } from '@/lib/time';
@@ -48,7 +49,7 @@ import { TIME_ZONE } from '@/lib/time';
  * persone. Tradurlo raddoppierebbe il lavoro su ogni domanda che aggiungerete.
  */
 
-const DRAFT_KEY = 'naka-rilevazione-bozza';
+export const DRAFT_KEY = 'naka-rilevazione-bozza';
 const SURVEYOR_KEY = 'naka-rilevatore';
 export const LOCALE_KEY = 'naka-rilevazioni-lingua';
 
@@ -116,7 +117,95 @@ export default function SurveyForm({ locked, pinHint }) {
       />
     );
   }
-  return <Survey locale={locale} onLocale={change} operator={operator} admin={admin} />;
+  return <SurveyApp locale={locale} onLocale={change} operator={operator} admin={admin} />;
+}
+
+/**
+ * Le tre schede dell'area rilevazioni: la visita nuova, le proprie visite, l'agenda dei ritorni.
+ *
+ * «Le mie» e «Agenda» esistono solo con il PIN personale: con il codice condiviso il server
+ * non sa chi sei, e non c'è un «mio» da mostrare.
+ */
+function SurveyApp({ locale, onLocale, operator, admin }) {
+  const t = ui(locale);
+  const [tab, setTab] = useState('nuova');
+  const [mine, setMine] = useState(null);
+  // Cambia quando «Vado ora» prepara una bozza: il modulo si rimonta e la rilegge.
+  const [surveyKey, setSurveyKey] = useState(0);
+
+  const loadMine = useCallback(() => {
+    fetch('/api/rilevazioni?mine=1')
+      .then((r) => r.json())
+      .then((d) => setMine(d.visits ?? []))
+      .catch(() => setMine([]));
+  }, []);
+
+  useEffect(() => {
+    if (operator) loadMine();
+  }, [operator, tab, loadMine]);
+
+  if (!operator) return <Survey locale={locale} onLocale={onLocale} operator={operator} admin={admin} />;
+
+  // Si riparte da quello che si sapeva del negozio, senza il ritorno e le note di allora.
+  const goNow = (visit) => {
+    const pending = readDraft();
+    const busy = pending && (pending.merchant || Object.keys(pending.answers ?? {}).length);
+    if (busy && !window.confirm(t.goNowConfirm)) return;
+    const { ritorno, ritorno_motivo, ritorno_quando, ritorno_ora, note, transazione_note, ...answers } = visit.answers ?? {};
+    try {
+      localStorage.setItem(
+        DRAFT_KEY,
+        JSON.stringify({
+          surveyor: operator,
+          merchant: visit.merchantId
+            ? { id: visit.merchantId, name: visit.merchantName, address: visit.address }
+            : { name: visit.merchantName },
+          answers,
+          step: 0,
+        }),
+      );
+    } catch {
+      /* senza bozza si parte da zero: il negozio si sceglie a mano */
+    }
+    clearDraftPhotos();
+    setSurveyKey((k) => k + 1);
+    setTab('nuova');
+    window.scrollTo(0, 0);
+  };
+
+  const due = (mine ?? []).filter((v) => v.ripasso && !v.superseded).length;
+  const tabs = [
+    ['nuova', t.tabNew, null],
+    ['mie', t.tabMine, mine?.length ?? null],
+    ['agenda', t.tabAgenda, due || null],
+  ];
+
+  return (
+    <>
+      <nav className="sticky top-0 z-40 border-b border-white/10 bg-ink-deep/90 backdrop-blur-xl">
+        <div className="mx-auto flex w-full max-w-2xl gap-1 px-5 py-2">
+          {tabs.map(([id, label, count]) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => setTab(id)}
+              aria-pressed={tab === id}
+              className={cn(
+                'flex-1 rounded-full px-3 py-2 text-sm font-semibold transition',
+                tab === id ? 'bg-btc/15 text-btc' : 'text-muted hover:text-white',
+              )}
+            >
+              {label}
+              {count !== null && <span className="ml-1.5 tabular-nums opacity-70">{count}</span>}
+            </button>
+          ))}
+        </div>
+      </nav>
+      {tab === 'nuova' && <Survey key={surveyKey} locale={locale} onLocale={onLocale} operator={operator} admin={admin} />}
+      {tab === 'mie' && <MyVisits visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
+      {tab === 'agenda' && <Agenda visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
+    </>
+  );
 }
 
 /** Interruttore IT/EN, due pulsanti e nessun menu: si cambia con un pollice. */
@@ -502,7 +591,6 @@ function MerchantStep({
   const [last, setLast] = useState(null);
   const [ripreso, setRipreso] = useState(false);
   const [visited, setVisited] = useState({});
-  const [mine, setMine] = useState(null);
 
   // Si scarica una volta sola: chi ha già una visita alle spalle va segnalato *dentro* i
   // risultati di ricerca, non dopo averlo scelto. Due persone sullo stesso elenco di 336
@@ -511,11 +599,6 @@ function MerchantStep({
     fetch('/api/rilevazioni?visited=1')
       .then((r) => r.json())
       .then((d) => setVisited(d.visited ?? {}))
-      .catch(() => {});
-    // Il proprio lavoro, per non chiedersi «questo l'ho già fatto?»: c'è solo con il PIN personale.
-    fetch('/api/rilevazioni?mine=1')
-      .then((r) => r.json())
-      .then((d) => setMine(d.visits ?? []))
       .catch(() => {});
   }, []);
 
@@ -585,7 +668,6 @@ function MerchantStep({
               {t.signedInAs} <span className="font-semibold text-white">{operator}</span>
             </span>
           </p>
-          <MineList visits={mine} onPick={onPick} locale={locale} />
           {/* Pannello ed esportazioni sono dell'admin: vedere tutto non serve a chi rileva. */}
           {admin && (
             <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
@@ -806,50 +888,6 @@ function AlreadyBanner({ seen, locale }) {
   );
 }
 
-/** Le rilevazioni salvate da chi è collegato: il proprio giro a colpo d'occhio. */
-function MineList({ visits, onPick, locale }) {
-  const t = ui(locale);
-  if (visits === null) return null;
-  const today = new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date());
-  const oggi = visits.filter((v) => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(v.at)) === today).length;
-  return (
-    <details className="mt-3 rounded-xl border border-white/10 bg-white/[0.03]">
-      <summary className="cursor-pointer select-none px-4 py-3 text-sm font-semibold text-white">
-        {t.mineTitle(visits.length, oggi)}
-      </summary>
-      {visits.length === 0 ? (
-        <p className="px-4 pb-3 text-xs text-muted">{t.mineEmpty}</p>
-      ) : (
-        <>
-          <p className="px-4 text-[11px] text-muted">{t.mineHint}</p>
-          <ul className="mt-2 max-h-72 divide-y divide-white/5 overflow-y-auto border-t border-white/10">
-            {visits.map((v) => (
-              <li key={v.id}>
-                <button
-                  type="button"
-                  onClick={() => onPick(v.merchantId ? { id: v.merchantId, name: v.merchantName, address: v.address } : { name: v.merchantName })}
-                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-white/5"
-                >
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm text-white">{v.merchantName}</span>
-                    <span className="block text-[11px] text-muted">
-                      {new Date(v.at).toLocaleString('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
-                      {' · '}
-                      {outcomeIn(v.outcome, OUTCOMES.find((o) => o.id === v.outcome)?.label ?? v.outcome, locale)}
-                      {v.ripasso ? ` · ${t.returnOn} ${new Date(v.ripasso).toLocaleDateString('it-CH', { timeZone: TIME_ZONE })}` : ''}
-                    </span>
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </details>
-  );
-}
-
 /**
  * Stato del negozio nei risultati di ricerca.
  *
@@ -895,7 +933,7 @@ function VisitedBadge({ seen, locale }) {
   );
 }
 
-function Question({ question, value, onChange, error, photos, setPhotos, answers, locale }) {
+export function Question({ question, value, onChange, error, photos, setPhotos, answers, locale }) {
   const id = question.id;
   const t = ui(locale);
   const { label, help } = askedIn(question, locale);
@@ -1219,7 +1257,7 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
   );
 }
 
-function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
+export function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
   const t = ui(locale);
   const { label, hint } = photoIn(photo, locale);
   // Uno slot multiplo tiene un array, uno singolo il file: il resto del componente

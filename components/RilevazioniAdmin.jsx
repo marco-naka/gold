@@ -21,6 +21,8 @@ import { CodeGate, LOCALE_KEY, LocaleSwitch } from './SurveyForm';
 import Button from './ui/Button';
 import Modal from './ui/Modal';
 import RilevazioniTable from './RilevazioniTable';
+import { AmendForm, VisitHistory } from './MyVisits';
+import { reschedules, wasAmended } from '@/lib/visit-history';
 import { cn } from './ui/cn';
 
 /*
@@ -175,6 +177,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
   }, [sorted]);
 
   const today = dayKey(new Date().toISOString());
+  const latestIds = useMemo(() => new Set(latest.map((v) => v.id)), [latest]);
 
   const stats = useMemo(() => {
     const byOutcome = Object.fromEntries(OUTCOMES.map((o) => [o.id, 0]));
@@ -216,6 +219,9 @@ export default function RilevazioniAdmin({ visits, operator }) {
     if (outcome && v.outcome !== outcome) return false;
     if (surveyor && (v.surveyor || '—') !== surveyor) return false;
     if (only === 'pos' && !hasPosProblem(v)) return false;
+    if (only === 'modificate' && !wasAmended(v)) return false;
+    // Scaduto: il ritorno è passato e nessuno è ancora tornato in quel negozio.
+    if (only === 'scaduti' && !(v.answers?.ritorno_quando < today && latestIds.has(v.id))) return false;
     if (only === 'ritorno' && !v.answers?.ritorno_quando) return false;
     if (only === 'oggi' && dayKey(v.createdAt) !== today) return false;
     if (q) {
@@ -326,6 +332,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
               <span className="font-semibold text-white">
                 {swissDate(v.answers.ritorno_quando)}
                 {v.answers.ritorno_ora ? `, ${v.answers.ritorno_ora}` : ''}
+                {reschedules(v) > 0 ? ` · ${t.moved(reschedules(v))}` : ''}
               </span>{' '}
               · {v.merchantName}
               <span className="block text-xs text-muted">
@@ -414,6 +421,8 @@ export default function RilevazioniAdmin({ visits, operator }) {
             <option value="oggi">{t.onlyToday}</option>
             <option value="ritorno">{t.withReturn}</option>
             <option value="pos">{t.withPos}</option>
+            <option value="modificate">{t.withAmended}</option>
+            <option value="scaduti">{t.overdueReturns}</option>
           </select>
         </div>
         <p className="mt-3 text-xs text-muted">{t.countOf(filtered.length, sorted.length)}</p>
@@ -466,7 +475,15 @@ export default function RilevazioniAdmin({ visits, operator }) {
         )}
       </section>
 
-      <VisitModal visit={open} onClose={() => setOpen(null)} locale={locale} />
+      <VisitModal
+        visit={open}
+        onClose={() => setOpen(null)}
+        locale={locale}
+        onSaved={() => {
+          setOpen(null);
+          router.refresh();
+        }}
+      />
     </div>
   );
 }
@@ -517,7 +534,9 @@ function TodoRow({ children, onClick, past }) {
 
 /* ------------------------------------------------------------------ scheda */
 
-function VisitModal({ visit, onClose, locale }) {
+function VisitModal({ visit, onClose, locale, onSaved }) {
+  const [amending, setAmending] = useState(false);
+  useEffect(() => setAmending(false), [visit?.id]);
   if (!visit) return null;
   const t = adminUi(locale);
   const o = outcomeOf(visit.outcome);
@@ -593,6 +612,22 @@ function VisitModal({ visit, onClose, locale }) {
           </div>
         </div>
       )}
+
+      {/* L'admin integra sempre, anche a concorso chiuso: ogni passaggio resta in cronologia. */}
+      <div className="mt-6">
+        {amending ? (
+          <AmendForm visit={visit} locale={locale} onCancel={() => setAmending(false)} onSaved={onSaved} />
+        ) : (
+          <Button variant="secondary" size="sm" onClick={() => setAmending(true)}>
+            {t.amend}
+          </Button>
+        )}
+      </div>
+
+      <div className="mt-6">
+        <h4 className="text-xs font-semibold uppercase tracking-[0.14em] text-btc">{t.history}</h4>
+        <VisitHistory visit={visit} locale={locale} />
+      </div>
     </Modal>
   );
 }
