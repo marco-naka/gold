@@ -31,6 +31,7 @@ import {
 import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
 import { compressAll } from '@/lib/compress-image';
 import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
+import { deleteShopDraft, draftKeyOf, listShopDrafts, photoKeyOf, readShopDraft, saveShopDraft } from '@/lib/survey-drafts';
 import { Agenda, MyVisits } from './MyVisits';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
@@ -147,22 +148,18 @@ function SurveyApp({ locale, onLocale, operator, admin }) {
   if (!operator) return <Survey locale={locale} onLocale={onLocale} operator={operator} admin={admin} />;
 
   // Si riparte da quello che si sapeva del negozio, senza il ritorno e le note di allora.
+  // Niente conferma: la rilevazione in corso, se c'è, resta nella bozza del suo negozio.
   const goNow = (visit) => {
-    const pending = readDraft();
-    const busy = pending && (pending.merchant || Object.keys(pending.answers ?? {}).length);
-    if (busy && !window.confirm(t.goNowConfirm)) return;
     const { ritorno, ritorno_motivo, ritorno_quando, ritorno_ora, note, transazione_note, ...answers } = visit.answers ?? {};
+    const merchant = visit.merchantId
+      ? { id: visit.merchantId, name: visit.merchantName, address: visit.address }
+      : { name: visit.merchantName };
+    // Una bozza non inviata di questo negozio vince sul precompilato: è lavoro già fatto.
+    const existing = readShopDraft(draftKeyOf(merchant));
     try {
       localStorage.setItem(
         DRAFT_KEY,
-        JSON.stringify({
-          surveyor: operator,
-          merchant: visit.merchantId
-            ? { id: visit.merchantId, name: visit.merchantName, address: visit.address }
-            : { name: visit.merchantName },
-          answers,
-          step: 0,
-        }),
+        JSON.stringify(existing ?? { surveyor: operator, merchant, answers, step: 0 }),
       );
     } catch {
       /* senza bozza si parte da zero: il negozio si sceglie a mano */
@@ -307,6 +304,11 @@ function Survey({ locale, onLocale, operator, admin }) {
   const [askReset, setAskReset] = useState(false);
   const restored = useRef(false);
   const photosRestored = useRef(false);
+  // Il negozio a cui appartiene quello che c'è nel modulo, e le bozze degli altri negozi.
+  const formKey = useRef(null);
+  const [drafts, setDrafts] = useState([]);
+  const [resumedAt, setResumedAt] = useState(null);
+  const resumedStep = useRef(null);
 
   // Bozza: si rilegge all'apertura e si riscrive a ogni modifica. Le foto restano fuori,
   // sono troppo pesanti per localStorage e si riscattano in un attimo.
@@ -324,9 +326,10 @@ function Survey({ locale, onLocale, operator, admin }) {
     // Le foto tornano dalla bozza in IndexedDB: sui telefoni la pagina si ricarica spesso
     // dopo la fotocamera, e prima tornavano solo le risposte. Senza bozza non c'è niente da
     // riprendere, e le foto rimaste di un giro precedente si buttano.
+    formKey.current = draftKeyOf(draft?.merchant);
     if (draft) {
-      loadDraftPhotos().then((stored) => {
-        setPhotos((current) => ({ ...stored, ...current }));
+      Promise.all([loadDraftPhotos(photoKeyOf(formKey.current)), loadDraftPhotos()]).then(([shop, stored]) => {
+        setPhotos((current) => ({ ...shop, ...stored, ...current }));
         photosRestored.current = true;
       });
     } else {
@@ -335,10 +338,15 @@ function Survey({ locale, onLocale, operator, admin }) {
     }
   }, []);
 
+  const hasPhotos = (p) => Object.values(p).some((v) => (Array.isArray(v) ? v.length > 0 : Boolean(v)));
+
   useEffect(() => {
     if (!photosRestored.current || done) return;
     saveDraftPhotos(photos);
-  }, [photos, done]);
+    // Anche nella bozza del negozio: iniziarne un altro non le cancella più.
+    const key = draftKeyOf(merchant);
+    if (key && hasPhotos(photos)) saveDraftPhotos(photos, photoKeyOf(key));
+  }, [photos, merchant, done]);
 
   useEffect(() => {
     if (!restored.current || done) return;
@@ -347,6 +355,8 @@ function Survey({ locale, onLocale, operator, admin }) {
     } catch {
       /* quota piena o navigazione privata: la bozza è un extra, non un requisito */
     }
+    const key = draftKeyOf(merchant);
+    if (key && (Object.keys(answers).length || step > 0)) saveShopDraft(key, { surveyor, merchant, answers, step });
   }, [surveyor, merchant, answers, step, done]);
 
   useEffect(() => {
@@ -380,14 +390,69 @@ function Survey({ locale, onLocale, operator, admin }) {
     if (operator) setSurveyor(operator);
   }, [operator]);
 
+  /*
+   * Scelta del negozio. Se nel modulo c'era il lavoro di un altro negozio, quello resta nella
+   * sua bozza e si passa alla bozza di questo (o a un modulo vuoto). Se il modulo era vuoto e
+   * questo negozio ha una bozza, la si riprende.
+   */
+  const pickMerchant = useCallback(async (m) => {
+    setMerchant(m);
+    if (!m) return;
+    const key = draftKeyOf(m);
+    const prev = formKey.current;
+    formKey.current = key;
+    if (prev === key) return;
+    const draft = readShopDraft(key);
+    if (prev) {
+      setAnswers(draft?.answers ?? {});
+      setPhotos({});
+      setErrors({});
+      setResumedAt(draft?.savedAt ?? null);
+      resumedStep.current = 0;
+      if (draft) setPhotos(await loadDraftPhotos(photoKeyOf(key)));
+      return;
+    }
+    if (draft && Object.keys(draft.answers ?? {}).length) {
+      setAnswers((current) => ({ ...draft.answers, ...current }));
+      setResumedAt(draft.savedAt);
+      resumedStep.current = 0;
+      const stored = await loadDraftPhotos(photoKeyOf(key));
+      setPhotos((current) => ({ ...stored, ...current }));
+    }
+  }, []);
+
+  const resumeDraft = useCallback(async (draft) => {
+    formKey.current = draft.key;
+    resumedStep.current = draft.step ?? 0;
+    setMerchant(draft.merchant);
+    setAnswers(draft.answers ?? {});
+    setStep(draft.step ?? 0);
+    setErrors({});
+    setPhotos({});
+    setResumedAt(draft.savedAt);
+    window.scrollTo(0, 0);
+    setPhotos(await loadDraftPhotos(photoKeyOf(draft.key)));
+  }, []);
+
+  const discardDraft = useCallback((key) => {
+    deleteShopDraft(key);
+    clearDraftPhotos(photoKeyOf(key));
+    setDrafts((list) => list.filter((d) => d.key !== key));
+  }, []);
+
   const setAnswer = useCallback((id, value) => {
     setAnswers((prev) => ({ ...prev, [id]: value }));
     setErrors((prev) => (prev[id] ? { ...prev, [id]: undefined } : prev));
   }, []);
 
+  // Modulo nuovo. La rilevazione che c'era resta nella bozza del suo negozio: «Altro negozio»
+  // dopo un invio fallito non la butta più. Dopo un invio riuscito la bozza è già stata tolta;
+  // eliminarla di proposito si fa dall'elenco delle bozze.
   function reset() {
     localStorage.removeItem(DRAFT_KEY);
     clearDraftPhotos();
+    formKey.current = null;
+    setResumedAt(null);
     setSurveyor(localStorage.getItem(SURVEYOR_KEY) || '');
     setMerchant(null);
     setAnswers({});
@@ -440,6 +505,9 @@ function Survey({ locale, onLocale, operator, admin }) {
       }
       localStorage.removeItem(DRAFT_KEY);
       clearDraftPhotos();
+      // Invio confermato dal server: solo ora la bozza del negozio può sparire.
+      deleteShopDraft(draftKeyOf(merchant));
+      clearDraftPhotos(photoKeyOf(draftKeyOf(merchant)));
       setDone({ id: json.id, photos: json.photos ?? 0 });
     } catch {
       setErrors({ _: 'network' });
@@ -447,20 +515,44 @@ function Survey({ locale, onLocale, operator, admin }) {
     setSending(false);
   }
 
+  // L'avviso «bozza ripresa» resta nella sezione in cui si è ripreso; al primo passo dopo, sparisce.
+  useEffect(() => {
+    if (resumedAt && resumedStep.current !== null && step !== resumedStep.current) {
+      setResumedAt(null);
+      resumedStep.current = null;
+    }
+  }, [step, resumedAt]);
+
+  // Le bozze degli altri negozi si rileggono ogni volta che si torna alla scelta del negozio.
+  const choosingShop = steps[step] === 'negozio' && !merchant;
+  useEffect(() => {
+    if (!choosingShop) return;
+    setDrafts(listShopDrafts().filter((d) => Object.keys(d.answers ?? {}).length || d.step > 0));
+  }, [choosingShop, done]);
+
   if (done) return <Done id={done.id} photos={done.photos} merchant={merchant} onNext={reset} locale={locale} />;
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
   const canGoNext = step < steps.length - 1;
+  const choosing = current === 'negozio' && !merchant;
 
   return (
     <div className="mx-auto w-full max-w-2xl px-5 pb-32 pt-10">
       <Progress step={step} total={steps.length} merchant={merchant} locale={locale} onLocale={onLocale} />
 
+      {choosing && drafts.length > 0 && (
+        <DraftList drafts={drafts} onResume={resumeDraft} onDiscard={discardDraft} locale={locale} />
+      )}
+      {merchant && resumedAt && (
+        <p className="mb-4 rounded-xl border border-btc/30 bg-btc/10 px-4 py-3 text-sm font-semibold text-btc">
+          {t.draftResumed(draftWhen(resumedAt, locale))}
+        </p>
+      )}
       {current === 'negozio' && (
         <MerchantStep
           merchant={merchant}
-          onPick={setMerchant}
+          onPick={pickMerchant}
           surveyor={surveyor}
           onSurveyor={setSurveyor}
           operator={operator}
@@ -574,6 +666,60 @@ function Progress({ step, total, merchant, locale, onLocale }) {
         />
       </div>
     </div>
+  );
+}
+
+const draftWhen = (iso, locale) =>
+  new Date(iso).toLocaleString(locale === 'en' ? 'en-GB' : 'it-CH', {
+    timeZone: TIME_ZONE,
+    day: '2-digit',
+    month: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+/** Le bozze non inviate, una per negozio, in cima alla scelta del negozio. */
+function DraftList({ drafts, onResume, onDiscard, locale }) {
+  const t = ui(locale);
+  const [confirm, setConfirm] = useState(null);
+  return (
+    <section className="mb-6 rounded-2xl border border-btc/30 bg-btc/[0.06] p-4">
+      <p className="text-sm font-bold text-white">{t.draftsTitle(drafts.length)}</p>
+      <p className="mt-1 text-xs text-muted">{t.draftsHint}</p>
+      <ul className="mt-3 divide-y divide-white/5">
+        {drafts.map((d) => (
+          <li key={d.key} className="flex flex-wrap items-center justify-between gap-3 py-2.5">
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-semibold text-white">{d.merchant?.name}</span>
+              <span className="block text-xs text-muted">
+                {t.draftSaved(draftWhen(d.savedAt, locale))} · {t.draftAnswers(Object.keys(d.answers ?? {}).length)}
+              </span>
+            </span>
+            <span className="flex shrink-0 gap-2">
+              {confirm === d.key ? (
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => {
+                    onDiscard(d.key);
+                    setConfirm(null);
+                  }}
+                >
+                  {t.draftDiscardSure}
+                </Button>
+              ) : (
+                <Button size="sm" variant="ghost" onClick={() => setConfirm(d.key)}>
+                  {t.draftDiscard}
+                </Button>
+              )}
+              <Button size="sm" onClick={() => onResume(d)}>
+                {t.draftResume}
+              </Button>
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 
