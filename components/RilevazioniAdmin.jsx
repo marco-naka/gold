@@ -212,6 +212,8 @@ export default function RilevazioniAdmin({ visits, operator }) {
   );
   const posProblems = useMemo(() => latest.filter(hasPosProblem), [latest]);
   const requests = useMemo(() => latest.filter((v) => v.answers?.naka_problemi), [latest]);
+  // Lamentele sull'app MyLugano: il numero accanto al filtro è quello delle righe che il filtro mostra.
+  const myLugano = useMemo(() => sorted.filter((v) => v.answers?.mylugano_lamentela === true), [sorted]);
 
   const surveyors = Object.keys(stats.bySurveyor).sort();
 
@@ -220,6 +222,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
     if (surveyor && (v.surveyor || '—') !== surveyor) return false;
     if (only === 'pos' && !hasPosProblem(v)) return false;
     if (only === 'modificate' && !wasAmended(v)) return false;
+    if (only === 'mylugano' && v.answers?.mylugano_lamentela !== true) return false;
     // Scaduto: il ritorno è passato e nessuno è ancora tornato in quel negozio.
     if (only === 'scaduti' && !(v.answers?.ritorno_quando < today && latestIds.has(v.id))) return false;
     if (only === 'ritorno' && !v.answers?.ritorno_quando) return false;
@@ -426,6 +429,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
             <option value="ritorno">{t.withReturn}</option>
             <option value="pos">{t.withPos}</option>
             <option value="modificate">{t.withAmended}</option>
+            <option value="mylugano">{t.withMyLugano(myLugano.length)}</option>
             <option value="scaduti">{t.overdueReturns}</option>
           </select>
         </div>
