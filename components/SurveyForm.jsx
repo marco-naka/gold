@@ -250,7 +250,7 @@ function SurveyApp({ locale, onLocale, operator, admin }) {
         </div>
       </nav>
       {tab === 'nuova' && (
-        <Survey key={surveyKey} locale={locale} onLocale={onLocale} operator={operator} admin={admin} onActivity={setActivity} />
+        <Survey key={surveyKey} locale={locale} onLocale={onLocale} operator={operator} admin={admin} onActivity={setActivity} onSent={loadMine} />
       )}
       {tab === 'mie' && <MyVisits visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
       {tab === 'agenda' && <Agenda visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
@@ -343,7 +343,7 @@ export function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
 
 /* ------------------------------------------------------------- rilevazione */
 
-function Survey({ locale, onLocale, operator, admin, onActivity }) {
+function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
   const t = ui(locale);
   const [step, setStep] = useState(0);
   const [surveyor, setSurveyor] = useState('');
@@ -562,7 +562,9 @@ function Survey({ locale, onLocale, operator, admin, onActivity }) {
       // Invio confermato dal server: solo ora la bozza del negozio può sparire.
       deleteShopDraft(draftKeyOf(merchant));
       clearDraftPhotos(photoKeyOf(draftKeyOf(merchant)));
-      setDone({ id: json.id, photos: json.photos ?? 0 });
+      setDone({ id: json.id, photos: json.photos ?? 0, closedReturn: json.closedReturn ?? null });
+      // I contatori di «Le mie» e «Agenda» si aggiornano subito, non al prossimo cambio di scheda.
+      onSent?.();
     } catch {
       setErrors({ _: 'network' });
     }
@@ -591,7 +593,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity }) {
     setDrafts(listShopDrafts().filter((d) => Object.keys(d.answers ?? {}).length || d.step > 0));
   }, [choosingShop, done]);
 
-  if (done) return <Done id={done.id} photos={done.photos} merchant={merchant} onNext={reset} locale={locale} />;
+  if (done) return <Done id={done.id} photos={done.photos} closedReturn={done.closedReturn} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
@@ -1594,7 +1596,7 @@ export function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
   );
 }
 
-function Done({ id, photos, merchant, onNext, locale }) {
+function Done({ id, photos, closedReturn, surveyor, merchant, onNext, locale }) {
   const t = ui(locale);
   return (
     <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
@@ -1610,6 +1612,13 @@ function Done({ id, photos, merchant, onNext, locale }) {
         <Camera className="h-3.5 w-3.5 text-btc" />
         {t.savedPhotos(photos)}
       </p>
+      {closedReturn && (
+        <p className="mt-3 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-300">
+          {closedReturn.surveyor && closedReturn.surveyor !== surveyor
+            ? t.savedClosedReturnOf(closedReturn.ripasso.split('-').reverse().join('.'), closedReturn.surveyor)
+            : t.savedClosedReturn(closedReturn.ripasso.split('-').reverse().join('.'))}
+        </p>
+      )}
       <Button onClick={onNext} size="lg" className="mt-8 w-full">
         {t.nextShop}
       </Button>

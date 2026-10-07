@@ -47,7 +47,9 @@ const intl = (locale) => (locale === 'en' ? 'en-GB' : 'it-CH');
 const dateTime = (iso, locale) =>
   new Date(iso).toLocaleString(intl(locale), { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
 const swiss = (ymd) => (ymd ? ymd.split('-').reverse().join('.') : '');
-const todayYmd = () => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date());
+const ymdOf = (date) => new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(date);
+const todayYmd = () => ymdOf(new Date());
+const timeOf = (iso) => new Date(iso).toLocaleTimeString('it-CH', { timeZone: TIME_ZONE, hour: '2-digit', minute: '2-digit' });
 const addDays = (ymd, n) => {
   const d = new Date(`${ymd}T12:00:00Z`);
   d.setUTCDate(d.getUTCDate() + n);
@@ -75,7 +77,16 @@ export function MyVisits({ visits, locale, onChanged, onGoNow }) {
   const open = openId && visits.find((v) => v.id === openId);
   if (open) {
     return (
-      <VisitDetail visit={open} locale={locale} onBack={() => setOpenId(null)} onChanged={onChanged} onGoNow={onGoNow} />
+      <VisitDetail
+        visit={open}
+        locale={locale}
+        onBack={() => setOpenId(null)}
+        onChanged={onChanged}
+        onGoNow={onGoNow}
+        // Si apre solo una visita propria: quella di un collega non è in questo elenco.
+        canOpen={(id) => visits.some((v) => v.id === id)}
+        onOpen={setOpenId}
+      />
     );
   }
 
@@ -110,6 +121,8 @@ export function MyVisits({ visits, locale, onChanged, onGoNow }) {
                       {nPhotos === 0 && <Chip tone="no" icon={Camera}>{t.badgeNoPhotos}</Chip>}
                       {pos && <Chip tone="no" icon={AlertTriangle}>{t.badgePos}</Chip>}
                       {v.ripasso && !v.superseded && <Chip tone="wait" icon={CalendarClock}>{t.badgeReturn(swiss(v.ripasso))}</Chip>}
+                      {v.ripasso && v.followUp && <Chip tone="ok" icon={Check}>{t.badgeReturnDone(swiss(ymdOf(new Date(v.followUp.at))))}</Chip>}
+                      {v.returnOf && <Chip icon={CalendarClock}>{t.badgeIsReturn(swiss(ymdOf(new Date(v.returnOf.at))))}</Chip>}
                       {amended && <Chip icon={PencilLine}>{t.badgeAmended}</Chip>}
                     </span>
                   </span>
@@ -140,7 +153,7 @@ function Chip({ tone, icon: Icon, children }) {
 
 /* ------------------------------------------------------------------ scheda */
 
-function VisitDetail({ visit, locale, onBack, onChanged, onGoNow }) {
+function VisitDetail({ visit, locale, onBack, onChanged, onGoNow, canOpen, onOpen }) {
   const t = ui(locale);
   const [amending, setAmending] = useState(false);
   const photos = photosOf(visit);
@@ -178,6 +191,24 @@ function VisitDetail({ visit, locale, onBack, onChanged, onGoNow }) {
         )}
       </div>
       {!visit.editable && <p className="mt-3 text-xs text-muted">{t.amendClosed}</p>}
+      {/* Il ritorno rifatto è una visita nuova: le due schede si rimandano a vicenda. */}
+      {visit.ripasso && visit.followUp && (
+        <LinkedVisit
+          tone="ok"
+          text={t.followUpText(swiss(ymdOf(new Date(visit.followUp.at))), timeOf(visit.followUp.at), visit.followUp.surveyor)}
+          linked={visit.followUp}
+          onOpen={canOpen?.(visit.followUp.id) ? onOpen : null}
+          locale={locale}
+        />
+      )}
+      {visit.returnOf && (
+        <LinkedVisit
+          text={t.returnOfText(swiss(ymdOf(new Date(visit.returnOf.at))), swiss(visit.returnOf.ripasso))}
+          linked={visit.returnOf}
+          onOpen={canOpen?.(visit.returnOf.id) ? onOpen : null}
+          locale={locale}
+        />
+      )}
 
       {amending && (
         <AmendForm
@@ -212,6 +243,24 @@ function VisitDetail({ visit, locale, onBack, onChanged, onGoNow }) {
       <h3 className="mt-8 text-xs font-semibold uppercase tracking-[0.14em] text-btc">{t.detailHistory}</h3>
       <VisitHistory visit={visit} locale={locale} />
     </section>
+  );
+}
+
+function LinkedVisit({ tone, text, linked, onOpen, locale }) {
+  const t = ui(locale);
+  return (
+    <div className={cn('mt-4 rounded-xl border p-3 text-sm', tone ? TONE[tone] : 'border-white/10 bg-white/5 text-white')}>
+      <p>{text}</p>
+      <div className="mt-2 flex flex-wrap items-center gap-2">
+        <span className="font-mono text-xs">{linked.id}</span>
+        <OutcomeBadge id={linked.outcome} locale={locale} />
+        {onOpen && (
+          <button type="button" onClick={() => onOpen(linked.id)} className="ml-auto text-xs font-semibold underline underline-offset-2">
+            {t.openLinked}
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -460,6 +509,8 @@ export function Agenda({ visits, locale, onChanged, onGoNow }) {
     ['today', t.agendaToday, open.filter((v) => v.ripasso === today)],
     ['tomorrow', t.agendaTomorrow, open.filter((v) => v.ripasso === tomorrow)],
     ['later', t.agendaLater, open.filter((v) => v.ripasso > tomorrow)],
+    // I ritorni chiusi oggi da una visita nuova: restano in vista, spuntati, fino a domani.
+    ['done', t.agendaDone, visits.filter((v) => v.ripasso && v.followUp && ymdOf(new Date(v.followUp.at)) === today)],
   ].filter(([, , list]) => list.length);
 
   return (
@@ -469,11 +520,32 @@ export function Agenda({ visits, locale, onChanged, onGoNow }) {
       {groups.length === 0 && <p className="mt-6 text-sm text-muted">{t.agendaEmpty}</p>}
       {groups.map(([id, title, list]) => (
         <div key={id} className="mt-6">
-          <h3 className={cn('text-xs font-semibold uppercase tracking-[0.14em]', id === 'overdue' ? 'text-red-300' : 'text-btc')}>
+          <h3
+            className={cn(
+              'text-xs font-semibold uppercase tracking-[0.14em]',
+              id === 'overdue' ? 'text-red-300' : id === 'done' ? 'text-emerald-300' : 'text-btc',
+            )}
+          >
             {title} · {list.length}
           </h3>
           <ul className="mt-2 space-y-2">
-            {list.map((v) => (
+            {id === 'done' && list.map((v) => (
+              <li key={v.id} className="rounded-2xl border border-emerald-400/30 bg-emerald-400/[0.05] p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-1.5 font-semibold text-white">
+                      <Check className="h-4 w-4 shrink-0 text-emerald-300" /> {v.merchantName}
+                    </p>
+                    <p className="mt-1 text-xs text-muted">{t.agendaWasDue(swiss(v.ripasso))}</p>
+                    <p className="text-sm text-white">
+                      {t.agendaDoneAt(timeOf(v.followUp.at), v.followUp.surveyor === v.surveyor ? null : v.followUp.surveyor)}
+                    </p>
+                  </div>
+                  <OutcomeBadge id={v.followUp.outcome} locale={locale} className="shrink-0" />
+                </div>
+              </li>
+            ))}
+            {id !== 'done' && list.map((v) => (
               <li key={v.id} className={cn('rounded-2xl border bg-ink-soft/60 p-4', id === 'overdue' ? 'border-red-400/30' : 'border-white/10')}>
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">

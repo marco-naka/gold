@@ -236,6 +236,12 @@ export async function POST(request) {
   const outcomeId = outcomeOf(answers);
   const outcome = OUTCOMES.find((o) => o.id === outcomeId);
 
+  // Se l'ultima visita a questo negozio aveva un ritorno fissato, questa lo chiude: il
+  // rilevatore lo legge subito nella conferma, invece di vederlo sparire dall'agenda.
+  const before = await visitsForMerchant(known?.id ?? null, known?.name ?? data.merchantName);
+  const last = before.sort((a, b) => a.createdAt.localeCompare(b.createdAt)).at(-1);
+  const closedReturn = last?.answers?.ritorno_quando ? { id: last.id, ripasso: last.answers.ritorno_quando, surveyor: last.surveyor } : null;
+
   await saveVisit({
     id,
     createdAt: new Date().toISOString(),
@@ -255,7 +261,7 @@ export async function POST(request) {
 
   // Quante foto sono finite sul disco: il rilevatore lo vede subito, invece di scoprirlo dopo.
   const saved = Object.values(photos).flat().length;
-  return NextResponse.json({ ok: true, id, photos: saved });
+  return NextResponse.json({ ok: true, id, photos: saved, closedReturn });
 }
 
 /**
@@ -283,16 +289,23 @@ async function readPhotos(form, errors) {
 }
 
 const shopKey = (v) => v.merchantId ?? v.merchantName.toLowerCase();
+const brief = (o) => ({ id: o.id, at: o.createdAt, outcome: o.outcome, surveyor: o.surveyor });
 
 /** Una visita come la vede chi l'ha fatta: tutta, più lo stato che serve all'agenda. */
 function ownVisit(v, all, who) {
+  const same = all.filter((o) => o.id !== v.id && shopKey(o) === shopKey(v));
+  const after = same.filter((o) => o.createdAt > v.createdAt).sort((a, b) => a.createdAt.localeCompare(b.createdAt))[0];
+  const prev = same.filter((o) => o.createdAt < v.createdAt).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0];
   return {
     ...v,
     at: v.createdAt,
     address: v.mapSnapshot?.address ?? null,
     ripasso: v.answers?.ritorno_quando ?? null,
-    // Una visita più recente allo stesso negozio, di chiunque, chiude il ritorno di questa.
-    superseded: all.some((o) => o.id !== v.id && shopKey(o) === shopKey(v) && o.createdAt > v.createdAt),
+    // Una visita più recente allo stesso negozio, di chiunque, chiude il ritorno di questa:
+    // la prima di quelle è il ritorno fatto, e le due visite si rimandano a vicenda.
+    superseded: Boolean(after),
+    followUp: after ? brief(after) : null,
+    returnOf: prev?.answers?.ritorno_quando ? { ...brief(prev), ripasso: prev.answers.ritorno_quando } : null,
     editable: canEdit(v, who),
     reschedules: reschedules(v),
   };
