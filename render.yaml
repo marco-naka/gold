@@ -53,5 +53,7 @@ services:
       # production e resta spenta in demo. Per procedere a mano dalla Shell con `npm run draw`:
       # - key: DRAW_AUTOMATIC
       #   value: "off"
+      - key: RILEVAZIONI_SECRET
+        sync: false # chiave fissa per le sessioni: così aggiungere un rilevatore non disconnette gli altri
       - key: RILEVAZIONI_CODE
         sync: false # alternativa: un codice condiviso, senza identità del rilevatore

@@ -426,6 +426,12 @@ function Survey({ locale, onLocale, operator, admin }) {
 
     try {
       const res = await fetch('/api/rilevazioni', { method: 'POST', body });
+      // Sessione non più valida (PIN cambiati, cookie scaduto): lo si dice, la bozza resta.
+      if (res.status === 401) {
+        setErrors({ _: 'unauthorized' });
+        setSending(false);
+        return;
+      }
       const json = await res.json();
       if (!res.ok) {
         setErrors(json.errors || { _: json.code });
@@ -1250,7 +1256,13 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
 
       {generic && (
         <p className="mt-5 text-sm text-red-400">
-          {generic === 'network' ? t.offline : generic === 'storage_unavailable' ? t.storageOff : t.genericError}
+          {generic === 'network'
+            ? t.offline
+            : generic === 'storage_unavailable'
+              ? t.storageOff
+              : generic === 'unauthorized'
+                ? t.sessionExpired
+                : t.genericError}
         </p>
       )}
     </section>

@@ -343,6 +343,7 @@ export function AmendForm({ visit, locale, onCancel, onSaved }) {
       const res = await fetch('/api/rilevazioni', { method: 'POST', body });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return onSaved(json);
+      if (res.status === 401) return setError(t.sessionExpired);
       const errs = json.errors ?? {};
       if (errs._ === 'nothing') setError(t.amendNothing);
       else if (errs.reason) setError(t.amendReasonMissing);
@@ -545,6 +546,7 @@ function RescheduleForm({ visit, locale, onDone }) {
       const res = await fetch('/api/rilevazioni', { method: 'POST', body });
       const json = await res.json().catch(() => ({}));
       if (res.ok) return onDone();
+      if (res.status === 401) return setError(t.sessionExpired);
       setError(json.errors?._ === 'nothing' ? t.amendNothing : t.genericError);
     } catch {
       setError(t.offline);
