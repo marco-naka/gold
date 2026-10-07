@@ -1,5 +1,17 @@
 {
-  "_comment": "Rigenerato da `npm run visits exclude`. Negozi tolti dall'elenco pubblico dopo una rilevazione sul campo.",
+  "_comment": "«excluded» è rigenerato da `npm run visits exclude` dalle rilevazioni sul campo; «manual» sono le esclusioni decise a mano, che lo script non tocca. In entrambi i casi il negozio esce dall'elenco pubblico ma resta nei dati e nelle rilevazioni.",
   "updatedAt": null,
-  "excluded": {}
+  "excluded": {},
+  "manual": {
+    "lug-love-is-in-the-hair-ae5ebf": {
+      "name": "Love is in the Hair",
+      "reason": "tolto dall'elenco su indicazione del team",
+      "at": "2026-10-07"
+    },
+    "lug-musicdoor-2d0c25": {
+      "name": "Musicdoor",
+      "reason": "tolto dall'elenco su indicazione del team",
+      "at": "2026-10-07"
+    }
+  }
 }

@@ -223,6 +223,8 @@ if (command === 'stats') {
         _comment: current._comment,
         updatedAt: new Date().toISOString(),
         excluded,
+        // Le esclusioni decise a mano non vengono dalle visite: si conservano come sono.
+        manual: current.manual ?? {},
       },
       null,
       2
