@@ -59,6 +59,13 @@ export async function GET(request) {
     });
   }
 
+  // Tutte le visite per il pannello dell'admin, che si aggiorna da solo: solo i dati, così una
+  // richiesta andata a vuoto (deploy, telefono senza campo) non sostituisce la pagina.
+  if (params.get('all') === '1') {
+    if (!isAdmin(request)) return NextResponse.json({ code: 'forbidden' }, { status: 403 });
+    return NextResponse.json({ visits: await listVisits() }, { headers: { 'Cache-Control': 'no-store' } });
+  }
+
   // Il ritorno nel calendario del telefono: un file .ics, per chi ha fatto la visita o per l'admin.
   if (params.get('ics')) {
     const visit = await findVisit(params.get('ics'));

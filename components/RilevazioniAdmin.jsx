@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   AlertTriangle,
@@ -122,8 +122,7 @@ export function AdminGate({ signedInAs, pinHint }) {
 
 /* ------------------------------------------------------------------ pannello */
 
-export default function RilevazioniAdmin({ visits, operator }) {
-  const router = useRouter();
+export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
   const [locale, setLocale] = useLocale();
   const t = adminUi(locale);
   const outcomeLabel = (o) => outcomeIn(o.id, o.label, locale);
@@ -135,10 +134,14 @@ export default function RilevazioniAdmin({ visits, operator }) {
   const [only, setOnly] = useState('');
   // Schede o tabella: la scelta resta su questo dispositivo.
   const [view, setView] = useState('list');
-  // Tempo reale: la pagina si ricarica dal server ogni 30 secondi, finché non la si mette in
+  // Tempo reale: ogni 30 secondi si chiedono al server i soli dati, finché non lo si mette in
   // pausa o la scheda del browser non è nascosta. I filtri e la scheda aperta restano.
+  // Non si ricarica la pagina: se la richiesta va a vuoto — un deploy, il telefono senza campo —
+  // restano i dati che c'erano, lo si dice, e al giro dopo si riprova.
+  const [visits, setVisits] = useState(initialVisits);
   const [live, setLive] = useState(true);
   const [updatedAt, setUpdatedAt] = useState(null);
+  const [link, setLink] = useState('ok'); // ok | offline | expired
 
   useEffect(() => {
     try {
@@ -156,16 +159,34 @@ export default function RilevazioniAdmin({ visits, operator }) {
     }
   };
 
-  // Ogni volta che arrivano dati nuovi dal server, l'ora dell'ultimo aggiornamento.
-  useEffect(() => setUpdatedAt(new Date()), [visits]);
+  const load = useCallback(async () => {
+    try {
+      const res = await fetch('/api/rilevazioni?all=1', { cache: 'no-store' });
+      if (res.status === 401 || res.status === 403) return setLink('expired');
+      if (!res.ok) throw new Error(String(res.status));
+      setVisits((await res.json()).visits);
+      setUpdatedAt(new Date());
+      setLink('ok');
+    } catch {
+      setLink('offline');
+    }
+  }, []);
+
+  useEffect(() => setUpdatedAt(new Date()), []);
 
   useEffect(() => {
     if (!live) return undefined;
-    const id = setInterval(() => {
-      if (document.visibilityState === 'visible') router.refresh();
-    }, LIVE_MS);
-    return () => clearInterval(id);
-  }, [live, router]);
+    const tick = () => document.visibilityState === 'visible' && load();
+    const id = setInterval(tick, LIVE_MS);
+    // Tornati sulla scheda o di nuovo in rete: si aggiorna subito, senza aspettare il giro.
+    document.addEventListener('visibilitychange', tick);
+    window.addEventListener('online', tick);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', tick);
+      window.removeEventListener('online', tick);
+    };
+  }, [live, load]);
 
   const sorted = useMemo(() => [...visits].sort((a, b) => b.createdAt.localeCompare(a.createdAt)), [visits]);
 
@@ -234,10 +255,10 @@ export default function RilevazioniAdmin({ visits, operator }) {
     return true;
   });
 
-  const refresh = () => {
+  const refresh = async () => {
     setRefreshing(true);
-    router.refresh();
-    setTimeout(() => setRefreshing(false), 800);
+    await load();
+    setRefreshing(false);
   };
 
   return (
@@ -255,11 +276,18 @@ export default function RilevazioniAdmin({ visits, operator }) {
             {t.dataNote}
           </p>
           {updatedAt && (
-            <p className="mt-2 inline-flex items-center gap-2 text-xs text-muted">
-              <span className={cn('h-2 w-2 rounded-full', live ? 'animate-pulse bg-emerald-400' : 'bg-muted/50')} />
-              {(live ? t.live : t.paused)(
-                updatedAt.toLocaleTimeString(locale === 'en' ? 'en-GB' : 'it-CH', { timeZone: TIME_ZONE }),
-              )}
+            <p className={cn('mt-2 inline-flex flex-wrap items-center gap-2 text-xs', link === 'ok' ? 'text-muted' : 'font-semibold text-red-300')}>
+              <span
+                className={cn(
+                  'h-2 w-2 rounded-full',
+                  link !== 'ok' ? 'bg-red-400' : live ? 'animate-pulse bg-emerald-400' : 'bg-muted/50',
+                )}
+              />
+              {link === 'expired'
+                ? t.expired
+                : (link === 'offline' ? t.offline : live ? t.live : t.paused)(
+                    updatedAt.toLocaleTimeString(locale === 'en' ? 'en-GB' : 'it-CH', { timeZone: TIME_ZONE }),
+                  )}
               <button
                 type="button"
                 onClick={() => setLive((x) => !x)}
@@ -489,7 +517,7 @@ export default function RilevazioniAdmin({ visits, operator }) {
         locale={locale}
         onSaved={() => {
           setOpen(null);
-          router.refresh();
+          load();
         }}
       />
     </div>
