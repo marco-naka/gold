@@ -31,7 +31,16 @@ import {
 import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
 import { compressAll } from '@/lib/compress-image';
 import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
-import { deleteShopDraft, draftKeyOf, listShopDrafts, photoKeyOf, readShopDraft, saveShopDraft } from '@/lib/survey-drafts';
+import {
+  deleteShopDraft,
+  draftKeyOf,
+  draftsSnapshot,
+  listShopDrafts,
+  photoKeyOf,
+  readShopDraft,
+  saveShopDraft,
+  setShopDraftPhotoCount,
+} from '@/lib/survey-drafts';
 import { Agenda, MyVisits } from './MyVisits';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
@@ -122,6 +131,45 @@ export default function SurveyForm({ locked, pinHint }) {
 }
 
 /**
+ * Il segnale per l'admin: ogni 30 secondi, mentre la pagina è in primo piano, e subito quando
+ * cambiano negozio o sezione. Porta con sé la copia delle bozze non inviate. Con lo schermo
+ * spento lo si dice una volta; chiudendo la pagina, pure. Un segnale perso non fa niente.
+ */
+function usePresence(operator, activity) {
+  const latest = useRef(activity);
+  latest.current = activity;
+  const send = useCallback(
+    (extra = {}) => {
+      if (!operator) return;
+      const body = JSON.stringify({ activity: latest.current, visible: document.visibilityState === 'visible', drafts: draftsSnapshot(), ...extra });
+      if (extra.closing && navigator.sendBeacon) {
+        navigator.sendBeacon('/api/rilevazioni/presenza', body);
+        return;
+      }
+      fetch('/api/rilevazioni/presenza', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {});
+    },
+    [operator],
+  );
+  const key = JSON.stringify(activity ?? null);
+  useEffect(() => {
+    const id = setTimeout(() => send(), 1500);
+    return () => clearTimeout(id);
+  }, [key, send]);
+  useEffect(() => {
+    const id = setInterval(() => document.visibilityState === 'visible' && send(), 30_000);
+    const onVisibility = () => send();
+    const onHide = () => send({ closing: true });
+    document.addEventListener('visibilitychange', onVisibility);
+    window.addEventListener('pagehide', onHide);
+    return () => {
+      clearInterval(id);
+      document.removeEventListener('visibilitychange', onVisibility);
+      window.removeEventListener('pagehide', onHide);
+    };
+  }, [send]);
+}
+
+/**
  * Le tre schede dell'area rilevazioni: la visita nuova, le proprie visite, l'agenda dei ritorni.
  *
  * «Le mie» e «Agenda» esistono solo con il PIN personale: con il codice condiviso il server
@@ -130,6 +178,9 @@ export default function SurveyForm({ locked, pinHint }) {
 function SurveyApp({ locale, onLocale, operator, admin }) {
   const t = ui(locale);
   const [tab, setTab] = useState('nuova');
+  // Che cosa sta facendo il rilevatore, per l'admin: negozio e sezione del modulo aperto.
+  const [activity, setActivity] = useState(null);
+  usePresence(operator, tab === 'nuova' ? activity : { tab });
   const [mine, setMine] = useState(null);
   // Cambia quando «Vado ora» prepara una bozza: il modulo si rimonta e la rilegge.
   const [surveyKey, setSurveyKey] = useState(0);
@@ -198,7 +249,9 @@ function SurveyApp({ locale, onLocale, operator, admin }) {
           ))}
         </div>
       </nav>
-      {tab === 'nuova' && <Survey key={surveyKey} locale={locale} onLocale={onLocale} operator={operator} admin={admin} />}
+      {tab === 'nuova' && (
+        <Survey key={surveyKey} locale={locale} onLocale={onLocale} operator={operator} admin={admin} onActivity={setActivity} />
+      )}
       {tab === 'mie' && <MyVisits visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
       {tab === 'agenda' && <Agenda visits={mine} locale={locale} onChanged={loadMine} onGoNow={goNow} />}
     </>
@@ -290,7 +343,7 @@ export function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
 
 /* ------------------------------------------------------------- rilevazione */
 
-function Survey({ locale, onLocale, operator, admin }) {
+function Survey({ locale, onLocale, operator, admin, onActivity }) {
   const t = ui(locale);
   const [step, setStep] = useState(0);
   const [surveyor, setSurveyor] = useState('');
@@ -346,6 +399,7 @@ function Survey({ locale, onLocale, operator, admin }) {
     // Anche nella bozza del negozio: iniziarne un altro non le cancella più.
     const key = draftKeyOf(merchant);
     if (key && hasPhotos(photos)) saveDraftPhotos(photos, photoKeyOf(key));
+    if (key) setShopDraftPhotoCount(key, Object.values(photos).flat().filter(Boolean).length);
   }, [photos, merchant, done]);
 
   useEffect(() => {
@@ -514,6 +568,13 @@ function Survey({ locale, onLocale, operator, admin }) {
     }
     setSending(false);
   }
+
+  // Per l'admin: su quale negozio e in quale sezione si sta lavorando (in italiano, come il pannello).
+  const activitySection = steps[step] === 'negozio' ? 'Scelta del negozio' : steps[step] === 'foto' ? 'Foto' : SECTIONS.find((s) => s.id === steps[step])?.title ?? null;
+  useEffect(() => {
+    onActivity?.({ tab: 'nuova', merchantName: merchant?.name ?? null, section: activitySection });
+  }, [merchant?.name, activitySection, onActivity]);
+  useEffect(() => () => onActivity?.(null), [onActivity]);
 
   // L'avviso «bozza ripresa» resta nella sezione in cui si è ripreso; al primo passo dopo, sparisce.
   useEffect(() => {

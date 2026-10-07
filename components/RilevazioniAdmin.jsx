@@ -3,11 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import {
+  Activity,
   AlertTriangle,
   CalendarClock,
   Camera,
   ChevronRight,
   Download,
+  FileText,
   MessageSquare,
   RefreshCw,
   Search,
@@ -142,6 +144,17 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
   const [live, setLive] = useState(true);
   const [updatedAt, setUpdatedAt] = useState(null);
   const [link, setLink] = useState('ok'); // ok | offline | expired
+  // Chi sta lavorando adesso e le bozze sui telefoni (api/rilevazioni/presenza).
+  const [presence, setPresence] = useState({ presence: [], drafts: [] });
+  const [draftOpen, setDraftOpen] = useState(null);
+  const loadPresence = useCallback(async () => {
+    try {
+      const res = await fetch('/api/rilevazioni/presenza', { cache: 'no-store' });
+      if (res.ok) setPresence(await res.json());
+    } catch {
+      /* resta l'ultimo stato noto */
+    }
+  }, []);
 
   useEffect(() => {
     try {
@@ -160,6 +173,7 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
   };
 
   const load = useCallback(async () => {
+    loadPresence();
     try {
       const res = await fetch('/api/rilevazioni?all=1', { cache: 'no-store' });
       if (res.status === 401 || res.status === 403) return setLink('expired');
@@ -172,7 +186,10 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
     }
   }, []);
 
-  useEffect(() => setUpdatedAt(new Date()), []);
+  useEffect(() => {
+    setUpdatedAt(new Date());
+    loadPresence();
+  }, [loadPresence]);
 
   useEffect(() => {
     if (!live) return undefined;
@@ -317,6 +334,23 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
           </Button>
         </div>
       </header>
+
+      {/* Prima di pubblicare: c'è qualcuno che sta compilando? E che bozze ci sono sui telefoni? */}
+      <section className="mt-8 grid gap-4 lg:grid-cols-2">
+        <WorkingNow list={presence.presence ?? []} t={t} locale={locale} />
+        <TodoCard icon={FileText} title={t.draftsTitle} empty={t.draftsEmpty}>
+          {(presence.drafts ?? []).map((d) => (
+            <TodoRow key={`${d.operator}-${d.key}`} onClick={() => setDraftOpen(d)}>
+              <span className="font-semibold text-white">{d.merchant?.name ?? d.key}</span>
+              <span className="text-muted"> · {d.operator}</span>
+              <span className="block text-xs text-muted">
+                {t.draftMeta(d.savedAt ? fmt(d.savedAt, locale) : '—', Object.keys(d.answers ?? {}).length, d.photoCount ?? 0)}
+              </span>
+            </TodoRow>
+          ))}
+        </TodoCard>
+      </section>
+      <DraftModal draft={draftOpen} onClose={() => setDraftOpen(null)} locale={locale} t={t} />
 
       {/* Come siamo messi */}
       <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -531,6 +565,86 @@ function Kpi({ label, value, note }) {
       <span className="mt-1 block text-2xl font-bold">{value}</span>
       <span className="block text-xs text-muted">{note}</span>
     </div>
+  );
+}
+
+/** Chi ha il modulo aperto: per non pubblicare mentre qualcuno sta compilando. */
+function WorkingNow({ list, t, locale }) {
+  const now = Date.now();
+  const filling = list.filter((p) => p.active && p.tab === 'nuova' && p.merchantName);
+  const busy = filling.length > 0;
+  const time = (iso) => new Date(iso).toLocaleTimeString(locale === 'en' ? 'en-GB' : 'it-CH', { timeZone: TIME_ZONE, hour: '2-digit', minute: '2-digit' });
+  return (
+    <div className={cn('rounded-2xl border p-5', busy ? 'border-btc/40 bg-btc/[0.08]' : 'border-emerald-400/30 bg-emerald-400/[0.06]')}>
+      <h3 className="flex items-center gap-2 text-sm font-bold">
+        <Activity className={cn('h-4 w-4', busy ? 'text-btc' : 'text-emerald-300')} /> {t.workingTitle}
+      </h3>
+      <p className={cn('mt-2 text-sm font-semibold', busy ? 'text-btc' : 'text-emerald-300')}>
+        {busy ? t.workingBusy(filling.length) : t.workingFree}
+      </p>
+      {list.length ? (
+        <ul className="mt-3 space-y-2">
+          {list.map((p) => {
+            const doing = p.tab === 'nuova' ? (p.merchantName ? `${p.merchantName}${p.section ? ` · ${p.section}` : ''}` : t.workingChoosing) : t.workingTab(p.tab);
+            return (
+              <li key={p.operator} className="flex items-start gap-2 text-sm">
+                <span className={cn('mt-1.5 h-2 w-2 shrink-0 rounded-full', p.active ? 'animate-pulse bg-emerald-400' : 'bg-muted/50')} />
+                <span className="min-w-0">
+                  <span className="font-semibold text-white">{p.operator}</span>
+                  <span className="text-muted"> · {doing}</span>
+                  <span className="block text-xs text-muted">
+                    {p.active ? t.ago(Math.max(0, Math.round((now - Date.parse(p.at)) / 1000))) : t.workingIdle}
+                    {p.merchantName && p.since ? ` · ${t.workingSince(time(p.since))}` : ''}
+                  </span>
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      ) : (
+        <p className="mt-3 text-xs text-muted">{t.workingNobody}</p>
+      )}
+    </div>
+  );
+}
+
+/** Una bozza vista dall'admin: le risposte che il rilevatore ha già dato, sezione per sezione. */
+function DraftModal({ draft, onClose, locale, t }) {
+  if (!draft) return null;
+  const answers = draft.answers ?? {};
+  const groups = SECTIONS.map((section) => ({
+    title: sectionIn(section, locale).title,
+    rows: section.questions.filter((q) => q.type !== 'photo' && q.type !== 'qr' && answers[q.id] !== undefined),
+  })).filter((g) => g.rows.length);
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title={draft.merchant?.name ?? draft.key}
+      subtitle={`${draft.operator} · ${t.draftMeta(draft.savedAt ? fmt(draft.savedAt, locale) : '—', Object.keys(answers).length, draft.photoCount ?? 0)}`}
+      size="lg"
+    >
+      <div className="overflow-y-auto px-6 py-5">
+        <p className="text-xs text-muted">{t.draftNote}</p>
+        {groups.length ? (
+          groups.map((g) => (
+            <section key={g.title} className="mt-5">
+              <h4 className="text-xs font-semibold uppercase tracking-[0.12em] text-btc">{g.title}</h4>
+              <dl className="mt-2 space-y-2">
+                {g.rows.map((q) => (
+                  <div key={q.id}>
+                    <dt className="text-xs text-muted">{askedIn(q, locale).label}</dt>
+                    <dd className="text-sm text-white">{answerIn(q, answers[q.id], locale)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+          ))
+        ) : (
+          <p className="mt-4 text-sm text-muted">{t.draftNoAnswers}</p>
+        )}
+      </div>
+    </Modal>
   );
 }
 
