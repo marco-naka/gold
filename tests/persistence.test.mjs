@@ -149,10 +149,11 @@ test('un testo che sembra una formula resta testo nel CSV', () => {
 });
 
 test('il CSV ha le colonne della lamentela MyLugano', () => {
-  const csv = visitsCsv([{ id: 'RV-2026-CCCCCC', createdAt: '2026-10-07T08:30:00Z', surveyor: 'Anna', merchantName: 'Bar', outcome: 'aderisce', answers: { con_chi: 'Titolare', mylugano_lamentela: true, mylugano_note: 'Non si apre' }, photos: {} }]);
+  const csv = visitsCsv([{ id: 'RV-2026-CCCCCC', createdAt: '2026-10-07T08:30:00Z', surveyor: 'Anna', merchantName: 'Bar', outcome: 'aderisce', answers: { con_chi: 'Titolare', mylugano_lamentela: true, mylugano_problema: ['È lenta', 'Non funziona'], mylugano_note: 'Non si apre' }, photos: {} }]);
   const [head, row] = parseCsv(csv);
   const cell = (name) => row[head.indexOf(name)];
   assert.ok(head.includes('Si lamenta del funzionamento dell’app MyLugano'));
   assert.equal(cell('Si lamenta del funzionamento dell’app MyLugano'), 'sì');
-  assert.equal(cell('Che cosa non funziona?'), 'Non si apre');
+  assert.equal(cell('Di che cosa si lamenta?'), 'È lenta; Non funziona');
+  assert.equal(cell('Commento libero'), 'Non si apre');
 });

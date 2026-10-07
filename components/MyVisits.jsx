@@ -316,6 +316,12 @@ export function AmendForm({ visit, locale, onCancel, onSaved }) {
   // Le domande che si possono correggere: quelle visibili con le risposte di adesso.
   const editable = ALL_QUESTIONS.filter((q) => q.type !== 'photo' && q.type !== 'qr' && isVisible(q, merged));
   const changedIds = Object.keys(changes);
+  // Le domande in correzione: quella appena scelta, quelle già toccate e quelle che una
+  // risposta di adesso ha appena fatto comparire. Spuntata la lamentela MyLugano, per esempio,
+  // scelte e commento sono subito lì, senza tornare al menu. In ordine di questionario.
+  const shownIds = new Set([...changedIds, picked].filter(Boolean));
+  for (const q of editable) if (!isVisible(q, visit.answers)) shownIds.add(q.id);
+  const shown = editable.map((q) => q.id).filter((id) => shownIds.has(id));
   const needsReason = changedIds.some((id) => !FREE_FIELDS.includes(id));
   // La vetrina è una sola: si propone solo se manca.
   const slots = PHOTOS.filter((p) => p.multiple || !visit.photos?.[p.id]);
@@ -386,7 +392,7 @@ export function AmendForm({ visit, locale, onCancel, onSaved }) {
       </select>
       {/* Le domande in correzione: quella appena scelta più quelle già toccate. */}
       <div className="mt-3 space-y-4">
-        {[...new Set([...changedIds, picked].filter(Boolean))].map((id) => (
+        {shown.map((id) => (
           <div key={id} className="rounded-xl border border-white/10 bg-ink-deep/40 p-3">
             <Question
               question={Q[id]}

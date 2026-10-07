@@ -96,20 +96,22 @@ test('il ritorno diventa un appuntamento di calendario, con o senza ora', async 
 
 test('la lamentela sull’app MyLugano si aggiunge a una visita già fatta, senza motivo', () => {
   const { visit, event, errors } = applyAmend(base, {
-    changes: { mylugano_lamentela: true, mylugano_note: 'Il cashback non arriva' },
+    changes: { mylugano_lamentela: true, mylugano_problema: ['È lenta', 'Non gli piace il cashback'], mylugano_note: 'Il cashback non arriva' },
     by: 'Sabrina',
     at,
   });
   assert.equal(errors, undefined);
   assert.equal(visit.answers.mylugano_lamentela, true);
   assert.equal(visit.answers.mylugano_note, 'Il cashback non arriva');
-  assert.deepEqual(event.changes.map((c) => c.id), ['mylugano_lamentela', 'mylugano_note']);
+  assert.deepEqual(visit.answers.mylugano_problema, ['È lenta', 'Non gli piace il cashback']);
+  assert.deepEqual(event.changes.map((c) => c.id), ['mylugano_lamentela', 'mylugano_problema', 'mylugano_note']);
   // L'invio originale resta com'era, senza la spunta aggiunta dopo.
   assert.equal(visit.original.answers.mylugano_lamentela, undefined);
   assert.equal(event.reason, null);
 });
 
-test('la nota MyLugano esiste solo con la spunta', () => {
-  const { visit } = applyAmend(base, { changes: { mylugano_note: 'Lenta' }, by: 'Sabrina', at, note: 'prova' });
+test('scelte e commento MyLugano esistono solo con la spunta', () => {
+  const { visit } = applyAmend(base, { changes: { mylugano_problema: ['Non funziona'], mylugano_note: 'Lenta' }, by: 'Sabrina', at, note: 'prova' });
+  assert.equal(visit.answers.mylugano_problema, undefined);
   assert.equal(visit.answers.mylugano_note, undefined);
 });
