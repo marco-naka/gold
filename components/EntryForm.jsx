@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import {
+  Camera,
   Mail,
   Store,
   Hash,
@@ -624,10 +625,10 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
       }
     >
       <div className="flex flex-col items-center text-center">
-        <span className="grid h-16 w-16 place-items-center rounded-full border border-btc/30 bg-btc/10 text-btc">
-          <CheckCircle2 className="h-8 w-8" />
+        <span className="grid h-11 w-11 place-items-center rounded-full border border-btc/30 bg-btc/10 text-btc">
+          <CheckCircle2 className="h-6 w-6" />
         </span>
-        <p className="mt-5 text-sm text-muted">{t.idLabel}</p>
+        <p className="mt-3 text-sm text-muted">{t.idLabel}</p>
         <button
           type="button"
           onClick={copy}
@@ -636,10 +637,27 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
           {entry.id}
           <Copy className="h-4 w-4" />
         </button>
-        <span className="mt-2 h-4 text-xs text-btc/80">{copied ? t.copied : ''}</span>
+        <span className="mt-1 h-4 text-xs text-btc/80">{copied ? t.copied : ''}</span>
       </div>
 
-      <dl className="mt-6 space-y-2">
+      {/* L'email si promette solo se è partita davvero: altrimenti la ricevuta è lo screenshot,
+          e l'invito sta subito sotto l'ID, dove si legge senza scorrere. */}
+      {entry.confirmationEmail === 'sent' ? (
+        <p className="mt-4 flex items-start gap-2.5 rounded-xl border border-btc/30 bg-btc/[0.06] p-4 text-xs leading-relaxed text-muted">
+          <Mail className="mt-0.5 h-4 w-4 shrink-0 text-btc" />
+          <span>{t.emailSent(entry.email)}</span>
+        </p>
+      ) : (
+        <p className="mt-4 flex items-start gap-2.5 rounded-xl border border-btc/40 bg-btc/10 p-4 text-sm leading-relaxed text-white">
+          <Camera className="mt-0.5 h-4 w-4 shrink-0 text-btc" />
+          <span>
+            {t.screenshot} <span className="text-xs text-muted">{t.emailPending}</span>
+          </span>
+        </p>
+      )}
+
+      {/* Compatto: ID, invito e riepilogo devono stare in uno screenshot del telefono. */}
+      <dl className="mt-4 space-y-1.5">
         <SummaryRow label={t.rowEmail} value={entry.email} />
         <SummaryRow label={t.rowProof} value={proofLabel} />
         {entry.txIdMasked && <SummaryRow label={t.rowTx} value={entry.txIdMasked} mono />}
@@ -649,10 +667,6 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
         <SummaryRow label={t.rowStatus} value={t.statusValue} />
       </dl>
 
-      <p className="mt-5 flex items-start gap-2.5 rounded-xl border border-btc/30 bg-btc/[0.06] p-4 text-xs leading-relaxed text-muted">
-        <Mail className="mt-0.5 h-4 w-4 shrink-0 text-btc" />
-        <span>{t.emailSent(entry.email)}</span>
-      </p>
 
       <p className="mt-3 text-xs leading-relaxed text-muted">{t.nextSteps}</p>
     </Modal>
@@ -661,7 +675,7 @@ function ConfirmationModal({ entry, t, proofLabel, locale, onClose }) {
 
 function SummaryRow({ label, value, mono }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-2.5">
+    <div className="flex items-start justify-between gap-4 rounded-lg border border-white/5 bg-white/[0.02] px-4 py-2">
       <dt className="text-xs text-muted">{label}</dt>
       <dd
         className={cn('max-w-[60%] break-all text-right text-xs font-medium text-white', mono && 'font-mono')}

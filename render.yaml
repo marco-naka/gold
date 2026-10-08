@@ -1,15 +1,15 @@
 # Blueprint Render — https://render.com/docs/blueprint-spec
 #
-# PROFILO ATTUALE: demo su piano starter, CON disco persistente
-# Le giocate dei clienti restano chiuse fino al 19 ottobre (il form mostra lo stato
-# "anteprima" e l'API risponde 503). Le rilevazioni in negozio invece sono attive: si
-# salvano su /var/data, che sopravvive a deploy e riavvii. Senza DATA_DIR le rilevazioni
-# vengono rifiutate (lib/server/persistence.js): meglio un errore che dati persi.
+# PROFILO ATTUALE: production, con apertura anticipata per i test del team (dall'8 ottobre)
+# Le giocate sono aperte e vere: il team prova con pagamenti reali nei negozi. La pagina
+# mostra il badge rosso «Finestra di prova» accanto al countdown finché vale
+# NEXT_PUBLIC_CONTEST_VALID_FROM. Le rilevazioni si salvano su /var/data come prima.
 #
-# PER APRIRE IL CONCORSO (19 ottobre):
-#   NEXT_PUBLIC_DEPLOY_PROFILE: demo -> production
-# Il disco c'è già. Con profilo production e disco non scrivibile il health check risponde
-# 503 e il deploy risulta degradato: è voluto, meglio un allarme che giocate perse.
+# PRIMA DEL 19 OTTOBRE, per l'apertura vera:
+#   1. dalla Shell di Render: npm run reset-prove (mostra cosa sposta), poi npm run reset-prove -- --yes
+#   2. togliere NEXT_PUBLIC_CONTEST_VALID_FROM: tornano le date vere di lib/constants.js
+# Con profilo production e disco non scrivibile il health check risponde 503 e il deploy
+# risulta degradato: è voluto, meglio un allarme che giocate perse.
 
 services:
   - type: web
@@ -36,7 +36,10 @@ services:
       - key: TZ
         value: Europe/Zurich
       - key: NEXT_PUBLIC_DEPLOY_PROFILE
-        value: demo # -> production il 19 ottobre, all'apertura del concorso
+        value: production
+      # Apertura anticipata per i test: da togliere prima del 19 ottobre, insieme a reset-prove.
+      - key: NEXT_PUBLIC_CONTEST_VALID_FROM
+        value: "2026-10-08T00:00:00+02:00"
       - key: DATA_DIR
         value: /var/data # deve coincidere con disk.mountPath
       - key: NEXT_PUBLIC_SITE_URL
