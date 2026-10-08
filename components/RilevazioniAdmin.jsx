@@ -26,6 +26,7 @@ import RilevazioniTable from './RilevazioniTable';
 import { AmendForm, VisitHistory } from './MyVisits';
 import { reschedules, wasAmended } from '@/lib/visit-history';
 import { cn } from './ui/cn';
+import AdminNav from './admin/AdminNav';
 
 /*
  * Pannello dell'admin delle rilevazioni.
@@ -67,7 +68,7 @@ const VIEW_KEY = 'naka-admin-vista';
 const LIVE_MS = 30_000;
 
 /** Lingua del pannello: la stessa scelta nel questionario, ricordata su questo dispositivo. */
-function useLocale() {
+export function useLocale() {
   const [locale, setLocale] = useState('it');
   useEffect(() => {
     try {
@@ -279,7 +280,9 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
   };
 
   return (
-    // In tabella servono tutte le colonne che lo schermo concede: la pagina si allarga.
+    <>
+    <AdminNav current="surveys" locale={locale} />
+    {/* In tabella servono tutte le colonne che lo schermo concede: la pagina si allarga. */}
     <div className={cn('mx-auto w-full px-5 pb-24 pt-10', view === 'table' ? 'max-w-[1800px]' : 'max-w-6xl')}>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -324,10 +327,6 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
           </Button>
           <Button as="a" href="/api/rilevazioni?export=json" variant="ghost" size="sm">
             <Download className="h-4 w-4" /> {t.backup}
-          </Button>
-          {/* «Link social» è uguale in italiano e in inglese */}
-          <Button as="a" href="/admin/social" variant="ghost" size="sm">
-            Link social
           </Button>
           <Button as="a" href="/rilevazioni" variant="ghost" size="sm">
             {t.newSurvey}
@@ -555,6 +554,7 @@ export default function RilevazioniAdmin({ visits: initialVisits, operator }) {
         }}
       />
     </div>
+    </>
   );
 }
 

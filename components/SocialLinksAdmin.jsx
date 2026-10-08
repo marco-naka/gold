@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Download, ExternalLink, RefreshCw } from 'lucide-react';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
+import AdminNav from './admin/AdminNav';
 import { LOCALE_KEY, LocaleSwitch } from './SurveyForm';
 import { TIME_ZONE } from '@/lib/time';
 
@@ -22,7 +23,6 @@ const UI = {
     customerCols: ['Data', 'Email', 'Partecipazioni', 'Piattaforma', 'Link'],
     entries: (n, match) => (n ? `${n} con questa email${match === false ? ' · ID diverso' : ''}` : 'Nessuna: non ammesso'),
     refresh: 'Aggiorna',
-    surveys: 'Rilevazioni',
     kpiLinks: 'Link',
     kpiShops: 'Negozi',
     kpiPlatforms: 'Per piattaforma',
@@ -40,7 +40,6 @@ const UI = {
     customerCols: ['Date', 'Email', 'Entries', 'Platform', 'Link'],
     entries: (n, match) => (n ? `${n} with this email${match === false ? ' · different ID' : ''}` : 'None: not eligible'),
     refresh: 'Refresh',
-    surveys: 'Surveys',
     kpiLinks: 'Links',
     kpiShops: 'Shops',
     kpiPlatforms: 'By platform',
@@ -118,6 +117,8 @@ export default function SocialLinksAdmin({ initial }) {
     });
 
   return (
+    <>
+    <AdminNav current="social" locale={locale} />
     <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
@@ -134,9 +135,6 @@ export default function SocialLinksAdmin({ initial }) {
           </Button>
           <Button as="a" href="/api/social?export=csv" variant="secondary" size="sm">
             <Download className="h-4 w-4" /> CSV
-          </Button>
-          <Button as="a" href="/rilevazioni/admin" variant="ghost" size="sm">
-            {t.surveys}
           </Button>
         </div>
       </header>
@@ -247,5 +245,6 @@ export default function SocialLinksAdmin({ initial }) {
         </table>
       </div>
     </div>
+    </>
   );
 }

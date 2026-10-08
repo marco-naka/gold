@@ -12,7 +12,7 @@ import { normalizeUrl, platformOf } from '@/lib/social-links';
 /*
  * Premio Social dei clienti: il pulsante accanto al premio apre un popup in cui il cliente
  * incolla il link del contenuto e l'email della sua partecipazione. È la segnalazione che
- * mette il contenuto davanti alla giuria; l'admin la trova in /admin/social, scheda Clienti.
+ * mette il contenuto davanti alla giuria; l’admin la trova in /rilevazioni/admin/social, scheda Clienti.
  */
 
 const input =
