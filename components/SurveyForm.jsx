@@ -35,6 +35,7 @@ import {
   deleteShopDraft,
   draftKeyOf,
   draftsSnapshot,
+  hasDraftWork,
   listShopDrafts,
   photoKeyOf,
   readShopDraft,
@@ -205,12 +206,19 @@ function SurveyApp({ locale, onLocale, operator, admin }) {
     const merchant = visit.merchantId
       ? { id: visit.merchantId, name: visit.merchantName, address: visit.address }
       : { name: visit.merchantName };
+    // Le foto della visita di prima restano con quella visita: il modulo nuovo le mostra,
+    // così nessuno pensa di averle perse né le riscatta uguali.
+    const previous = {
+      id: visit.id,
+      at: visit.createdAt,
+      photos: PHOTOS.flatMap((p) => [].concat(visit.photos?.[p.id] ?? []).filter((ph) => ph?.key).map((ph) => ({ key: ph.key, slot: p.id }))),
+    };
     // Una bozza non inviata di questo negozio vince sul precompilato: è lavoro già fatto.
     const existing = readShopDraft(draftKeyOf(merchant));
     try {
       localStorage.setItem(
         DRAFT_KEY,
-        JSON.stringify(existing ?? { surveyor: operator, merchant, answers, step: 0 }),
+        JSON.stringify(existing ? { ...existing, previous: existing.previous ?? previous } : { surveyor: operator, merchant, answers, step: 0, previous }),
       );
     } catch {
       /* senza bozza si parte da zero: il negozio si sceglie a mano */
@@ -350,6 +358,8 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
   const [merchant, setMerchant] = useState(null); // { id, name, address, ... } oppure { name }
   const [answers, setAnswers] = useState({});
   const [photos, setPhotos] = useState({});
+  // La visita da cui riparte «Vado ora», con le sue foto già inviate (solo da mostrare).
+  const [previous, setPrevious] = useState(null);
   const [errors, setErrors] = useState({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(null);
@@ -372,6 +382,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       setMerchant(draft.merchant || null);
       setAnswers(draft.answers || {});
       setStep(draft.step || 0);
+      setPrevious(draft.previous ?? null);
     }
     const saved = localStorage.getItem(SURVEYOR_KEY);
     if (saved && !draft?.surveyor) setSurveyor(saved);
@@ -398,20 +409,28 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     saveDraftPhotos(photos);
     // Anche nella bozza del negozio: iniziarne un altro non le cancella più.
     const key = draftKeyOf(merchant);
-    if (key && hasPhotos(photos)) saveDraftPhotos(photos, photoKeyOf(key));
-    if (key) setShopDraftPhotoCount(key, Object.values(photos).flat().filter(Boolean).length);
+    const count = Object.values(photos).flat().filter(Boolean).length;
+    if (key && hasPhotos(photos)) {
+      saveDraftPhotos(photos, photoKeyOf(key));
+      // La foto della vetrina arriva prima di ogni risposta: la bozza del negozio deve
+      // esistere già da lì, o la foto resta sul telefono senza che nessuno la ritrovi.
+      if (!readShopDraft(key)) saveShopDraft(key, { surveyor, merchant, answers: {}, step: 0, photoCount: count, previous });
+    }
+    if (key) setShopDraftPhotoCount(key, count);
   }, [photos, merchant, done]);
 
   useEffect(() => {
     if (!restored.current || done) return;
     try {
-      localStorage.setItem(DRAFT_KEY, JSON.stringify({ surveyor, merchant, answers, step }));
+      localStorage.setItem(DRAFT_KEY, JSON.stringify({ surveyor, merchant, answers, step, previous }));
     } catch {
       /* quota piena o navigazione privata: la bozza è un extra, non un requisito */
     }
     const key = draftKeyOf(merchant);
-    if (key && (Object.keys(answers).length || step > 0)) saveShopDraft(key, { surveyor, merchant, answers, step });
-  }, [surveyor, merchant, answers, step, done]);
+    if (key && (Object.keys(answers).length || step > 0)) {
+      saveShopDraft(key, { ...readShopDraft(key), surveyor, merchant, answers, step, previous });
+    }
+  }, [surveyor, merchant, answers, step, previous, done]);
 
   useEffect(() => {
     if (surveyor) {
@@ -462,16 +481,22 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       setPhotos({});
       setErrors({});
       setResumedAt(draft?.savedAt ?? null);
+      setPrevious(draft?.previous ?? null);
       resumedStep.current = 0;
-      if (draft) setPhotos(await loadDraftPhotos(photoKeyOf(key)));
+      setPhotos(await loadDraftPhotos(photoKeyOf(key)));
       return;
     }
+    if (draft?.previous) setPrevious(draft.previous);
     if (draft && Object.keys(draft.answers ?? {}).length) {
       setAnswers((current) => ({ ...draft.answers, ...current }));
       setResumedAt(draft.savedAt);
       resumedStep.current = 0;
-      const stored = await loadDraftPhotos(photoKeyOf(key));
+    }
+    // Le foto del negozio tornano sempre, anche da una bozza che ha solo quelle.
+    const stored = await loadDraftPhotos(photoKeyOf(key));
+    if (Object.keys(stored).length) {
       setPhotos((current) => ({ ...stored, ...current }));
+      if (draft) setResumedAt(draft.savedAt);
     }
   }, []);
 
@@ -483,6 +508,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     setStep(draft.step ?? 0);
     setErrors({});
     setPhotos({});
+    setPrevious(draft.previous ?? null);
     setResumedAt(draft.savedAt);
     window.scrollTo(0, 0);
     setPhotos(await loadDraftPhotos(photoKeyOf(draft.key)));
@@ -511,6 +537,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     setMerchant(null);
     setAnswers({});
     setPhotos({});
+    setPrevious(null);
     setErrors({});
     setStep(0);
     setDone(null);
@@ -590,7 +617,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
   const choosingShop = steps[step] === 'negozio' && !merchant;
   useEffect(() => {
     if (!choosingShop) return;
-    setDrafts(listShopDrafts().filter((d) => Object.keys(d.answers ?? {}).length || d.step > 0));
+    setDrafts(listShopDrafts().filter(hasDraftWork));
   }, [choosingShop, done]);
 
   if (done) return <Done id={done.id} photos={done.photos} closedReturn={done.closedReturn} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
@@ -624,6 +651,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
           error={errors.merchantName || errors.surveyor}
           photos={photos}
           setPhotos={setPhotos}
+          previous={previous}
           locale={locale}
         />
       )}
@@ -756,6 +784,7 @@ function DraftList({ drafts, onResume, onDiscard, locale }) {
               <span className="block truncate text-sm font-semibold text-white">{d.merchant?.name}</span>
               <span className="block text-xs text-muted">
                 {t.draftSaved(draftWhen(d.savedAt, locale))} · {t.draftAnswers(Object.keys(d.answers ?? {}).length)}
+                {d.photoCount > 0 && ` · ${t.draftPhotos(d.photoCount)}`}
               </span>
             </span>
             <span className="flex shrink-0 gap-2">
@@ -797,6 +826,7 @@ function MerchantStep({
   error,
   photos,
   setPhotos,
+  previous,
   locale,
 }) {
   const t = ui(locale);
@@ -1053,6 +1083,14 @@ function MerchantStep({
         nell'ultima schermata, così chi se ne dimentica può rimediare.
       */}
       <div className="mt-8">
+        {previous?.photos?.length > 0 && (
+          <SavedPhotos
+            items={previous.photos}
+            title={t.previousPhotos(previous.at ? new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(previous.at)).split('-').reverse().join('.') : '')}
+            locale={locale}
+            className="mb-5"
+          />
+        )}
         <PhotoSlot
           photo={PHOTOS.find((p) => p.id === 'vetrina')}
           locale={locale}
@@ -1333,7 +1371,7 @@ export function Question({ question, value, onChange, error, photos, setPhotos, 
           ))}
       </div>
 
-      {error && <p className="mt-2 text-sm text-red-400">{error === 'too_long' ? t.tooLong : t.required}</p>}
+      {error && <p className="mt-2 text-sm text-red-400">{error === 'too_long' ? t.tooLong : error === 'pick_or_describe' ? t.pickOrDescribe : t.required}</p>}
     </div>
   );
 }
@@ -1475,6 +1513,33 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
         </p>
       )}
     </section>
+  );
+}
+
+/**
+ * Foto già inviate al server, da guardare e basta: quelle della visita da cui riparte «Vado
+ * ora», o quelle già allegate a una visita che si sta integrando.
+ */
+export function SavedPhotos({ items, title, locale, className }) {
+  return (
+    <div className={cn('rounded-xl border border-white/10 bg-white/[0.03] p-3', className)}>
+      <p className="text-xs text-muted">{title}</p>
+      <ul className="mt-2 grid grid-cols-4 gap-2">
+        {items.map((ph) => {
+          const src = `/api/rilevazioni/foto?key=${encodeURIComponent(ph.key)}`;
+          const label = photoIn(PHOTOS.find((p) => p.id === ph.slot) ?? { label: ph.slot }, locale).label;
+          return (
+            <li key={ph.key}>
+              <a href={src} target="_blank" rel="noopener noreferrer" className="block">
+                {/* eslint-disable-next-line @next/next/no-img-element -- foto private, servite dall'API protetta */}
+                <img src={src} alt={label} loading="lazy" className="aspect-square w-full rounded-lg border border-white/10 object-cover" />
+                <span className="mt-0.5 block truncate text-[10px] text-muted">{label}</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
   );
 }
 

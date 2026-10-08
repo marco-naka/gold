@@ -315,9 +315,9 @@ test('le fasce di tempo sono tre, non due', () => {
   // Con un solo taglio ogni pagamento su Ethereum finirebbe fra i lenti: lì un blocco
   // esce ogni dodici secondi, e la lentezza sarebbe della rete, non del terminale.
   assert.equal(TEMPI.length, 3);
-  for (const id of ['tempo_qr', 'tempo_conferma']) {
-    assert.deepEqual(ALL_QUESTIONS.find((q) => q.id === id).options, TEMPI);
-  }
+  assert.deepEqual(ALL_QUESTIONS.find((q) => q.id === 'tempo_conferma').options, TEMPI);
+  // Per il QR c'è in più l'esito senza tempo: il QR non compare proprio.
+  assert.deepEqual(ALL_QUESTIONS.find((q) => q.id === 'tempo_qr').options, [...TEMPI, 'Non si genera']);
 });
 
 test('si può fissare un ritorno anche quando tutto è andato bene', () => {
@@ -363,9 +363,12 @@ test('la segnalazione di un problema si apre in due modi', () => {
   // Senza POS in negozio non c'è terminale da segnalare.
   assert.equal(isVisible(flag, { ...base, pos_presenza: 'Non presente' }), false);
 
-  // Dire «c'è un problema» senza dire quale non serve all'assistenza.
+  // Dire «c'è un problema» senza dire quale non serve all'assistenza: una voce o la
+  // descrizione a parole, almeno una delle due.
   const conProblema = { ...answers, problema_flag: true };
-  assert.equal(validateVisit({ ...valid, answers: conProblema }).problema_tipo, 'required');
+  assert.equal(validateVisit({ ...valid, answers: conProblema }).problema_tipo, 'pick_or_describe');
+  assert.equal(validateVisit({ ...valid, answers: { ...conProblema, problema_note: 'Schermo rotto' } }).problema_tipo, undefined);
+  assert.equal(validateVisit({ ...valid, answers: { ...conProblema, problema_tipo: ['Non si accende'] } }).problema_tipo, undefined);
 });
 
 test('la casella singola vale solo se spuntata', () => {

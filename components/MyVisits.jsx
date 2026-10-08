@@ -20,7 +20,7 @@ import { answerIn, askedIn, outcomeIn, photoIn, sectionIn, ui } from '@/lib/surv
 import { FREE_FIELDS } from '@/lib/visit-history';
 import { TIME_ZONE } from '@/lib/time';
 import { mapsUrl } from '@/lib/merchants';
-import { PhotoSlot, Question } from './SurveyForm';
+import { PhotoSlot, Question, SavedPhotos } from './SurveyForm';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 
@@ -413,6 +413,15 @@ export function AmendForm({ visit, locale, onCancel, onSaved }) {
       <p className="mt-1 text-xs text-muted">{t.amendIntro}</p>
 
       <p className="mt-5 text-xs font-semibold uppercase tracking-[0.12em] text-btc">{t.amendPhotos}</p>
+      {/* Quelle già inviate restano: le nuove si aggiungono, non le sostituiscono. */}
+      {photosOf(visit).length > 0 && (
+        <SavedPhotos
+          items={photosOf(visit).map((ph) => ({ key: ph.key, slot: ph.slot.id }))}
+          title={t.amendExisting}
+          locale={locale}
+          className="mt-2"
+        />
+      )}
       <div className="mt-2 space-y-3">
         {slots.map((photo) => (
           <PhotoSlot
