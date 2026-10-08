@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { mkdir, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { submissionWindow } from '@/lib/contest';
+import { CONTEST } from '@/lib/constants';
 import { DEPLOY_PROFILE, IS_DEMO } from '@/lib/deploy';
 import { hasCommitment, hasResult } from '@/lib/server/draw';
 import { drawAutomationEnabled } from '@/lib/server/draw-scheduler';
@@ -39,7 +40,7 @@ export async function GET() {
       profile: DEPLOY_PROFILE,
       storage,
       dataDir: DATA_DIR,
-      submissions: IS_DEMO ? 'disattivate (anteprima)' : window.open ? 'aperte' : window.reason,
+      submissions: IS_DEMO ? 'disattivate (anteprima)' : window.test ? `prove del team, fino al ${CONTEST.testEntriesUntil}` : window.open ? 'aperte' : window.reason,
       // Le rilevazioni non dipendono dal profilo: si salvano solo su un disco che resta.
       rilevazioni: persistentStorage() ? `attive, su ${DATA_DIR}` : 'bloccate: manca il disco (DATA_DIR)',
       mailer: process.env.MAIL_PROVIDER_API_KEY ? 'provider configurato' : 'outbox locale',

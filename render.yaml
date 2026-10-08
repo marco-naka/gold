@@ -1,13 +1,13 @@
 # Blueprint Render — https://render.com/docs/blueprint-spec
 #
-# PROFILO ATTUALE: production, con apertura anticipata per i test del team (dall'8 ottobre)
-# Le giocate sono aperte e vere: il team prova con pagamenti reali nei negozi. La pagina
-# mostra il badge rosso «Finestra di prova» accanto al countdown finché vale
-# NEXT_PUBLIC_CONTEST_VALID_FROM. Le rilevazioni si salvano su /var/data come prima.
+# PROFILO ATTUALE: production, con le prove del team aperte dall'8 ottobre
+# Con NEXT_PUBLIC_TEST_ENTRIES_FROM il sito accetta giocate vere segnate come prova: il modulo
+# lo dice, il countdown mostra il badge «Prove del team» e le date del concorso restano quelle
+# vere. Le prove non entrano mai nell'estrazione.
 #
-# PRIMA DEL 19 OTTOBRE, per l'apertura vera:
-#   1. dalla Shell di Render: npm run reset-prove (mostra cosa sposta), poi npm run reset-prove -- --yes
-#   2. togliere NEXT_PUBLIC_CONTEST_VALID_FROM: tornano le date vere di lib/constants.js
+# Il 18 ottobre alle 20:00 (ora di Zurigo) le prove si chiudono e il server le sposta da solo in
+# /var/data/archivio-prove (lib/server/test-reset.js); il 19 alle 8:00 apre il concorso vero.
+# Non serve toccare niente. Per controllare o anticipare: npm run reset-prove dalla Shell.
 # Con profilo production e disco non scrivibile il health check risponde 503 e il deploy
 # risulta degradato: è voluto, meglio un allarme che giocate perse.
 
@@ -37,8 +37,8 @@ services:
         value: Europe/Zurich
       - key: NEXT_PUBLIC_DEPLOY_PROFILE
         value: production
-      # Apertura anticipata per i test: da togliere prima del 19 ottobre, insieme a reset-prove.
-      - key: NEXT_PUBLIC_CONTEST_VALID_FROM
+      # Prove del team con giocate vere: si chiudono e si azzerano da sole il 18.10 alle 20:00.
+      - key: NEXT_PUBLIC_TEST_ENTRIES_FROM
         value: "2026-10-08T00:00:00+02:00"
       - key: DATA_DIR
         value: /var/data # deve coincidere con disk.mountPath

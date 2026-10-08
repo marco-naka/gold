@@ -173,6 +173,8 @@ export async function POST(request) {
       txKind: txKind(data.txId),
       receipt: stored,
       status: 'pending_verification',
+      // Giocata di prova del team: non entra mai nell'estrazione e sparisce con il reset.
+      ...(window.test ? { test: true } : {}),
       createdAt: createdAt.toISOString(),
       createdAtLabel: formatDateTime(createdAt, data.locale, { dateStyle: 'medium', timeStyle: 'short' }),
     });

@@ -25,8 +25,9 @@ import { compressImage } from '@/lib/compress-image';
 import { cn } from './ui/cn';
 import { MAX_RECEIPT_BYTES, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
-import { formatDate, getDictionary } from '@/lib/i18n';
+import { formatDate, formatTime, getDictionary } from '@/lib/i18n';
 import { IS_DEMO } from '@/lib/deploy';
+import { CONTEST } from '@/lib/constants';
 
 const EMPTY = {
   email: '',
@@ -47,6 +48,7 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
   const [serverError, setServerError] = useState('');
   const [result, setResult] = useState(null);
   const [closed, setClosed] = useState(IS_DEMO ? { reason: 'demo' } : null);
+  const [testMode, setTestMode] = useState(false);
   const fileInput = useRef(null);
   // Marca temporale di apertura del form: serve al controllo anti-bot lato server.
   const startedAt = useRef(0);
@@ -62,6 +64,7 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
     if (IS_DEMO) return;
     const win = submissionWindow();
     if (!win.open) setClosed(win);
+    setTestMode(Boolean(win.test));
   }, []);
 
   // I suggerimenti del negozio arrivano da /api/merchants mentre si scrive: così la pagina
@@ -214,6 +217,17 @@ export default function EntryForm({ t, locale, onOpenRules, compact = false }) {
       ) : (
         <GlassCard hover={false} className={`mx-auto max-w-2xl p-6 sm:p-10 ${compact ? 'mt-6' : 'mt-12'}`}>
           <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            {testMode && (
+              <p className="flex items-start gap-2.5 rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-xs leading-relaxed text-red-200">
+                <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-red-300" />
+                <span>
+                  {t.testNotice(
+                    `${formatDate(CONTEST.testEntriesUntil, locale, { day: 'numeric', month: 'long' })}, ${formatTime(CONTEST.testEntriesUntil, locale)}`,
+                    `${formatDate(CONTEST.validFrom, locale, { day: 'numeric', month: 'long' })}, ${formatTime(CONTEST.validFrom, locale)}`,
+                  )}
+                </span>
+              </p>
+            )}
             {/* 1. Email */}
             <Field label={t.email} hint={t.emailHint} icon={Mail} error={showError('email')} htmlFor="email">
               <input

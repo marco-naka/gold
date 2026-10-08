@@ -92,6 +92,10 @@ export default function Hero({ t, locale }) {
                 endsAt={CONTEST.validTo}
                 t={t.countdown}
                 demo={CONTEST.isDemoWindow}
+                testUntil={CONTEST.testEntriesFrom ? CONTEST.testEntriesUntil : null}
+                testLabel={t.countdown.test(
+                  `${formatDate(CONTEST.testEntriesUntil, locale, { day: 'numeric', month: 'long' })}, ${formatTime(CONTEST.testEntriesUntil, locale)}`,
+                )}
               />
             </div>
 

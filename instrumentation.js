@@ -8,5 +8,8 @@ export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     const { startDrawScheduler } = await import('./lib/server/draw-scheduler.js');
     startDrawScheduler();
+    // Le prove del team si azzerano da sole la sera prima dell'apertura.
+    const { startTestResetScheduler } = await import('./lib/server/test-reset.js');
+    startTestResetScheduler();
   }
 }

@@ -17,19 +17,20 @@ function diff(target) {
  * Countdown live verso l'inizio dell'iniziativa; una volta partita passa al conto alla rovescia
  * sulla chiusura delle giocate. Il primo render è statico per evitare mismatch di idratazione.
  */
-export default function Countdown({ startsAt, endsAt, t, demo = false }) {
+export default function Countdown({ startsAt, endsAt, t, demo = false, testUntil = null, testLabel = '' }) {
   const [state, setState] = useState(null);
 
   useEffect(() => {
     const tick = () => {
       const toStart = diff(startsAt);
       const live = toStart.total === 0;
-      setState({ live, ...(live ? diff(endsAt) : toStart) });
+      // Il badge delle prove si spegne da solo all'ora giusta, anche su una pagina statica.
+      setState({ live, test: Boolean(testUntil) && Date.now() < Date.parse(testUntil), ...(live ? diff(endsAt) : toStart) });
     };
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [startsAt, endsAt]);
+  }, [startsAt, endsAt, testUntil]);
 
   const ended = state && state.live && state.total === 0;
   const units = [
@@ -48,6 +49,11 @@ export default function Countdown({ startsAt, endsAt, t, demo = false }) {
           {state && state.live && !ended && t.running}
           {ended && t.ended}
         </span>
+        {state?.test && !demo && (
+          <span className="rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-[10px] tracking-normal text-red-300">
+            {testLabel}
+          </span>
+        )}
         {demo && (
           <span className="rounded-full border border-red-500/40 bg-red-500/10 px-2 py-0.5 text-[10px] tracking-normal text-red-300">
             {t.demo}
