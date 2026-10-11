@@ -8,6 +8,7 @@ import {
   RAILS,
   SECTIONS,
   TEMPI,
+  isPending,
   isVisible,
   optionsFor,
   outcomeOf,
@@ -53,10 +54,11 @@ test('l’esito si deduce dalle risposte, non si chiede', () => {
   assert.equal(outcomeOf({}), 'da_ricontattare');
 });
 
-test('escono dall’elenco solo rifiuto e chiusura', () => {
+test('escono dall’elenco solo rifiuto e fuori circuito, non chi era chiuso', () => {
   const esclude = (id) => Boolean(OUTCOMES.find((o) => o.id === id)?.excludes);
   assert.equal(esclude(outcomeOf({ ...answers, adesione: 'Non aderisce' })), true);
-  assert.equal(esclude(outcomeOf({ con_chi: 'Era chiuso' })), true);
+  assert.equal(esclude(outcomeOf({ con_chi: 'Non fa più parte del circuito' })), true);
+  assert.equal(esclude(outcomeOf({ con_chi: 'Era chiuso' })), false);
   assert.equal(esclude(outcomeOf({ ...answers, adesione: 'Non è stato possibile ottenere una risposta' })), false);
   assert.equal(esclude(outcomeOf({ ...answers, adesione: 'Aderisce' })), false);
 });
@@ -67,16 +69,28 @@ test('a serranda abbassata la visita si chiude in due tocchi', () => {
   const chiuso = { con_chi: 'Era chiuso' };
   assert.equal(outcomeOf(chiuso), 'chiuso');
 
-  // A serranda abbassata si torna per forza: il ritorno si apre da sé e vuole data e motivo.
-  const errori = validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: chiuso });
-  assert.deepEqual(Object.keys(errori).sort(), ['ritorno_motivo', 'ritorno_quando']);
-
-  const completo = { ...chiuso, ritorno_motivo: ['Titolare assente'], ritorno_quando: '2026-10-09' };
+  // A serranda abbassata al massimo si riprogramma: niente motivo, e la data è facoltativa.
+  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: chiuso }), {});
+  const completo = { ...chiuso, ritorno_quando: '2026-10-09' };
   assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: completo }), {});
 
   // Della vetrina parla la foto, scattata nella prima schermata.
   const visibili = ALL_QUESTIONS.filter((q) => isVisible(q, completo)).map((q) => q.id);
-  assert.deepEqual(visibili, ['con_chi', 'ritorno_motivo', 'ritorno_quando', 'ritorno_ora', 'note']);
+  assert.deepEqual(visibili, ['con_chi', 'ritorno_quando', 'ritorno_ora', 'note']);
+  // E resta da completare anche senza data: non sparisce dal giro.
+  assert.equal(isPending(outcomeOf(chiuso), null), true);
+});
+
+test('fuori dal circuito la rilevazione finisce col motivo', () => {
+  const fuori = { con_chi: 'Non fa più parte del circuito' };
+  assert.equal(outcomeOf(fuori), 'fuori_circuito');
+  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: fuori }), { circuito_motivo: 'required' });
+  const con = { ...fuori, circuito_motivo: 'Ha tolto il POS' };
+  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: con }), {});
+  assert.deepEqual(ALL_QUESTIONS.filter((q) => isVisible(q, con)).map((q) => q.id), ['con_chi', 'circuito_motivo']);
+  assert.equal(isPending('fuori_circuito', null), false);
+  // Le risposte di prima a negozio aperto, se cambia idea, non bloccano l'invio.
+  assert.deepEqual(validateVisit({ merchantName: 'Bar X', surveyor: 'Anna', answers: { ...answers, ...con } }), {});
 });
 
 test('l’adesione non si chiede a un negozio chiuso', () => {
@@ -405,7 +419,9 @@ test('lo schema è coerente: id unici, opzioni dove servono, condizioni risolvib
         `${q.id} è a scelta ma non ha né opzioni né un optionsFrom valido`
       );
     }
-    const conditions = q.showIf ? (q.showIf.anyOf ?? q.showIf.allOf ?? [q.showIf]) : [];
+    // Le condizioni si annidano (un «aperto» dentro un allOf): si scende fino alle foglie.
+    const leaves = (c) => (c.anyOf ?? c.allOf ? (c.anyOf ?? c.allOf).flatMap(leaves) : [c]);
+    const conditions = [q.showIf, q.optionalIf].filter(Boolean).flatMap(leaves);
     for (const c of conditions) {
       assert.ok(ids.includes(c.id), `${q.id} dipende da ${c.id}, che non esiste`);
     }

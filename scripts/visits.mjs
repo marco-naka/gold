@@ -13,7 +13,7 @@
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { ALL_QUESTIONS, OUTCOMES } from '../lib/survey.js';
+import { ALL_QUESTIONS, OUTCOMES, outcomeExcludes } from '../lib/survey.js';
 import { TIME_ZONE } from '../lib/time.js';
 import { answerText, visitsCsv } from '../lib/survey-export.js';
 import { signedPhotoUrl } from '../lib/server/photo-links.js';
@@ -192,7 +192,8 @@ if (command === 'stats') {
 
   const excluded = {};
   for (const [id, v] of latest) {
-    if (!v.excludes) continue;
+    // Dall'esito di adesso: «chiuso al passaggio» non esclude più, anche nelle visite salvate prima.
+    if (!outcomeExcludes(v.outcome)) continue;
     excluded[id] = { name: v.merchantName, reason: v.outcome, visit: v.id, at: v.createdAt };
   }
 

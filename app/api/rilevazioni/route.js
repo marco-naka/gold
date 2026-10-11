@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ALL_MERCHANTS } from '@/lib/merchants';
-import { OUTCOMES, PHOTOS, outcomeOf } from '@/lib/survey';
+import { OUTCOMES, PHOTOS, isPending, outcomeOf } from '@/lib/survey';
 import { MAX_PHOTO_BYTES, pickAnswers, validateVisit } from '@/lib/survey-validation';
 import { sniffImage } from '@/lib/server/image-sniff';
 import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
@@ -17,6 +17,7 @@ import {
 } from '@/lib/server/visits';
 import { applyAmend, applyReschedule, canEdit, reschedules } from '@/lib/visit-history';
 import { visitIcs } from '@/lib/server/visit-ics';
+import { excludeMerchant } from '@/lib/server/merchant-exclusions';
 import { persistentStorage } from '@/lib/server/persistence';
 import { signedPhotoUrl } from '@/lib/server/photo-links';
 import { visitsCsv } from '@/lib/survey-export';
@@ -122,7 +123,7 @@ export async function GET(request) {
       }
     }
     for (const v of Object.values(visited)) {
-      v.status = v.ripasso || v.outcome === 'da_ricontattare' ? 'da_completare' : 'completo';
+      v.status = isPending(v.outcome, v.ripasso) ? 'da_completare' : 'completo';
     }
     return NextResponse.json({ visited });
   }
@@ -303,9 +304,24 @@ export async function POST(request) {
     photos,
   });
 
+  // Fuori dal circuito: il negozio esce subito dall'elenco pubblico, con il motivo scritto
+  // nel questionario, e l'admin lo trova in «Fuori circuito» collegato a questa visita.
+  // Se l'esclusione non riesce la visita resta salvata: il rilevatore non deve rifarla.
+  let excluded = null;
+  if (outcome.id === 'fuori_circuito' && known) {
+    try {
+      const result = await excludeMerchant({ id: known.id, name: known.name, reason: answers.circuito_motivo, by: data.surveyor, visit: id });
+      excluded = result.ok || result.code === 'already_excluded' ? 'ok' : 'failed';
+      if (result.ok) console.info(`[circuito] ${known.name} tolto dall'elenco da ${data.surveyor} (visita ${id})`);
+    } catch (err) {
+      excluded = 'failed';
+      console.error('[circuito] esclusione non salvata', id, err);
+    }
+  }
+
   // Quante foto sono finite sul disco: il rilevatore lo vede subito, invece di scoprirlo dopo.
   const saved = Object.values(photos).flat().length;
-  return NextResponse.json({ ok: true, id, photos: saved, closedReturn });
+  return NextResponse.json({ ok: true, id, photos: saved, closedReturn, excluded });
 }
 
 /** Le foto di una visita in fila, con lo slot: `[{ key, slot }]`. */
@@ -433,6 +449,13 @@ async function changeVisit(request, form, intent) {
     allowed(v) ? applyAmend(v, { changes, note, reason, photosAdded, by, at }) : { errors: { _: 'forbidden' } }
   );
   if (result.errors) return fail('invalid_fields', 422, result.errors);
+  // Integrata in «fuori dal circuito»: stessa regola dell'invio, il negozio esce dall'elenco.
+  const after = result.visit;
+  if (after.outcome === 'fuori_circuito' && after.merchantId) {
+    await excludeMerchant({ id: after.merchantId, name: after.merchantName, reason: after.answers?.circuito_motivo, by, visit: after.id }).catch((err) =>
+      console.error('[circuito] esclusione non salvata', after.id, err)
+    );
+  }
   return NextResponse.json({
     ok: true,
     photos: photosAdded.length,

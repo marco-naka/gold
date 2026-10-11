@@ -15,7 +15,7 @@ import {
   Search,
   Store,
 } from 'lucide-react';
-import { ALL_QUESTIONS, OUTCOMES, PHOTOS, SECTIONS } from '@/lib/survey';
+import { ALL_QUESTIONS, OUTCOMES, PHOTOS, SECTIONS, outcomeExcludes } from '@/lib/survey';
 import { SURVEY_LOCALES, answerIn, askedIn, outcomeIn, photoIn, sectionIn } from '@/lib/survey-i18n';
 import { adminUi } from '@/lib/admin-i18n';
 import { TIME_ZONE } from '@/lib/time';
@@ -710,7 +710,7 @@ function VisitModal({ visit, onClose, locale, onSaved }) {
         <span className={cn('rounded-full border px-2.5 py-1 text-xs font-semibold', TONE[o.tone])}>
           {outcomeIn(o.id, o.label, locale)}
         </span>
-        {visit.excludes && <span className="chip">{t.excluded}</span>}
+        {outcomeExcludes(visit.outcome) && <span className="chip">{t.excluded}</span>}
         {!visit.merchantKnown && <span className="chip">{t.notListed}</span>}
         {visit.mapSnapshot?.address && <span className="chip">{visit.mapSnapshot.address}</span>}
         {visit.mapSnapshot?.category && <span className="chip">{visit.mapSnapshot.category}</span>}

@@ -100,3 +100,13 @@ test('le risposte salvate in italiano si leggono in inglese nel pannello', async
   assert.equal(answerIn(q('ritorno_quando'), '2026-10-09', 'en'), '09.10.2026');
   assert.equal(answerIn(q('note'), 'scritto a mano', 'en'), 'scritto a mano');
 });
+
+test('a negozio chiuso la schermata del ritorno si chiama così, in tutte e due le lingue', async () => {
+  const { sectionIn } = await import('../lib/survey-i18n.js');
+  const { SECTIONS } = await import('../lib/survey.js');
+  const naka = SECTIONS.find((s) => s.id === 'naka');
+  assert.equal(sectionIn(naka, 'it', { con_chi: 'Titolare' }).title, naka.title);
+  assert.equal(sectionIn(naka, 'it', { con_chi: 'Era chiuso' }).title, 'Il ritorno');
+  assert.equal(sectionIn(naka, 'en', { con_chi: 'Era chiuso' }).title, 'Coming back');
+  assert.equal(sectionIn(naka, 'it').title, naka.title);
+});

@@ -16,7 +16,7 @@ const UI = {
   it: {
     kicker: 'Elenco pubblico',
     title: 'Negozi fuori circuito',
-    note: 'Si tolgono dall’area rilevazioni, scegliendo il negozio: «Non fa più parte del circuito», con il motivo. Spariscono subito da elenco, mappa e moduli del sito; qui si rimettono.',
+    note: 'Chi rileva li toglie dal questionario: «Chi hai trovato in negozio?» → «Non fa più parte del circuito», con il motivo. L’admin anche dalla scheda del negozio. Spariscono subito da elenco, mappa e moduli del sito; qui si rimettono.',
     live: 'Tolti dall’area rilevazioni',
     fixed: 'Tolti con un aggiornamento del sito',
     fixedNote: 'Per rimetterli serve una modifica al codice e un push.',
@@ -24,6 +24,7 @@ const UI = {
     none: 'Nessun negozio tolto.',
     by: (by, when) => `${by} · ${when}`,
     restore: 'Rimetti nel circuito',
+    fromVisit: 'dalla rilevazione',
     refresh: 'Aggiorna',
     error: 'Non riesco a caricare l’elenco. Riprova.',
     failed: 'Non sono riuscito a rimetterlo. Riprova.',
@@ -32,7 +33,7 @@ const UI = {
   en: {
     kicker: 'Public list',
     title: 'Shops out of the network',
-    note: 'They are removed from the surveys area, by picking the shop: “No longer part of the network”, with a reason. They disappear at once from the site list, map and forms; here you can put them back.',
+    note: 'Surveyors remove them from the questionnaire: “Who did you find in the shop?” → “No longer part of the network”, with a reason. The admin can also do it from the shop card. They disappear at once from the site list, map and forms; here you can put them back.',
     live: 'Removed from the surveys area',
     fixed: 'Removed with a site update',
     fixedNote: 'Putting these back needs a code change and a push.',
@@ -40,6 +41,7 @@ const UI = {
     none: 'No shop removed.',
     by: (by, when) => `${by} · ${when}`,
     restore: 'Put back in the network',
+    fromVisit: 'from survey',
     refresh: 'Refresh',
     error: 'Could not load the list. Try again.',
     failed: 'Could not put it back. Try again.',
@@ -152,7 +154,15 @@ export default function CircuitAdmin() {
                     <Ban className="h-4 w-4 shrink-0 text-red-300" /> {e.name}
                   </p>
                   <p className="mt-1 text-sm text-white/85">{e.reason}</p>
-                  <p className="mt-1 text-xs text-muted">{t.by(e.by || '—', when(e.at))}</p>
+                  <p className="mt-1 text-xs text-muted">
+                    {t.by(e.by || '—', when(e.at))}
+                    {e.visit && (
+                      <>
+                        {' · '}
+                        {t.fromVisit} <span className="font-mono text-btc">{e.visit}</span>
+                      </>
+                    )}
+                  </p>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => restore(id)} disabled={busy === id}>
                   <RotateCcw className="h-4 w-4" /> {t.restore}

@@ -18,7 +18,7 @@ import {
   Trash2,
   X,
 } from 'lucide-react';
-import { OUTCOMES, PHOTOS, SECTIONS, SCALE_MAX, isVisible } from '@/lib/survey';
+import { OUTCOMES, PHOTOS, SECTIONS, SCALE_MAX, isPending, isVisible } from '@/lib/survey';
 import {
   SURVEY_LOCALES,
   askedIn,
@@ -595,7 +595,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       // Invio confermato dal server: solo ora la bozza del negozio può sparire.
       deleteShopDraft(draftKeyOf(merchant));
       clearDraftPhotos(photoKeyOf(draftKeyOf(merchant)));
-      setDone({ id: json.id, photos: json.photos ?? 0, closedReturn: json.closedReturn ?? null });
+      setDone({ id: json.id, photos: json.photos ?? 0, closedReturn: json.closedReturn ?? null, excluded: json.excluded ?? null });
       // I contatori di «Le mie» e «Agenda» si aggiornano subito, non al prossimo cambio di scheda.
       onSent?.();
     } catch {
@@ -626,7 +626,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     setDrafts(listShopDrafts().filter(hasDraftWork));
   }, [choosingShop, done]);
 
-  if (done) return <Done id={done.id} photos={done.photos} closedReturn={done.closedReturn} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
+  if (done) return <Done id={done.id} photos={done.photos} closedReturn={done.closedReturn} excluded={done.excluded} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
@@ -665,9 +665,9 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
 
       {section && (
         <section>
-          <h2 className="text-xl font-bold">{sectionIn(section, locale).title}</h2>
-          {sectionIn(section, locale).intro && (
-            <p className="mt-1.5 text-sm text-muted">{sectionIn(section, locale).intro}</p>
+          <h2 className="text-xl font-bold">{sectionIn(section, locale, answers).title}</h2>
+          {sectionIn(section, locale, answers).intro && (
+            <p className="mt-1.5 text-sm text-muted">{sectionIn(section, locale, answers).intro}</p>
           )}
           <div className="mt-7 space-y-7">
             {section.questions
@@ -882,10 +882,9 @@ function MerchantStep({
             ...history[history.length - 1],
             // Stessa regola del server: un ritorno fissato o un «da ricontattare» lasciano il
             // negozio da completare.
-            status:
-              history[history.length - 1].ripasso || history[history.length - 1].outcome === 'da_ricontattare'
-                ? 'da_completare'
-                : 'completo',
+            status: isPending(history[history.length - 1].outcome, history[history.length - 1].ripasso)
+              ? 'da_completare'
+              : 'completo',
           }
         : null)
     : null;
@@ -996,7 +995,7 @@ function MerchantStep({
 
           {seenNow && <AlreadyBanner seen={seenNow} locale={locale} />}
 
-          {merchant.id && (
+          {merchant.id && (admin || circuit.excluded[merchant.id] || circuit.fixed[merchant.id]) && (
             <CircuitBox merchant={merchant} circuit={circuit} admin={admin} onChanged={loadCircuit} locale={locale} />
           )}
 
@@ -1134,9 +1133,10 @@ function MerchantStep({
 }
 
 /**
- * «Non fa più parte del circuito»: con il motivo, il negozio esce subito dall'elenco pubblico
- * (sito, mappa, moduli) e resta qui nelle rilevazioni. Lo può fare chi rileva, sul posto;
- * rimetterlo è dell'admin. Quelli tolti con un aggiornamento del sito si vedono e basta.
+ * Stato del negozio rispetto al circuito. Chi rileva lo toglie dal questionario («Chi hai
+ * trovato in negozio?» → «Non fa più parte del circuito»), con una visita; qui il tasto diretto
+ * è solo dell'admin, che lo toglie da scrivania o lo rimette. Fuori circuito, lo vedono tutti.
+ * Quelli tolti con un aggiornamento del sito si vedono e basta.
  */
 function CircuitBox({ merchant, circuit, admin, onChanged, locale }) {
   const t = ui(locale);
@@ -1390,7 +1390,9 @@ export function Question({ question, value, onChange, error, photos, setPhotos, 
     <div>
       <p className="text-sm font-semibold text-white">
         {label}
-        {question.required && <span className="text-btc"> *</span>}
+        {question.required && !(question.optionalIf && isVisible({ showIf: question.optionalIf }, answers ?? {})) && (
+          <span className="text-btc"> *</span>
+        )}
       </p>
       {help && <p className="mt-1 text-xs leading-relaxed text-muted">{help}</p>}
 
@@ -1844,7 +1846,7 @@ export function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
   );
 }
 
-function Done({ id, photos, closedReturn, surveyor, merchant, onNext, locale }) {
+function Done({ id, photos, closedReturn, excluded, surveyor, merchant, onNext, locale }) {
   const t = ui(locale);
   return (
     <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
@@ -1865,6 +1867,16 @@ function Done({ id, photos, closedReturn, surveyor, merchant, onNext, locale }) 
           {closedReturn.surveyor && closedReturn.surveyor !== surveyor
             ? t.savedClosedReturnOf(closedReturn.ripasso.split('-').reverse().join('.'), closedReturn.surveyor)
             : t.savedClosedReturn(closedReturn.ripasso.split('-').reverse().join('.'))}
+        </p>
+      )}
+      {excluded && (
+        <p
+          className={cn(
+            'mt-3 rounded-xl border px-3 py-2 text-sm',
+            excluded === 'ok' ? 'border-red-400/30 bg-red-400/10 text-red-200' : 'border-btc/40 bg-btc/10 text-btc',
+          )}
+        >
+          {excluded === 'ok' ? t.savedExcluded : t.savedExcludeFailed}
         </p>
       )}
       <Button onClick={onNext} size="lg" className="mt-8 w-full">
