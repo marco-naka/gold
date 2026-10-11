@@ -5,7 +5,9 @@ import { MAX_PHOTO_BYTES, pickAnswers, validateVisit } from '@/lib/survey-valida
 import { sniffImage } from '@/lib/server/image-sniff';
 import { currentOperator, isAdmin, isAuthorized, identify, sessionCookie } from '@/lib/server/rilevazioni-auth';
 import {
+  copyVisitPhoto,
   findVisit,
+  photosToCarry,
   listVisits,
   newVisitId,
   saveVisit,
@@ -19,7 +21,7 @@ import { persistentStorage } from '@/lib/server/persistence';
 import { signedPhotoUrl } from '@/lib/server/photo-links';
 import { visitsCsv } from '@/lib/survey-export';
 import { todayInZurich } from '@/lib/time';
-import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
+import { HOUR, MINUTE, globalLimit, hit, recent } from '@/lib/server/rate-limit';
 import { clientIp } from '@/lib/server/client-ip';
 
 export const runtime = 'nodejs';
@@ -142,7 +144,18 @@ export async function GET(request) {
     // Le risposte dell'ultima visita, per chi torna sul posto: ripartire da quello che
     // il collega ha già rilevato evita di ridigitare dieci risposte identiche, e fa
     // risaltare quello che nel frattempo è cambiato.
-    last: latest ? { id: latest.id, at: latest.createdAt, surveyor: latest.surveyor, answers: latest.answers } : null,
+    // Anche le foto, se la visita è di chi chiede (o per l'admin): riprendendola passano nella
+    // nuova. Quelle di un collega restano sue, come nel resto dell'area rilevazioni.
+    last: latest
+      ? {
+          id: latest.id,
+          at: latest.createdAt,
+          surveyor: latest.surveyor,
+          answers: latest.answers,
+          photos: isAdmin(request) || (currentOperator(request) && latest.surveyor === currentOperator(request)) ? photoList(latest) : [],
+          photoCount: photoList(latest).length,
+        }
+      : null,
   });
 }
 
@@ -152,6 +165,13 @@ const MAX_BODY_BYTES = 24 * 1024 * 1024;
 const PER_IP = { max: 60, windowMs: HOUR };
 // Il codice d'accesso è corto e condiviso: senza un freno si prova a indovinarlo.
 const UNLOCK_TRIES = { max: 10, windowMs: HOUR };
+/**
+ * PIN sbagliati in tutto, da qualunque indirizzo. Il limite per IP non ferma chi prova da
+ * cento indirizzi diversi: con PIN di quattro cifre, diecimila combinazioni, prima o poi ne
+ * indovinerebbe uno. Oltre questa soglia il codice non si accetta da nessuno per un po': i
+ * rilevatori entrano di rado, e un quarto d'ora di attesa costa meno di un PIN indovinato.
+ */
+const UNLOCK_FAILS = { key: 'unlock-fail:global', max: 30, windowMs: 15 * MINUTE };
 
 export async function POST(request) {
   const ip = clientIp(request);
@@ -167,11 +187,15 @@ export async function POST(request) {
 
   // Primo passo: lo scambio del codice per il cookie di sessione.
   if (form.get('intent') === 'unlock') {
-    if (hit(`unlock:${ip}`, UNLOCK_TRIES)) {
+    if (hit(`unlock:${ip}`, UNLOCK_TRIES) || recent(UNLOCK_FAILS.key, UNLOCK_FAILS.windowMs) >= UNLOCK_FAILS.max) {
       return NextResponse.json({ code: 'rate_limited' }, { status: 429 });
     }
     const operator = identify(form.get('code'));
     if (operator === null) {
+      hit(UNLOCK_FAILS.key, UNLOCK_FAILS);
+      if (recent(UNLOCK_FAILS.key, UNLOCK_FAILS.windowMs) === UNLOCK_FAILS.max) {
+        console.warn(`[rilevazioni] ${UNLOCK_FAILS.max} PIN sbagliati in 15 minuti: accesso sospeso per tutti`);
+      }
       return NextResponse.json({ code: 'wrong_code' }, { status: 401 });
     }
     const res = NextResponse.json({ ok: true, operator });
@@ -220,15 +244,35 @@ export async function POST(request) {
   const id = newVisitId();
   const photos = {};
   const counters = {};
-  for (const [slot, image] of files) {
-    const index = (counters[slot] = (counters[slot] ?? 0) + 1);
-    const multiple = PHOTOS.find((p) => p.id === slot)?.multiple;
-    const stored = await storeVisitPhoto(image, id, multiple ? `${slot}-${index}` : slot);
-    if (!stored) continue;
+  const place = (slot, stored) => {
     // Uno slot multiplo tiene sempre un array, anche con una foto sola: chi legge
     // dopo non deve indovinare la forma del dato.
-    if (multiple) (photos[slot] ??= []).push(stored);
+    if (PHOTOS.find((p) => p.id === slot)?.multiple) (photos[slot] ??= []).push(stored);
     else photos[slot] = stored;
+  };
+  const nameOf = (slot) => {
+    const index = (counters[slot] = (counters[slot] ?? 0) + 1);
+    return PHOTOS.find((p) => p.id === slot)?.multiple ? `${slot}-${index}` : slot;
+  };
+
+  // Le foto della visita di prima che il rilevatore ha lasciato nel modulo passano in questa.
+  // Solo da una sua visita (o per l'admin) e dello stesso negozio: le chiavi arrivano dal
+  // telefono, e non devono aprire le foto di un altro negozio o di un collega.
+  const previous = await carriedFrom(request, form.get('previousId'), data, known);
+  let keep = [];
+  try {
+    keep = JSON.parse(form.get('keepPhotos') || '[]');
+  } catch {
+    keep = [];
+  }
+  for (const [slot, photo] of photosToCarry(previous, keep, files.map(([slot]) => slot))) {
+    const stored = await copyVisitPhoto(photo, id, nameOf(slot));
+    if (stored) place(slot, stored);
+  }
+
+  for (const [slot, image] of files) {
+    const stored = await storeVisitPhoto(image, id, nameOf(slot));
+    if (stored) place(slot, stored);
   }
 
   // L'esito non arriva dal modulo: si deduce dalle risposte, così non può divergere da
@@ -262,6 +306,23 @@ export async function POST(request) {
   // Quante foto sono finite sul disco: il rilevatore lo vede subito, invece di scoprirlo dopo.
   const saved = Object.values(photos).flat().length;
   return NextResponse.json({ ok: true, id, photos: saved, closedReturn });
+}
+
+/** Le foto di una visita in fila, con lo slot: `[{ key, slot }]`. */
+const photoList = (visit) =>
+  PHOTOS.flatMap((p) => [].concat(visit.photos?.[p.id] ?? []).filter((ph) => ph?.key).map((ph) => ({ key: ph.key, slot: p.id })));
+
+/** La visita da cui riparte questa, se chi invia può portarne le foto. Altrimenti `null`. */
+async function carriedFrom(request, previousId, data, known) {
+  const id = typeof previousId === 'string' ? previousId.trim() : '';
+  if (!/^RV-\d{4}-[A-Z0-9]{6}$/.test(id)) return null;
+  const visit = await findVisit(id);
+  if (!visit) return null;
+  const sameShop = known?.id
+    ? visit.merchantId === known.id
+    : !visit.merchantId && visit.merchantName?.trim().toLowerCase() === data.merchantName.trim().toLowerCase();
+  const mine = isAdmin(request) || (data.surveyor && visit.surveyor === data.surveyor);
+  return sameShop && mine ? visit : null;
 }
 
 /**

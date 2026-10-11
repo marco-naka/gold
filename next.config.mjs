@@ -2,6 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Il sito non usa next/image: l'ottimizzatore resta spento, e con lui l'endpoint /_next/image,
+  // da cui passano diverse vulnerabilità note di Next 14 (DoS, disco riempito, AVIF).
+  images: { unoptimized: true },
   // Serve a `instrumentation.js`, che all'avvio del server fa partire l'estrazione automatica.
   experimental: { instrumentationHook: true },
 

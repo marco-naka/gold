@@ -36,6 +36,7 @@ const entries = [
   entry(91, { status: 'rejected' }),
   entry(92, { receipt: { key: 'receipts/2026/NK-2026-A00092.jpg', contentType: 'image/jpeg' } }),
   entry(93, { receipt: { key: '../../../etc/hosts', contentType: 'text/plain' } }),
+  entry(94, { merchant: '=HYPERLINK("http://evil.example","clic")', merchantKnown: false }),
 ];
 await writeFile(join(dir, 'entries.json'), JSON.stringify({ entries }));
 await mkdir(join(dir, 'receipts', '2026'), { recursive: true });
@@ -64,12 +65,14 @@ test('il CSV porta una riga per giocata e segna le prove', async () => {
   const lines = csv.trim().split('\r\n');
   assert.equal(lines.length, entries.length + 1);
   assert.ok(lines.some((l) => l.includes('NK-2026-A00090') && l.includes('"sì"')));
+  // Il nome del negozio lo scrive il cliente: una formula resta testo.
+  assert.ok(csv.includes(`"'=HYPERLINK`) && !csv.includes(`"=HYPERLINK`));
 });
 
 test('prima dell’impegno: anteprima degli elenchi senza prove e respinte', async () => {
   const s = await drawAdminState({ now: Date.parse('2026-10-22T12:00:00+02:00'), merchants: shops });
   assert.equal(s.phase, 'open');
-  assert.equal(s.preview.users, 22, '24 giocate meno una prova e una respinta');
+  assert.equal(s.preview.users, 23, '25 giocate meno una prova e una respinta');
   assert.equal(s.preview.excludedTest, 1);
   assert.equal(s.preview.excludedRejected, 1);
   assert.equal(s.preview.merchants, 3);

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { ALL_MERCHANTS, MERCHANTS } from '@/lib/merchants';
+import { ALL_MERCHANTS } from '@/lib/merchants';
+import { publicMerchants } from '@/lib/server/public-merchants';
 
 export const runtime = 'nodejs';
 
@@ -27,11 +28,11 @@ export async function GET(request) {
 
   const names = [
     ...new Set(
-      MERCHANTS.filter((m) => m.posActive && m.name.toLowerCase().includes(q)).map((m) => m.name)
+      (await publicMerchants()).filter((m) => m.posActive && m.name.toLowerCase().includes(q)).map((m) => m.name)
     ),
   ]
     .sort((a, b) => a.localeCompare(b, 'it'))
     .slice(0, 8);
 
-  return NextResponse.json({ names }, { headers: { 'Cache-Control': 'public, max-age=3600' } });
+  return NextResponse.json({ names }, { headers: { 'Cache-Control': 'public, max-age=300' } });
 }

@@ -16,6 +16,7 @@ export const ADMIN_SECTIONS = [
   ['drawUsers', '/rilevazioni/admin/estrazione'],
   ['drawMerchants', '/rilevazioni/admin/estrazione?scope=merchants'],
   ['social', '/rilevazioni/admin/social'],
+  ['circuit', '/rilevazioni/admin/negozi'],
 ];
 
 const entriesState = (h) => {

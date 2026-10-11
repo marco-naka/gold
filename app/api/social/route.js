@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MERCHANTS } from '@/lib/merchants';
+import { publicMerchants } from '@/lib/server/public-merchants';
 import { socialOpen, validateCustomerLink, validateSocialLink } from '@/lib/social-links';
 import { isAdmin } from '@/lib/server/rilevazioni-auth';
 import { adminSocialLinks, saveSocialLink } from '@/lib/server/social';
@@ -20,7 +21,6 @@ export const dynamic = 'force-dynamic';
  * GET,  admin:    l'elenco per il pannello; ?export=csv per scaricarlo.
  */
 
-const MERCHANT_IDS = new Set(MERCHANTS.map((m) => m.id));
 const byId = new Map(MERCHANTS.map((m) => [m.id, m]));
 const PER_IP = { max: 30, windowMs: HOUR };
 
@@ -81,7 +81,7 @@ export async function POST(request) {
   if (String(body?.company ?? '').trim()) return NextResponse.json({ ok: true }, { status: 201 });
 
   const kind = body?.kind === 'customer' ? 'customer' : 'merchant';
-  const { errors, value } = kind === 'customer' ? validateCustomerLink(body ?? {}) : validateSocialLink(body ?? {}, MERCHANT_IDS);
+  const { errors, value } = kind === 'customer' ? validateCustomerLink(body ?? {}) : validateSocialLink(body ?? {}, new Set((await publicMerchants()).map((m) => m.id)));
   if (errors) return NextResponse.json({ code: 'invalid', errors }, { status: 422 });
 
   const saved = await saveSocialLink({

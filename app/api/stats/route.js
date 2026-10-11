@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { MERCHANTS } from '@/lib/merchants';
+import { publicMerchants } from '@/lib/server/public-merchants';
 import { POOLS } from '@/lib/campaigns';
 import { IS_DEMO } from '@/lib/deploy';
 import { publicStats } from '@/lib/server/stats';
@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 /** Numeri pubblici per il contatore in pagina. In anteprima non si contano giocate. */
 export async function GET() {
-  const merchants = MERCHANTS.filter((m) => m.posActive).length;
+  const merchants = (await publicMerchants()).filter((m) => m.posActive).length;
 
   if (IS_DEMO) {
     return NextResponse.json({ collecting: false, merchants, prizes: POOLS.users.winners });

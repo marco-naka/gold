@@ -20,7 +20,8 @@ import SectionTitle from './ui/SectionTitle';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { formatDate, localePath } from '@/lib/i18n';
-import { MERCHANTS, distanceMeters, mapsUrl } from '@/lib/merchants';
+import { distanceMeters, mapsUrl } from '@/lib/merchants';
+import { usePublicMerchants } from '@/lib/use-public-merchants';
 
 const PAGE_SIZE = 12;
 
@@ -33,6 +34,7 @@ const PAGE_SIZE = 12;
  * risponde con la distanza reale e con le indicazioni, non con un disegno.
  */
 export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = null }) {
+  const MERCHANTS = usePublicMerchants();
   const categoryLabel = (id) => t.categories[id] ?? id;
 
   // Il conteggio accanto all'etichetta evita il filtro che non dà risultati.
@@ -43,7 +45,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
         label,
         count: id === 'all' ? MERCHANTS.length : MERCHANTS.filter((m) => m.category === id).length,
       })),
-    [t.categories],
+    [t.categories, MERCHANTS],
   );
 
   const [query, setQuery] = useState('');
@@ -83,7 +85,7 @@ export default function MerchantDirectory({ t, locale, limit = null, onSeeAll = 
     return filtered
       .map((m) => ({ ...m, distance: distanceMeters(position, m) }))
       .sort((a, b) => a.distance - b.distance);
-  }, [query, category, position]);
+  }, [query, category, position, MERCHANTS]);
 
   useEffect(() => {
     setVisible(PAGE_SIZE);

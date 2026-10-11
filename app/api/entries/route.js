@@ -1,6 +1,6 @@
 import { randomInt } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { MERCHANTS } from '@/lib/merchants';
+import { publicMerchants } from '@/lib/server/public-merchants';
 import { MAX_MERCHANT_LENGTH, parseAmount, txKind, txSuffix, validateEntry } from '@/lib/validation';
 import { submissionWindow } from '@/lib/contest';
 import { normalizeSource } from '@/lib/server/stats';
@@ -9,6 +9,7 @@ import { yearInZurich } from '@/lib/time';
 import { IS_DEMO } from '@/lib/deploy';
 import { saveEntry } from '@/lib/server/store';
 import { deleteReceipt, storeReceipt } from '@/lib/server/receipts';
+import { sniffImage } from '@/lib/server/image-sniff';
 import { sendEntryReceived } from '@/lib/server/mailer';
 import { HOUR, globalLimit, hit } from '@/lib/server/rate-limit';
 import { clientIp } from '@/lib/server/client-ip';
@@ -33,9 +34,11 @@ const mask = (value, head = 6, tail = 4) =>
   !value || value.length <= head + tail ? value : `${value.slice(0, head)}…${value.slice(-tail)}`;
 
 /** Riconosce il negozio dichiarato (testo libero) tra quelli della mappa, senza imporlo. */
-function matchMerchant(input) {
+async function matchMerchant(input) {
   const q = (input || '').trim().toLowerCase();
   if (!q) return null;
+  // L'elenco di adesso: un negozio uscito dal circuito non si aggancia più a una giocata nuova.
+  const MERCHANTS = await publicMerchants();
   const hit =
     MERCHANTS.find((m) => m.name.toLowerCase() === q) ||
     MERCHANTS.find((m) => m.name.toLowerCase().includes(q) || q.includes(m.name.toLowerCase()));
@@ -109,6 +112,10 @@ export async function POST(request) {
 
   // 2. Validazione server-side (stesse regole del client, non aggirabili)
   const errors = validateEntry(data, receipt);
+  // Il tipo dichiarato lo sceglie chi invia: un file qualunque rinominato .jpg passava. Come per
+  // le foto delle rilevazioni, decide il contenuto vero del file.
+  const kind = hasFile ? sniffImage(Buffer.from(await file.arrayBuffer())) : null;
+  if (hasFile && !kind && !errors.receipt) errors.receipt = 'receipt_type';
   if (Object.keys(errors).length) {
     return NextResponse.json(
       { code: 'invalid_fields', errors },
@@ -134,7 +141,7 @@ export async function POST(request) {
   const cents = parseAmount(data.amount);
   const suffix = txSuffix(data.txId);
   const tx = `${suffix}|${cents}`;
-  const merchant = matchMerchant(data.merchant);
+  const merchant = await matchMerchant(data.merchant);
   const createdAt = new Date();
 
   // L'ID è il biglietto dell'estrazione: due giocate con lo stesso ID varrebbero un biglietto
@@ -145,7 +152,7 @@ export async function POST(request) {
   for (let attempt = 0; attempt < 5 && !entry; attempt += 1) {
     const id = `NK-${yearInZurich(createdAt)}-${newIdSuffix()}`;
     try {
-      stored = await storeReceipt(hasFile ? file : null, id);
+      stored = await storeReceipt(hasFile ? file : null, id, kind);
     } catch (err) {
       if (err?.code === 'EEXIST') continue;
       return NextResponse.json(

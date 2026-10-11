@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
+  Ban,
   Camera,
   ImagePlus,
   QrCode,
@@ -307,7 +308,8 @@ export function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
     const json = await res.json().catch(() => ({}));
     setBusy(false);
     if (res.ok) onUnlock(json.operator);
-    else setError(t.gateWrong);
+    // Troppi tentativi: anche il PIN giusto aspetta, e va detto, o sembra sbagliato.
+    else setError(res.status === 429 ? t.gateBusy : t.gateWrong);
   }
 
   return (
@@ -566,6 +568,10 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     body.append('merchantId', merchant?.id || '');
     body.append('merchantName', merchant?.name || '');
     body.append('answers', JSON.stringify(answers));
+    if (previous?.id) {
+      body.append('previousId', previous.id);
+      body.append('keepPhotos', JSON.stringify(keptPhotos(previous).map((ph) => ph.key)));
+    }
     for (const [slot, value] of Object.entries(photos)) {
       for (const file of Array.isArray(value) ? value : [value]) if (file) body.append(`photo_${slot}`, file);
     }
@@ -652,6 +658,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
           photos={photos}
           setPhotos={setPhotos}
           previous={previous}
+          onPrevious={setPrevious}
           locale={locale}
         />
       )}
@@ -683,7 +690,15 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       )}
 
       {current === 'foto' && (
-        <PhotoStep photos={photos} setPhotos={setPhotos} errors={errors} generic={errors._} locale={locale} />
+        <PhotoStep
+          photos={photos}
+          setPhotos={setPhotos}
+          previous={previous}
+          onPrevious={setPrevious}
+          errors={errors}
+          generic={errors._}
+          locale={locale}
+        />
       )}
 
       {/* Barra fissa: i pollici stanno in basso, e in negozio si guarda lo schermo di sfuggita */}
@@ -827,6 +842,7 @@ function MerchantStep({
   photos,
   setPhotos,
   previous,
+  onPrevious,
   locale,
 }) {
   const t = ui(locale);
@@ -836,6 +852,15 @@ function MerchantStep({
   const [last, setLast] = useState(null);
   const [ripreso, setRipreso] = useState(false);
   const [visited, setVisited] = useState({});
+  // Negozi fuori dal circuito: tolti da qui (`excluded`) o con un aggiornamento del sito (`fixed`).
+  const [circuit, setCircuit] = useState({ excluded: {}, fixed: {} });
+  const loadCircuit = useCallback(() => {
+    fetch('/api/rilevazioni/circuito', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setCircuit({ excluded: d.excluded ?? {}, fixed: d.fixed ?? {} }))
+      .catch(() => {});
+  }, []);
+  useEffect(loadCircuit, [loadCircuit]);
 
   // Si scarica una volta sola: chi ha già una visita alle spalle va segnalato *dentro* i
   // risultati di ricerca, non dopo averlo scelto. Due persone sullo stesso elenco di 336
@@ -971,6 +996,10 @@ function MerchantStep({
 
           {seenNow && <AlreadyBanner seen={seenNow} locale={locale} />}
 
+          {merchant.id && (
+            <CircuitBox merchant={merchant} circuit={circuit} admin={admin} onChanged={loadCircuit} locale={locale} />
+          )}
+
           {merchant.assets?.length > 0 && (
             <p className="mt-3 border-t border-white/10 pt-3 text-xs text-muted">
               {t.fromMap} {merchant.assets.join(' · ')}
@@ -983,12 +1012,13 @@ function MerchantStep({
               {/*
                 Chi torna riparte da quello che il collega ha già rilevato: dieci risposte
                 identiche non si ridigitano, e quello che è cambiato salta all'occhio.
-                Le foto no: sono file, vanno riscattate.
+                Le foto della propria visita passano anche loro; quelle di un collega restano sue.
               */}
               <Button
                 variant="secondary"
                 onClick={() => {
                   onAnswers((prev) => ({ ...last.answers, ...prev }));
+                  if (last.photos?.length && previous?.id !== last.id) onPrevious({ id: last.id, at: last.at, photos: last.photos, dropped: [] });
                   setRipreso(true);
                 }}
                 disabled={ripreso}
@@ -1002,7 +1032,9 @@ function MerchantStep({
                       new Date(last.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE }),
                     )}
               </Button>
-              <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{t.resumeHint}</p>
+              <p className="mt-1.5 text-[11px] leading-relaxed text-muted">
+                {last.photos?.length ? t.resumeHint : last.photoCount ? t.resumeHintOthersPhotos : t.resumeHintNoPhotos}
+              </p>
             </div>
           )}
 
@@ -1057,6 +1089,11 @@ function MerchantStep({
                         <span className="block truncate text-sm font-medium text-white">{m.name}</span>
                         {m.address && <span className="block truncate text-xs text-muted">{m.address}</span>}
                         {seen && <VisitedBadge seen={seen} locale={locale} />}
+                        {m.id && (circuit.excluded[m.id] || circuit.fixed[m.id]) && (
+                          <span className="mt-1 inline-block rounded-full border border-red-400/30 bg-red-400/10 px-2 py-0.5 text-[10px] font-semibold text-red-300">
+                            {t.circuitBadge}
+                          </span>
+                        )}
                       </span>
                     </button>
                   </li>
@@ -1083,14 +1120,7 @@ function MerchantStep({
         nell'ultima schermata, così chi se ne dimentica può rimediare.
       */}
       <div className="mt-8">
-        {previous?.photos?.length > 0 && (
-          <SavedPhotos
-            items={previous.photos}
-            title={t.previousPhotos(previous.at ? new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(previous.at)).split('-').reverse().join('.') : '')}
-            locale={locale}
-            className="mb-5"
-          />
-        )}
+        <CarriedPhotos previous={previous} onPrevious={onPrevious} photos={photos} locale={locale} className="mb-5" />
         <PhotoSlot
           photo={PHOTOS.find((p) => p.id === 'vetrina')}
           locale={locale}
@@ -1100,6 +1130,114 @@ function MerchantStep({
         />
       </div>
     </section>
+  );
+}
+
+/**
+ * «Non fa più parte del circuito»: con il motivo, il negozio esce subito dall'elenco pubblico
+ * (sito, mappa, moduli) e resta qui nelle rilevazioni. Lo può fare chi rileva, sul posto;
+ * rimetterlo è dell'admin. Quelli tolti con un aggiornamento del sito si vedono e basta.
+ */
+function CircuitBox({ merchant, circuit, admin, onChanged, locale }) {
+  const t = ui(locale);
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    setOpen(false);
+    setReason('');
+    setError(null);
+  }, [merchant.id]);
+
+  const fixed = circuit.fixed[merchant.id];
+  const out = circuit.excluded[merchant.id];
+
+  const send = async (action) => {
+    if (action === 'exclude' && reason.trim().length < 3) return setError(t.circuitReasonShort);
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/rilevazioni/circuito', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action, merchantId: merchant.id, reason }),
+      });
+      // Già tolto da un collega nel frattempo: va bene lo stesso, si rilegge lo stato.
+      if (!res.ok && res.status !== 409) throw new Error(String(res.status));
+      setOpen(false);
+      setReason('');
+      onChanged();
+    } catch {
+      setError(t.circuitError);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (fixed) {
+    return <p className="mt-3 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-muted">{t.circuitFixed}{fixed.reason ? ` ${fixed.reason}` : ''}</p>;
+  }
+
+  if (out) {
+    const when = new Date(out.at).toLocaleDateString('it-CH', { timeZone: TIME_ZONE });
+    return (
+      <div className="mt-3 rounded-xl border border-red-400/40 bg-red-400/10 p-3">
+        <p className="text-sm font-semibold text-red-300">{t.circuitRemoved(out.by || '—', when)}</p>
+        <p className="mt-1 text-xs text-white/80">{out.reason}</p>
+        {admin && (
+          <Button variant="ghost" size="sm" onClick={() => send('restore')} disabled={busy} className="mt-2">
+            <RotateCcw className="h-4 w-4" /> {t.circuitRestore}
+          </Button>
+        )}
+        {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+      </div>
+    );
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-3 inline-flex items-center gap-1.5 rounded-lg border border-red-400/30 px-2.5 py-2 text-xs font-semibold text-red-300 hover:border-red-400/60"
+      >
+        <Ban className="h-4 w-4" /> {t.circuitOut}
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-3 rounded-xl border border-red-400/40 bg-red-400/[0.06] p-3">
+      <p className="text-sm font-semibold text-red-300">{t.circuitOut}</p>
+      <label htmlFor="circuit-reason" className="mt-2 block text-xs font-semibold text-white">
+        {t.circuitAsk}
+      </label>
+      <textarea
+        id="circuit-reason"
+        value={reason}
+        onChange={(e) => setReason(e.target.value)}
+        placeholder={t.circuitPlaceholder}
+        maxLength={500}
+        rows={3}
+        className="field mt-1.5"
+      />
+      <p className="mt-1.5 text-[11px] leading-relaxed text-muted">{t.circuitHint}</p>
+      {error && <p className="mt-2 text-xs text-red-300">{error}</p>}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => send('exclude')}
+          disabled={busy}
+          className="inline-flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-sm font-bold text-white transition hover:bg-red-400 disabled:opacity-50"
+        >
+          <Ban className="h-4 w-4" /> {t.circuitConfirm}
+        </button>
+        <Button variant="ghost" size="sm" onClick={() => setOpen(false)} disabled={busy}>
+          {t.circuitCancel}
+        </Button>
+      </div>
+    </div>
   );
 }
 
@@ -1481,12 +1619,13 @@ function Choices({ options, value, onSelect, multi = false, variant = 'auto' }) 
   );
 }
 
-function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
+function PhotoStep({ photos, setPhotos, previous, onPrevious, errors, generic, locale }) {
   const t = ui(locale);
   return (
     <section>
       <h2 className="text-xl font-bold">{t.photosTitle}</h2>
       <p className="mt-1.5 text-sm text-muted">{t.photosIntro}</p>
+      <CarriedPhotos previous={previous} onPrevious={onPrevious} photos={photos} locale={locale} className="mt-7" />
       <div className="mt-7 space-y-4">
         {PHOTOS.map((photo) => (
           <PhotoSlot
@@ -1516,11 +1655,41 @@ function PhotoStep({ photos, setPhotos, errors, generic, locale }) {
   );
 }
 
+/** Le foto della visita di prima che passano in quella nuova: tutte, tranne quelle tolte. */
+export const keptPhotos = (previous) =>
+  (previous?.photos ?? []).filter((ph) => !(previous.dropped ?? []).includes(ph.key));
+
 /**
- * Foto già inviate al server, da guardare e basta: quelle della visita da cui riparte «Vado
- * ora», o quelle già allegate a una visita che si sta integrando.
+ * Le foto della visita da cui si riparte («Vado ora» o «Riprendi»): già sul server, passano
+ * nella visita nuova all'invio. Con la X si toglie quella che non vale più; una vetrina
+ * scattata adesso prende il posto della vecchia.
  */
-export function SavedPhotos({ items, title, locale, className }) {
+function CarriedPhotos({ previous, onPrevious, photos, locale, className }) {
+  const t = ui(locale);
+  if (!previous?.photos?.length) return null;
+  const when = previous.at ? new Intl.DateTimeFormat('en-CA', { timeZone: TIME_ZONE }).format(new Date(previous.at)).split('-').reverse().join('.') : '';
+  const dropped = previous.dropped ?? [];
+  const toggle = (key) =>
+    onPrevious({ ...previous, dropped: dropped.includes(key) ? dropped.filter((k) => k !== key) : [...dropped, key] });
+  return (
+    <SavedPhotos
+      items={previous.photos}
+      title={t.previousPhotos(when, keptPhotos(previous).length)}
+      locale={locale}
+      className={className}
+      removed={dropped}
+      replaced={photos?.vetrina ? ['vetrina'] : []}
+      onToggle={toggle}
+    />
+  );
+}
+
+/**
+ * Foto già inviate al server: quelle della visita da cui si riparte (con `onToggle` si tolgono
+ * e si rimettono), o quelle già allegate a una visita che si sta integrando, da guardare e basta.
+ */
+export function SavedPhotos({ items, title, locale, className, removed = [], replaced = [], onToggle }) {
+  const t = ui(locale);
   return (
     <div className={cn('rounded-xl border border-white/10 bg-white/[0.03] p-3', className)}>
       <p className="text-xs text-muted">{title}</p>
@@ -1528,13 +1697,27 @@ export function SavedPhotos({ items, title, locale, className }) {
         {items.map((ph) => {
           const src = `/api/rilevazioni/foto?key=${encodeURIComponent(ph.key)}`;
           const label = photoIn(PHOTOS.find((p) => p.id === ph.slot) ?? { label: ph.slot }, locale).label;
+          const off = removed.includes(ph.key);
+          const swapped = !off && replaced.includes(ph.slot);
           return (
-            <li key={ph.key}>
-              <a href={src} target="_blank" rel="noopener noreferrer" className="block">
+            <li key={ph.key} className="relative">
+              <a href={src} target="_blank" rel="noopener noreferrer" className={cn('block', (off || swapped) && 'opacity-35')}>
                 {/* eslint-disable-next-line @next/next/no-img-element -- foto private, servite dall'API protetta */}
                 <img src={src} alt={label} loading="lazy" className="aspect-square w-full rounded-lg border border-white/10 object-cover" />
-                <span className="mt-0.5 block truncate text-[10px] text-muted">{label}</span>
               </a>
+              <span className={cn('mt-0.5 block truncate text-[10px]', off || swapped ? 'text-red-300' : 'text-muted')}>
+                {off ? t.photoRemoved : swapped ? t.photoReplaced : label}
+              </span>
+              {onToggle && !swapped && (
+                <button
+                  type="button"
+                  onClick={() => onToggle(ph.key)}
+                  aria-label={off ? t.photoKeep : t.photoRemove}
+                  className="absolute right-1 top-1 rounded-full border border-white/20 bg-ink-deep/90 p-1 text-white"
+                >
+                  {off ? <RotateCcw className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
+                </button>
+              )}
             </li>
           );
         })}

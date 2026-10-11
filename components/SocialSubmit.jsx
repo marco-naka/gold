@@ -7,6 +7,7 @@ import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { normalizeUrl, platformOf } from '@/lib/social-links';
 import { getDictionary } from '@/lib/i18n';
+import { useExcludedIds } from '@/lib/use-public-merchants';
 
 /*
  * Segnalazione di un contenuto social, nell'area commercianti.
@@ -21,7 +22,10 @@ import { getDictionary } from '@/lib/i18n';
 
 const MAX_RESULTS = 6;
 
-export default function SocialSubmit({ shops, bounds, locale, fallbackHref, fallbackEmail }) {
+export default function SocialSubmit({ shops: allShops, bounds, locale, fallbackHref, fallbackEmail }) {
+  // Senza i negozi tolti dal circuito dopo l'ultimo deploy (il server li rifiuterebbe).
+  const out = useExcludedIds();
+  const shops = useMemo(() => (out ? allShops.filter((s) => !out.has(s.id)) : allShops), [allShops, out]);
   // I testi si leggono qui: contengono funzioni, che dal server a un componente client non passano.
   const t = getDictionary(locale).video.form;
   const [query, setQuery] = useState('');

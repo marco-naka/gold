@@ -11,7 +11,8 @@ import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { PAYMENT_ASSETS } from '@/lib/constants';
 import { getDictionary, localePath } from '@/lib/i18n';
-import { MERCHANTS, MERCHANT_BOUNDS, distanceMeters, mapsUrl } from '@/lib/merchants';
+import { MERCHANT_BOUNDS, distanceMeters, mapsUrl } from '@/lib/merchants';
+import { usePublicMerchants } from '@/lib/use-public-merchants';
 
 /*
  * Mappa dei negozi aderenti, su /mappa e /en/map.
@@ -52,6 +53,7 @@ export default function MerchantMap({ locale }) {
   const leafletRef = useRef(null);
   const layerRef = useRef(null);
   const markersRef = useRef(new Map());
+  const MERCHANTS = usePublicMerchants();
   const meRef = useRef(null);
   const [ready, setReady] = useState(false);
 
@@ -87,7 +89,7 @@ export default function MerchantMap({ locale }) {
           id === 'all' ? MERCHANTS.length : MERCHANTS.filter((m) => m.category === id).length,
         ]),
       ),
-    [tm.categories],
+    [tm.categories, MERCHANTS],
   );
 
   const results = useMemo(() => {
@@ -99,7 +101,7 @@ export default function MerchantMap({ locale }) {
     );
     if (!position) return [...list].sort((a, b) => a.name.localeCompare(b.name, locale));
     return list.map((m) => ({ ...m, distance: distanceMeters(position, m) })).sort((a, b) => a.distance - b.distance);
-  }, [query, category, position, locale]);
+  }, [query, category, position, locale, MERCHANTS]);
 
   useEffect(() => setVisible(PAGE), [query, category, position]);
 
