@@ -32,7 +32,7 @@ import {
   yesNoIn,
 } from '@/lib/survey-i18n';
 import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
-import { compressAll } from '@/lib/compress-image';
+import { compressAll, inMemory } from '@/lib/compress-image';
 import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
 import {
   deleteShopDraft,
@@ -565,6 +565,30 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     }
 
     setSending(true);
+    // Ogni foto si rilegge prima di partire: una che il telefono non riesce più a leggere si
+    // dice adesso, sullo slot giusto, invece di salvare la visita senza.
+    const ready = {};
+    const lost = {};
+    for (const [slot, value] of Object.entries(photos)) {
+      const list = [];
+      for (const file of (Array.isArray(value) ? value : [value]).filter(Boolean)) {
+        const copy = await inMemory(file);
+        if (copy) list.push(copy);
+        else lost[`photo_${slot}`] = 'photo_lost';
+      }
+      ready[slot] = PHOTOS.find((p) => p.id === slot)?.multiple ? (list.length ? list : null) : list[0] ?? null;
+    }
+    if (Object.keys(lost).length) {
+      setPhotos(ready);
+      setErrors(lost);
+      setStep(steps.length - 1);
+      setSending(false);
+      return;
+    }
+    // Stessa regola del server: una vetrina nuova prende il posto di quella della visita di prima.
+    const kept = previous?.id ? keptPhotos(previous).filter((ph) => !(ph.slot === 'vetrina' && ready.vetrina)).length : 0;
+    const sent = kept + Object.values(ready).flat().filter(Boolean).length;
+
     const body = new FormData();
     body.append('surveyor', surveyor);
     body.append('merchantId', merchant?.id || '');
@@ -574,7 +598,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       body.append('previousId', previous.id);
       body.append('keepPhotos', JSON.stringify(keptPhotos(previous).map((ph) => ph.key)));
     }
-    for (const [slot, value] of Object.entries(photos)) {
+    for (const [slot, value] of Object.entries(ready)) {
       for (const file of Array.isArray(value) ? value : [value]) if (file) body.append(`photo_${slot}`, file);
     }
 
@@ -597,7 +621,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
       // Invio confermato dal server: solo ora la bozza del negozio può sparire.
       deleteShopDraft(draftKeyOf(merchant));
       clearDraftPhotos(photoKeyOf(draftKeyOf(merchant)));
-      setDone({ id: json.id, photos: json.photos ?? 0, closedReturn: json.closedReturn ?? null, excluded: json.excluded ?? null });
+      setDone({ id: json.id, photos: json.photos ?? 0, sent, closedReturn: json.closedReturn ?? null, excluded: json.excluded ?? null });
       // I contatori di «Le mie» e «Agenda» si aggiornano subito, non al prossimo cambio di scheda.
       onSent?.();
     } catch {
@@ -628,7 +652,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
     setDrafts(listShopDrafts().filter(hasDraftWork));
   }, [choosingShop, done]);
 
-  if (done) return <Done id={done.id} photos={done.photos} closedReturn={done.closedReturn} excluded={done.excluded} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
+  if (done) return <Done id={done.id} photos={done.photos} sent={done.sent} closedReturn={done.closedReturn} excluded={done.excluded} surveyor={surveyor} merchant={merchant} onNext={reset} locale={locale} />;
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
@@ -2040,14 +2064,18 @@ export function PhotoSlot({ photo, file, error, onPick, onClear, locale }) {
 
       {error && (
         <p className="mt-2 text-xs text-red-400">
-          {error === 'photo_size' ? t.photoSize(Math.round(MAX_PHOTO_BYTES / 1024 / 1024)) : t.photoType}
+          {error === 'photo_size'
+            ? t.photoSize(Math.round(MAX_PHOTO_BYTES / 1024 / 1024))
+            : error === 'photo_lost'
+              ? t.photoLost
+              : t.photoType}
         </p>
       )}
     </div>
   );
 }
 
-function Done({ id, photos, closedReturn, excluded, surveyor, merchant, onNext, locale }) {
+function Done({ id, photos, sent = 0, closedReturn, excluded, surveyor, merchant, onNext, locale }) {
   const t = ui(locale);
   return (
     <div className="mx-auto w-full max-w-md px-5 py-24 text-center">
@@ -2063,6 +2091,11 @@ function Done({ id, photos, closedReturn, excluded, surveyor, merchant, onNext, 
         <Camera className="h-3.5 w-3.5 text-btc" />
         {t.savedPhotos(photos)}
       </p>
+      {sent > photos && (
+        <p className="mt-3 rounded-xl border border-red-400/30 bg-red-400/10 px-3 py-2 text-sm text-red-200">
+          {t.savedPhotosMissing(sent - photos)}
+        </p>
+      )}
       {closedReturn && (
         <p className="mt-3 rounded-xl border border-emerald-400/30 bg-emerald-400/10 px-3 py-2 text-sm text-emerald-300">
           {closedReturn.surveyor && closedReturn.surveyor !== surveyor
