@@ -15,6 +15,16 @@ export async function GET(request) {
   // `full=1` serve all'area rilevazioni, che dei negozi ha bisogno anche di id e indirizzo
   // per agganciare la visita allo snapshot. Il form dei clienti continua a ricevere i soli nomi.
   const full = params.get('full') === '1';
+
+  // `near=1`: tutti i negozi con le coordinate, per il tasto «Vicino a me» delle rilevazioni.
+  // La distanza la calcola il telefono: la posizione di chi è in giro non arriva al server.
+  if (full && params.get('near') === '1') {
+    const merchants = ALL_MERCHANTS.filter((m) => Number.isFinite(m.lat) && Number.isFinite(m.lng)).map(
+      ({ id, name, address, assets, phone, category, lat, lng }) => ({ id, name, address, assets, phone, category, lat, lng }),
+    );
+    return NextResponse.json({ merchants }, { headers: { 'Cache-Control': 'public, max-age=3600' } });
+  }
+
   if (q.length < 2) return NextResponse.json(full ? { merchants: [] } : { names: [] });
 
   if (full) {

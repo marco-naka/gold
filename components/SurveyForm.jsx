@@ -5,6 +5,8 @@ import {
   Ban,
   Camera,
   ImagePlus,
+  LocateFixed,
+  Navigation,
   QrCode,
   Check,
   ChevronLeft,
@@ -1067,6 +1069,9 @@ function MerchantStep({
               className={cn('field pl-10', error && 'field-error')}
             />
           </div>
+          {q.trim().length < 2 && (
+            <NearbyShops visited={visited} circuit={circuit} onPick={onPick} locale={locale} />
+          )}
           {hits.length > 0 && (
             <ul className="mt-2 divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10">
               {hits.slice(0, 8).map((m) => {
@@ -1129,6 +1134,202 @@ function MerchantStep({
         />
       </div>
     </section>
+  );
+}
+
+// Posizione e negozi restano in memoria fra un negozio e l'altro: chi torna indietro con
+// «Cambia negozio» ritrova l'elenco senza richiedere il GPS. Dopo due minuti si riprende.
+const NEAR_FRESH_MS = 2 * 60 * 1000;
+const NEAR_PAGE = 8;
+let nearCache = { merchants: null, position: null, at: 0 };
+
+// Copia della formula di lib/merchants: importarla da lì porterebbe nel bundle tutto lo snapshot.
+function distanceMeters(a, b) {
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const h =
+    Math.sin(toRad(b.lat - a.lat) / 2) ** 2 +
+    Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * Math.sin(toRad(b.lng - a.lng) / 2) ** 2;
+  return 2 * 6371000 * Math.asin(Math.sqrt(h));
+}
+
+/**
+ * «Negozi vicino a me»: chi è in giro vede cosa ha attorno, come sulla mappa del sito, con lo
+ * stato della rilevazione accanto a ogni negozio. La distanza si calcola qui: la posizione non
+ * lascia il telefono. Di base si vedono solo quelli ancora da fare.
+ */
+function NearbyShops({ visited, circuit, onPick, locale }) {
+  const t = ui(locale);
+  const fresh = nearCache.position && Date.now() - nearCache.at < NEAR_FRESH_MS;
+  const [merchants, setMerchants] = useState(nearCache.merchants);
+  const [position, setPosition] = useState(fresh ? nearCache.position : null);
+  const [geo, setGeo] = useState(fresh ? 'on' : 'idle'); // idle | loading | on | denied
+  const [todo, setTodo] = useState(true);
+  const [shown, setShown] = useState(NEAR_PAGE);
+
+  const locate = () => {
+    if (!navigator.geolocation) return setGeo('denied');
+    setGeo('loading');
+    if (!merchants) {
+      fetch('/api/merchants?full=1&near=1')
+        .then((r) => r.json())
+        .then((d) => {
+          nearCache.merchants = d.merchants ?? [];
+          setMerchants(nearCache.merchants);
+        })
+        .catch(() => setMerchants([]));
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        nearCache = { ...nearCache, position: p, at: Date.now() };
+        setPosition(p);
+        setGeo('on');
+        setShown(NEAR_PAGE);
+      },
+      () => setGeo('denied'),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 },
+    );
+  };
+
+  const statusOf = (m) => visited[m.id] ?? visited[m.name?.toLowerCase()];
+  const outOf = (m) => m.id && (circuit.excluded[m.id] || circuit.fixed[m.id]);
+
+  const list = useMemo(() => {
+    if (!position || !merchants) return [];
+    return merchants
+      .filter((m) => !todo || (!outOf(m) && statusOf(m)?.status !== 'completo'))
+      .map((m) => ({ ...m, distance: distanceMeters(position, m) }))
+      .sort((a, b) => a.distance - b.distance);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [position, merchants, todo, visited, circuit]);
+
+  if (geo === 'idle') {
+    return (
+      <Button variant="secondary" onClick={locate} className="mt-2 w-full">
+        <LocateFixed className="h-4 w-4" />
+        {t.nearMe}
+      </Button>
+    );
+  }
+
+  const loading = geo === 'loading' || (geo === 'on' && !merchants);
+
+  return (
+    <div className="mt-2 rounded-xl border border-white/10 p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-white">
+          <LocateFixed className="h-4 w-4 text-btc" />
+          {t.nearMe}
+        </p>
+        <div className="flex items-center gap-1.5">
+          {geo !== 'loading' && (
+            <button
+              type="button"
+              onClick={locate}
+              className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-muted hover:border-white/25 hover:text-white"
+            >
+              {t.nearRefresh}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => setGeo('idle')}
+            aria-label={t.nearClose}
+            className="rounded-lg border border-white/10 p-1.5 text-muted hover:border-white/25 hover:text-white"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {geo === 'denied' && <p className="mt-3 text-xs text-red-300">{t.nearDenied}</p>}
+      {loading && <p className="mt-3 text-xs text-muted">{t.nearLoading}</p>}
+
+      {geo === 'on' && merchants && (
+        <>
+          <div className="mt-3 flex gap-1.5">
+            {[
+              [true, t.nearTodo],
+              [false, t.nearAll],
+            ].map(([value, label]) => (
+              <button
+                key={label}
+                type="button"
+                onClick={() => {
+                  setTodo(value);
+                  setShown(NEAR_PAGE);
+                }}
+                className={cn(
+                  'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                  todo === value ? 'border-btc/50 bg-btc/15 text-btc' : 'border-white/10 text-muted hover:text-white',
+                )}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {list.length === 0 ? (
+            <p className="mt-3 text-xs text-muted">{t.nearEmpty}</p>
+          ) : (
+            <ul className="mt-2 divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10">
+              {list.slice(0, shown).map((m) => {
+                const seen = statusOf(m);
+                return (
+                  <li key={m.id ?? m.name} className="flex items-stretch">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const { lat, lng, distance, ...picked } = m;
+                        onPick(picked);
+                      }}
+                      className="flex min-w-0 flex-1 items-start gap-3 p-3.5 text-left transition hover:bg-white/5"
+                    >
+                      <Store
+                        className={cn('mt-0.5 h-4 w-4 shrink-0', seen?.status === 'completo' ? 'text-muted' : 'text-btc')}
+                      />
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-baseline justify-between gap-2">
+                          <span className="truncate text-sm font-medium text-white">{m.name}</span>
+                          <span className="shrink-0 text-xs font-semibold text-btc">{t.nearDistance(m.distance)}</span>
+                        </span>
+                        {m.address && <span className="block truncate text-xs text-muted">{m.address}</span>}
+                        {seen && <VisitedBadge seen={seen} locale={locale} />}
+                        {outOf(m) && (
+                          <span className="mt-1 inline-block rounded-full border border-red-400/30 bg-red-400/10 px-2 py-0.5 text-[10px] font-semibold text-red-300">
+                            {t.circuitBadge}
+                          </span>
+                        )}
+                      </span>
+                    </button>
+                    {/* Le indicazioni a piedi, senza perdere il questionario. */}
+                    <a
+                      href={`https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${m.lat},${m.lng}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${m.name}: Google Maps`}
+                      className="flex shrink-0 items-center border-l border-white/5 px-3.5 text-muted transition hover:bg-white/5 hover:text-btc"
+                    >
+                      <Navigation className="h-4 w-4" />
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          {list.length > shown && (
+            <button
+              type="button"
+              onClick={() => setShown((n) => n + NEAR_PAGE)}
+              className="mt-2 w-full rounded-xl border border-white/10 p-2.5 text-xs font-semibold text-muted hover:border-white/25 hover:text-white"
+            >
+              {t.nearMore}
+            </button>
+          )}
+          <p className="mt-2 text-[11px] text-muted">{t.nearPrivacy}</p>
+        </>
+      )}
+    </div>
   );
 }
 
