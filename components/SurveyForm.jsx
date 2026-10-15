@@ -5,6 +5,7 @@ import {
   Ban,
   Camera,
   ImagePlus,
+  ListTodo,
   LocateFixed,
   Navigation,
   QrCode,
@@ -1165,6 +1166,7 @@ function MerchantStep({
 // «Cambia negozio» ritrova l'elenco senza richiedere il GPS. Dopo due minuti si riprende.
 const NEAR_FRESH_MS = 2 * 60 * 1000;
 const NEAR_PAGE = 8;
+const ALL_PAGE = 30;
 let nearCache = { merchants: null, position: null, at: 0 };
 
 // Copia della formula di lib/merchants: importarla da lì porterebbe nel bundle tutto lo snapshot.
@@ -1177,31 +1179,37 @@ function distanceMeters(a, b) {
 }
 
 /**
- * «Negozi vicino a me»: chi è in giro vede cosa ha attorno, come sulla mappa del sito, con lo
- * stato della rilevazione accanto a ogni negozio. La distanza si calcola qui: la posizione non
- * lascia il telefono. Di base si vedono solo quelli ancora da fare.
+ * «Negozi vicino a me» e «Tutti i negozi da fare»: chi è in giro vede cosa ha attorno, come
+ * sulla mappa del sito, oppure l'elenco intero in ordine alfabetico, per organizzare il giro
+ * anche senza GPS. Accanto a ogni negozio lo stato della rilevazione. La distanza si calcola
+ * qui: la posizione non lascia il telefono. Di base si vedono solo quelli ancora da fare.
  */
 function NearbyShops({ visited, circuit, onPick, locale }) {
   const t = ui(locale);
   const fresh = nearCache.position && Date.now() - nearCache.at < NEAR_FRESH_MS;
   const [merchants, setMerchants] = useState(nearCache.merchants);
   const [position, setPosition] = useState(fresh ? nearCache.position : null);
+  const [mode, setMode] = useState(fresh ? 'near' : 'idle'); // idle | near | all
   const [geo, setGeo] = useState(fresh ? 'on' : 'idle'); // idle | loading | on | denied
   const [todo, setTodo] = useState(true);
   const [shown, setShown] = useState(NEAR_PAGE);
 
+  const loadMerchants = () => {
+    if (merchants) return;
+    fetch('/api/merchants?full=1&near=1')
+      .then((r) => r.json())
+      .then((d) => {
+        nearCache.merchants = d.merchants ?? [];
+        setMerchants(nearCache.merchants);
+      })
+      .catch(() => setMerchants([]));
+  };
+
   const locate = () => {
+    setMode('near');
     if (!navigator.geolocation) return setGeo('denied');
     setGeo('loading');
-    if (!merchants) {
-      fetch('/api/merchants?full=1&near=1')
-        .then((r) => r.json())
-        .then((d) => {
-          nearCache.merchants = d.merchants ?? [];
-          setMerchants(nearCache.merchants);
-        })
-        .catch(() => setMerchants([]));
-    }
+    loadMerchants();
     navigator.geolocation.getCurrentPosition(
       (pos) => {
         const p = { lat: pos.coords.latitude, lng: pos.coords.longitude };
@@ -1215,38 +1223,66 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
     );
   };
 
+  const showAll = () => {
+    setMode('all');
+    setTodo(true);
+    setShown(ALL_PAGE);
+    loadMerchants();
+  };
+
   const statusOf = (m) => visited[m.id] ?? visited[m.name?.toLowerCase()];
   const outOf = (m) => m.id && (circuit.excluded[m.id] || circuit.fixed[m.id]);
 
   const list = useMemo(() => {
-    if (!position || !merchants) return [];
-    return merchants
+    if (!merchants || (mode === 'near' && !position)) return [];
+    const rows = merchants
       .filter((m) => !todo || (!outOf(m) && statusOf(m)?.status !== 'completo'))
-      .map((m) => ({ ...m, distance: distanceMeters(position, m) }))
-      .sort((a, b) => a.distance - b.distance);
+      .map((m) => ({ ...m, distance: position ? distanceMeters(position, m) : null }));
+    return mode === 'near'
+      ? rows.sort((a, b) => a.distance - b.distance)
+      : rows.sort((a, b) => a.name.localeCompare(b.name, 'it', { sensitivity: 'base' }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [position, merchants, todo, visited, circuit]);
+  }, [mode, position, merchants, todo, visited, circuit]);
 
-  if (geo === 'idle') {
+  if (mode === 'idle') {
     return (
-      <Button variant="secondary" onClick={locate} className="mt-2 w-full">
-        <LocateFixed className="h-4 w-4" />
-        {t.nearMe}
-      </Button>
+      <div className="mt-2 grid gap-2 sm:grid-cols-2">
+        <Button variant="secondary" onClick={locate} className="w-full">
+          <LocateFixed className="h-4 w-4" />
+          {t.nearMe}
+        </Button>
+        <Button variant="secondary" onClick={showAll} className="w-full">
+          <ListTodo className="h-4 w-4" />
+          {t.allTodo}
+        </Button>
+      </div>
     );
   }
 
-  const loading = geo === 'loading' || (geo === 'on' && !merchants);
+  const near = mode === 'near';
+  const ready = near ? geo === 'on' && merchants : merchants;
+  const loading = near ? geo === 'loading' || (geo === 'on' && !merchants) : !merchants;
+  const page = near ? NEAR_PAGE : ALL_PAGE;
+  const Icon = near ? LocateFixed : ListTodo;
 
   return (
     <div className="mt-2 rounded-xl border border-white/10 p-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="inline-flex items-center gap-1.5 text-sm font-semibold text-white">
-          <LocateFixed className="h-4 w-4 text-btc" />
-          {t.nearMe}
+          <Icon className="h-4 w-4 text-btc" />
+          {near ? t.nearMe : t.allTodo}
         </p>
         <div className="flex items-center gap-1.5">
           {geo !== 'loading' && (
+            <button
+              type="button"
+              onClick={near ? showAll : locate}
+              className="rounded-lg border border-white/10 px-2.5 py-1.5 text-xs font-semibold text-muted hover:border-white/25 hover:text-white"
+            >
+              {near ? t.allTodo : t.nearMe}
+            </button>
+          )}
+          {near && geo !== 'loading' && (
             <button
               type="button"
               onClick={locate}
@@ -1257,7 +1293,7 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
           )}
           <button
             type="button"
-            onClick={() => setGeo('idle')}
+            onClick={() => setMode('idle')}
             aria-label={t.nearClose}
             className="rounded-lg border border-white/10 p-1.5 text-muted hover:border-white/25 hover:text-white"
           >
@@ -1266,12 +1302,12 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
         </div>
       </div>
 
-      {geo === 'denied' && <p className="mt-3 text-xs text-red-300">{t.nearDenied}</p>}
-      {loading && <p className="mt-3 text-xs text-muted">{t.nearLoading}</p>}
+      {near && geo === 'denied' && <p className="mt-3 text-xs text-red-300">{t.nearDenied}</p>}
+      {loading && <p className="mt-3 text-xs text-muted">{near ? t.nearLoading : t.allLoading}</p>}
 
-      {geo === 'on' && merchants && (
+      {ready && (
         <>
-          <div className="mt-3 flex gap-1.5">
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
             {[
               [true, t.nearTodo],
               [false, t.nearAll],
@@ -1281,7 +1317,7 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
                 type="button"
                 onClick={() => {
                   setTodo(value);
-                  setShown(NEAR_PAGE);
+                  setShown(page);
                 }}
                 className={cn(
                   'rounded-full border px-3 py-1 text-xs font-semibold transition',
@@ -1291,10 +1327,11 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
                 {label}
               </button>
             ))}
+            <span className="ml-auto text-xs text-muted">{t.shopCount(list.length)}</span>
           </div>
 
           {list.length === 0 ? (
-            <p className="mt-3 text-xs text-muted">{t.nearEmpty}</p>
+            <p className="mt-3 text-xs text-muted">{near ? t.nearEmpty : t.allEmpty}</p>
           ) : (
             <ul className="mt-2 divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10">
               {list.slice(0, shown).map((m) => {
@@ -1315,7 +1352,9 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
                       <span className="min-w-0 flex-1">
                         <span className="flex items-baseline justify-between gap-2">
                           <span className="truncate text-sm font-medium text-white">{m.name}</span>
-                          <span className="shrink-0 text-xs font-semibold text-btc">{t.nearDistance(m.distance)}</span>
+                          {m.distance != null && (
+                            <span className="shrink-0 text-xs font-semibold text-btc">{t.nearDistance(m.distance)}</span>
+                          )}
                         </span>
                         {m.address && <span className="block truncate text-xs text-muted">{m.address}</span>}
                         {seen && <VisitedBadge seen={seen} locale={locale} />}
@@ -1344,13 +1383,13 @@ function NearbyShops({ visited, circuit, onPick, locale }) {
           {list.length > shown && (
             <button
               type="button"
-              onClick={() => setShown((n) => n + NEAR_PAGE)}
+              onClick={() => setShown((n) => n + page)}
               className="mt-2 w-full rounded-xl border border-white/10 p-2.5 text-xs font-semibold text-muted hover:border-white/25 hover:text-white"
             >
               {t.nearMore}
             </button>
           )}
-          <p className="mt-2 text-[11px] text-muted">{t.nearPrivacy}</p>
+          {near && <p className="mt-2 text-[11px] text-muted">{t.nearPrivacy}</p>}
         </>
       )}
     </div>

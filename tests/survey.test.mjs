@@ -441,3 +441,22 @@ test('chi non ha mai usato il POS non deve dare un voto', () => {
   // Senza voto non compaiono nemmeno QR e domanda sulla recensione.
   assert.equal(isVisible(recensione, { con_chi: 'Titolare', naka_mai_usato: true }), false);
 });
+
+test('con le risposte di una visita ripresa, fuori circuito e chiuso non chiedono del terminale', () => {
+  // Una visita di prima a negozio aperto, con il terminale presente e la prova dei QR.
+  const prima = {
+    con_chi: 'Titolare',
+    pos_presenza: 'Presente e acceso',
+    pos_test: 'Solo generato i QR',
+    qr_provati: ['BTC · Lightning'],
+    ritorno: true,
+    naka_esperienza: 5,
+    mylugano_lamentela: true,
+    cassa_sistema: 'si',
+  };
+  const fuori = { ...prima, con_chi: 'Non fa più parte del circuito', circuito_motivo: 'Ha tolto il POS' };
+  assert.deepEqual(ALL_QUESTIONS.filter((q) => isVisible(q, fuori)).map((q) => q.id), ['con_chi', 'circuito_motivo']);
+  assert.deepEqual(pickAnswers(fuori), { con_chi: fuori.con_chi, circuito_motivo: 'Ha tolto il POS' });
+  const chiuso = { ...prima, con_chi: 'Era chiuso' };
+  assert.deepEqual(ALL_QUESTIONS.filter((q) => isVisible(q, chiuso)).map((q) => q.id), ['con_chi', 'ritorno_quando', 'ritorno_ora', 'note']);
+});
