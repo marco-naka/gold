@@ -422,6 +422,18 @@ Pannello, foto ed esportazioni sono riservati ai nomi elencati in `RILEVAZIONI_A
 di `RILEVAZIONI_OPERATORI`, con il loro PIN). Le foto restano sul disco, coperte dagli snapshot
 giornalieri di Render.
 
+### Adesivi in vetrina
+
+Chi monta gli adesivi entra da `/rilevazioni` con il PIN `RILEVAZIONI_ADESIVI_PIN` (es. `2000`,
+diverso da quelli dei rilevatori) e finisce in **`/rilevazioni/adesivi`**: vede i negozi che
+aderiscono e quelli ancora da visitare (mai rilevati, chiusi o da ricontattare; non quelli fuori
+circuito né chi non aderisce, sempre secondo l'ultima rilevazione). Per ogni negozio manda la foto
+della vetrina con l'adesivo, oppure «Non ha voluto l'adesivo» o «Chiuso, da ripassare». Il nome lo
+scrive una volta sul telefono. Il questionario e il pannello restano chiusi a quel PIN.
+
+L'admin vede tutto, foto comprese, in **`/rilevazioni/admin/adesivi`**. Dati in `.data/adesivi.json`,
+foto in `.data/adesivi/<anno>/<id>.<ext>`. Senza la variabile l'area adesivi è chiusa.
+
 ### Dati
 
 `.data/rilevazioni.json` per le rilevazioni, `.data/rilevazioni/<anno>/<id>-<slot>.<ext>` per le foto, fuori

@@ -18,6 +18,7 @@ import {
 import { applyAmend, applyReschedule, canEdit, reschedules } from '@/lib/visit-history';
 import { visitIcs } from '@/lib/server/visit-ics';
 import { excludeMerchant } from '@/lib/server/merchant-exclusions';
+import { isStickerPin, stickerCookie } from '@/lib/server/adesivi-auth';
 import { persistentStorage } from '@/lib/server/persistence';
 import { signedPhotoUrl } from '@/lib/server/photo-links';
 import { visitsCsv } from '@/lib/survey-export';
@@ -192,6 +193,13 @@ export async function POST(request) {
       return NextResponse.json({ code: 'rate_limited' }, { status: 429 });
     }
     const operator = identify(form.get('code'));
+    // Il PIN di chi monta gli adesivi apre solo la sua area, con un cookie a parte: il
+    // questionario e il pannello restano chiusi.
+    if (operator === null && isStickerPin(form.get('code'))) {
+      const res = NextResponse.json({ ok: true, redirect: '/rilevazioni/adesivi' });
+      res.cookies.set(stickerCookie());
+      return res;
+    }
     if (operator === null) {
       hit(UNLOCK_FAILS.key, UNLOCK_FAILS);
       if (recent(UNLOCK_FAILS.key, UNLOCK_FAILS.windowMs) === UNLOCK_FAILS.max) {

@@ -310,7 +310,9 @@ export function CodeGate({ onUnlock, locale, onLocale, pinHint }) {
     const res = await fetch('/api/rilevazioni', { method: 'POST', body });
     const json = await res.json().catch(() => ({}));
     setBusy(false);
-    if (res.ok) onUnlock(json.operator);
+    // Il PIN degli adesivi porta alla sua area: lì il questionario non c'è.
+    if (res.ok && json.redirect) window.location.assign(json.redirect);
+    else if (res.ok) onUnlock(json.operator);
     // Troppi tentativi: anche il PIN giusto aspetta, e va detto, o sembra sbagliato.
     else setError(res.status === 429 ? t.gateBusy : t.gateWrong);
   }
