@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
+import { mkdtempSync, readFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { isStickerDone, matchesShop, stickerShops } from '../lib/stickers.js';
 import { isStickerPin, isStickerSession, stickerCookie } from '../lib/server/adesivi-auth.js';
 import { currentOperator, identify, isAuthorized } from '../lib/server/rilevazioni-auth.js';
@@ -100,15 +103,20 @@ test('«Vicino a me»: dal più vicino, e chi non ha coordinate va in fondo', as
   assert.equal(formatDistance(1450), '1,4 km');
 });
 
-test('il cookie degli adesivi non si firma col solo PIN, e cambiare PIN lo invalida', () => {
+test('il cookie degli adesivi non si firma con niente di indovinabile, e cambiare PIN lo invalida', () => {
   delete process.env.RILEVAZIONI_SECRET;
+  process.env.DATA_DIR = mkdtempSync(join(tmpdir(), 'adesivi-'));
   process.env.RILEVAZIONI_OPERATORI = 'Sabri:1111,Emilio:2222';
   process.env.RILEVAZIONI_ADESIVI_PIN = '2000';
   const c = stickerCookie();
   assert.equal(isStickerSession(req(c)), true);
-  // Firmato col solo PIN sarebbe questo: non deve coincidere.
-  assert.notEqual(c.value, createHmac('sha256', '2000').update('adesivi-v1:2000').digest('hex'));
+  const msg = 'adesivi-v1:2000';
+  assert.notEqual(c.value, createHmac('sha256', '2000').update(msg).digest('hex'));
+  assert.notEqual(c.value, createHmac('sha256', 'Sabri:1111,Emilio:2222').update(msg).digest('hex'));
+  // La chiave casuale sta sul disco del server, lunga 256 bit.
+  assert.equal(readFileSync(join(process.env.DATA_DIR, 'adesivi-chiave'), 'utf8').length, 64);
   process.env.RILEVAZIONI_ADESIVI_PIN = '3000';
   assert.equal(isStickerSession(req(c)), false);
   delete process.env.RILEVAZIONI_ADESIVI_PIN;
+  delete process.env.DATA_DIR;
 });
