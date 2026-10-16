@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { createHmac } from 'node:crypto';
 import { isStickerDone, matchesShop, stickerShops } from '../lib/stickers.js';
 import { isStickerPin, isStickerSession, stickerCookie } from '../lib/server/adesivi-auth.js';
 import { currentOperator, identify, isAuthorized } from '../lib/server/rilevazioni-auth.js';
@@ -97,4 +98,17 @@ test('«Vicino a me»: dal più vicino, e chi non ha coordinate va in fondo', as
   assert.deepEqual(byDistance(shops, here).map((s) => s.id), ['vicino', 'lontano', 'senza']);
   assert.equal(formatDistance(123), '120 m');
   assert.equal(formatDistance(1450), '1,4 km');
+});
+
+test('il cookie degli adesivi non si firma col solo PIN, e cambiare PIN lo invalida', () => {
+  delete process.env.RILEVAZIONI_SECRET;
+  process.env.RILEVAZIONI_OPERATORI = 'Sabri:1111,Emilio:2222';
+  process.env.RILEVAZIONI_ADESIVI_PIN = '2000';
+  const c = stickerCookie();
+  assert.equal(isStickerSession(req(c)), true);
+  // Firmato col solo PIN sarebbe questo: non deve coincidere.
+  assert.notEqual(c.value, createHmac('sha256', '2000').update('adesivi-v1:2000').digest('hex'));
+  process.env.RILEVAZIONI_ADESIVI_PIN = '3000';
+  assert.equal(isStickerSession(req(c)), false);
+  delete process.env.RILEVAZIONI_ADESIVI_PIN;
 });

@@ -115,7 +115,11 @@ export default function StickerApp() {
 
   const todo = useMemo(() => (shops ?? []).filter((s) => !isStickerDone(s)), [shops]);
   const done = useMemo(() => (shops ?? []).filter(isStickerDone), [shops]);
-  const filtered = (tab === 'todo' ? todo : done).filter((s) => matchesShop(s, q));
+  const todoJoined = useMemo(() => todo.filter((s) => s.group === 'aderisce'), [todo]);
+  const TABS = { todo, joined: todoJoined, done };
+  const filtered = (TABS[tab] ?? todo).filter((s) => matchesShop(s, q));
+  // Se il negozio cercato non è in questa scheda: dove sta, per portarci con un tocco.
+  const elsewhere = q && !filtered.length ? (done.some((s) => matchesShop(s, q)) && tab !== 'done' ? 'done' : todo.some((s) => matchesShop(s, q)) && tab !== 'todo' ? 'todo' : null) : null;
   const list = sort === 'near' && position ? byDistance(filtered, position) : filtered;
 
   if (name === null) return null;
@@ -152,9 +156,10 @@ export default function StickerApp() {
         </button>
       </header>
 
-      <div className="mt-5 grid grid-cols-2 gap-2" role="tablist">
+      <div className="mt-5 grid grid-cols-3 gap-2" role="tablist">
         {[
           ['todo', `Da fare (${todo.length})`],
+          ['joined', `Da fare · aderito (${todoJoined.length})`],
           ['done', `Fatti (${done.length})`],
         ].map(([id, label]) => (
           <button
@@ -167,7 +172,7 @@ export default function StickerApp() {
               setLimit(PAGE);
             }}
             className={cn(
-              'rounded-xl border px-3 py-2.5 text-sm font-semibold transition',
+              'rounded-xl border px-2 py-2.5 text-xs font-semibold leading-tight transition sm:text-sm',
               tab === id ? 'border-btc/50 bg-btc/15 text-btc' : 'border-white/10 bg-white/5 text-muted hover:text-white',
             )}
           >
@@ -232,7 +237,7 @@ export default function StickerApp() {
       {shops && (
         <>
           {list.length === 0 ? (
-            <EmptyList q={q} tab={tab} other={(tab === 'todo' ? done : todo).filter((s) => matchesShop(s, q)).length} onSwitch={() => setTab(tab === 'todo' ? 'done' : 'todo')} />
+            <EmptyList q={q} tab={tab} elsewhere={elsewhere} onSwitch={() => elsewhere && setTab(elsewhere)} />
           ) : (
             <ul className="mt-3 divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10">
               {list.slice(0, limit).map((s) => (
@@ -273,18 +278,20 @@ export default function StickerApp() {
 }
 
 /** Elenco vuoto: se il negozio cercato sta nell'altra scheda, lo si dice e ci si passa. */
-function EmptyList({ q, tab, other, onSwitch }) {
-  if (q && other > 0) {
+function EmptyList({ q, tab, elsewhere, onSwitch }) {
+  if (elsewhere) {
+    const name = elsewhere === 'done' ? 'Fatti' : 'Da fare';
     return (
       <p className="mt-6 text-sm text-muted">
-        Qui non c’è, ma è tra {tab === 'todo' ? 'i Fatti' : 'i Da fare'}.{' '}
+        Qui non c’è, ma è in «{name}».{' '}
         <button type="button" onClick={onSwitch} className="font-semibold text-btc underline">
-          Apri {tab === 'todo' ? 'Fatti' : 'Da fare'}
+          Apri {name}
         </button>
       </p>
     );
   }
-  return <p className="mt-6 text-sm text-muted">{q ? 'Nessun negozio con questo nome.' : tab === 'todo' ? 'Tutto fatto.' : 'Ancora nessun negozio fatto.'}</p>;
+  const empty = { todo: 'Tutto fatto.', joined: 'Nessun negozio aderente ancora da fare.', done: 'Ancora nessun negozio fatto.' };
+  return <p className="mt-6 text-sm text-muted">{q ? 'Nessun negozio con questo nome.' : empty[tab]}</p>;
 }
 
 function GroupBadge({ group }) {
