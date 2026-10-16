@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Camera, Check, CircleSlash, DoorClosed, LocateFixed, MapPin, Search, SortAsc, Store, UserRound } from 'lucide-react';
+import { ArrowLeft, Camera, Check, CircleSlash, DoorClosed, LocateFixed, MapPin, Navigation, Search, SortAsc, Store, UserRound } from 'lucide-react';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { CodeGate } from './SurveyForm';
@@ -11,6 +11,11 @@ import { TIME_ZONE } from '@/lib/time';
 
 // Non da `lib/merchants`: importarlo porterebbe nel telefono tutto l'elenco dei negozi.
 const mapsUrl = (shop) => `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${shop.name}, ${shop.address}`)}`;
+// Le indicazioni a piedi, come nelle rilevazioni; senza coordinate, la ricerca per nome e indirizzo.
+const directionsUrl = (shop) =>
+  shop.lat != null && shop.lng != null
+    ? `https://www.google.com/maps/dir/?api=1&travelmode=walking&destination=${shop.lat},${shop.lng}`
+    : mapsUrl(shop);
 
 /*
  * Area di chi monta gli adesivi in vetrina. Tre cose sole: cercare il negozio, mandare la foto
@@ -241,11 +246,11 @@ export default function StickerApp() {
           ) : (
             <ul className="mt-3 divide-y divide-white/5 overflow-hidden rounded-xl border border-white/10">
               {list.slice(0, limit).map((s) => (
-                <li key={s.id}>
+                <li key={s.id} className="flex items-stretch">
                   <button
                     type="button"
                     onClick={() => setOpen(s.id)}
-                    className="flex w-full items-start gap-3 p-3.5 text-left transition hover:bg-white/5"
+                    className="flex min-w-0 flex-1 items-start gap-3 p-3.5 text-left transition hover:bg-white/5"
                   >
                     <Store className={cn('mt-0.5 h-4 w-4 shrink-0', isStickerDone(s) ? 'text-muted' : 'text-btc')} />
                     <span className="min-w-0 flex-1">
@@ -258,6 +263,16 @@ export default function StickerApp() {
                       </span>
                     </span>
                   </button>
+                  {/* Google Maps senza aprire la scheda del negozio. */}
+                  <a
+                    href={directionsUrl(s)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${s.name}: Google Maps`}
+                    className="flex shrink-0 items-center border-l border-white/5 px-3.5 text-muted transition hover:bg-white/5 hover:text-btc"
+                  >
+                    <Navigation className="h-4 w-4" />
+                  </a>
                 </li>
               ))}
             </ul>
@@ -456,6 +471,14 @@ function ShopStep({ shop, name, onBack, onSent }) {
             <MapPin className="h-4 w-4" /> {shop.address}
           </a>
         )}
+        <a
+          href={directionsUrl(shop)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 p-3 text-sm font-semibold text-white transition hover:border-btc/50 hover:text-btc"
+        >
+          <Navigation className="h-4 w-4" /> Apri in Google Maps
+        </a>
         <div className="mt-2 flex flex-wrap gap-1.5">
           <GroupBadge group={shop.group} />
           {shop.sticker && <StatusBadge sticker={shop.sticker} />}
