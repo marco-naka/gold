@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ALL_MERCHANTS } from '@/lib/merchants';
+import { ALL_MERCHANTS, MERCHANT_EXCLUSIONS } from '@/lib/merchants';
 import { OUTCOMES, PHOTOS, isPending, outcomeOf } from '@/lib/survey';
 import { MAX_PHOTO_BYTES, pickAnswers, validateVisit } from '@/lib/survey-validation';
 import { sniffImage } from '@/lib/server/image-sniff';
@@ -17,11 +17,11 @@ import {
 } from '@/lib/server/visits';
 import { applyAmend, applyReschedule, canEdit, reschedules } from '@/lib/visit-history';
 import { visitIcs } from '@/lib/server/visit-ics';
-import { excludeMerchant } from '@/lib/server/merchant-exclusions';
+import { excludeMerchant, excludedIds } from '@/lib/server/merchant-exclusions';
 import { isStickerPin, stickerCookie } from '@/lib/server/adesivi-auth';
 import { persistentStorage } from '@/lib/server/persistence';
 import { signedPhotoUrl } from '@/lib/server/photo-links';
-import { visitsCsv } from '@/lib/survey-export';
+import { unvisitedMerchants, visitsCsv } from '@/lib/survey-export';
 import { todayInZurich } from '@/lib/time';
 import { HOUR, MINUTE, globalLimit, hit, recent } from '@/lib/server/rate-limit';
 import { clientIp } from '@/lib/server/client-ip';
@@ -52,7 +52,11 @@ export async function GET(request) {
     const name = `rilevazioni-${todayInZurich()}.${format}`;
     const body =
       format === 'csv'
-        ? `\uFEFF${visitsCsv(visits, { photoUrl: signedPhotoUrl })}` // BOM: Excel apre gli accenti giusti
+        ? `\uFEFF${visitsCsv(visits, {
+          photoUrl: signedPhotoUrl,
+          // In fondo anche i negozi mai rilevati, per avere fatti e da fare in un foglio solo.
+          unvisited: unvisitedMerchants(ALL_MERCHANTS, visits, new Set([...Object.keys(MERCHANT_EXCLUSIONS), ...(await excludedIds())])),
+        })}` // BOM: Excel apre gli accenti giusti
         : `${JSON.stringify({ exportedAt: new Date().toISOString(), visits }, null, 2)}\n`;
     return new NextResponse(body, {
       headers: {

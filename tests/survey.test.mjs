@@ -479,3 +479,21 @@ test('ripasso: obbligatorie solo le domande che decidono l’esito', async () =>
   const ritorno = ALL_QUESTIONS.find((q) => q.id === 'ritorno_motivo');
   assert.equal(isRequired(ritorno, { con_chi: 'Titolare', ritorno: true }, { returnVisit: true }), true);
 });
+
+test('export: i negozi mai rilevati in fondo, con esito «Mai rilevato»', async () => {
+  const { visitsCsv, unvisitedMerchants } = await import('../lib/survey-export.js');
+  const merchants = [
+    { id: 'a', name: 'Zeta Bar', address: 'Via 1', category: 'food' },
+    { id: 'b', name: 'Alfa Shop', address: 'Via 2', category: 'shopping' },
+    { id: 'c', name: 'Visitato', address: 'Via 3', category: 'food' },
+    { id: 'd', name: 'Escluso', address: 'Via 4', category: 'food' },
+  ];
+  const visits = [{ id: 'RV-1', merchantId: 'c', merchantName: 'Visitato', surveyor: 'Anna', outcome: 'aderisce', answers: {}, createdAt: '2026-10-16T08:00:00Z' }];
+  const unvisited = unvisitedMerchants(merchants, visits, new Set(['d']));
+  assert.deepEqual(unvisited.map((m) => m.id), ['b', 'a']);
+  const lines = visitsCsv(visits, { unvisited }).trim().split('\r\n');
+  assert.equal(lines.length, 1 + 1 + 2);
+  assert.ok(lines[2].includes('Alfa Shop') && lines[2].includes('Mai rilevato'));
+  assert.ok(lines[3].includes('Zeta Bar'));
+  assert.equal(lines[2].split(',').length, lines[0].split(',').length);
+});
