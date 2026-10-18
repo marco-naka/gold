@@ -238,7 +238,9 @@ export async function POST(request) {
     answers,
   };
 
-  const errors = validateVisit(data);
+  // Ripasso: il negozio ha già una rilevazione, quindi si chiede solo quello che decide l'esito.
+  const returnVisit = (await visitsForMerchant(data.merchantId, data.merchantName)).length > 0;
+  const errors = validateVisit(data, { returnVisit });
 
   const files = await readPhotos(form, errors);
 

@@ -460,3 +460,22 @@ test('con le risposte di una visita ripresa, fuori circuito e chiuso non chiedon
   const chiuso = { ...prima, con_chi: 'Era chiuso' };
   assert.deepEqual(ALL_QUESTIONS.filter((q) => isVisible(q, chiuso)).map((q) => q.id), ['con_chi', 'ritorno_quando', 'ritorno_ora', 'note']);
 });
+
+test('ripasso: obbligatorie solo le domande che decidono l’esito', async () => {
+  const { validateVisit, isRequired, RETURN_REQUIRED } = await import('../lib/survey-validation.js');
+  const { ALL_QUESTIONS } = await import('../lib/survey.js');
+  const base = { merchantName: 'Bar Test', surveyor: 'Anna' };
+  // Negozio aperto, nessuna risposta oltre a chi si è trovato: alla prima visita mancano tante cose,
+  // al ripasso manca solo l'adesione.
+  const answers = { con_chi: 'Titolare' };
+  const first = Object.keys(validateVisit({ ...base, answers }));
+  const again = Object.keys(validateVisit({ ...base, answers }, { returnVisit: true }));
+  assert.ok(first.length > 3);
+  assert.deepEqual(again, ['adesione']);
+  assert.deepEqual(Object.keys(validateVisit({ ...base, answers: { con_chi: 'Titolare', adesione: 'Aderisce' } }, { returnVisit: true })), []);
+  // Le domande tenute obbligatorie esistono davvero nel questionario.
+  for (const id of RETURN_REQUIRED) assert.ok(ALL_QUESTIONS.some((q) => q.id === id), id);
+  // Un ritorno spuntato chiede ancora motivo e data anche al ripasso.
+  const ritorno = ALL_QUESTIONS.find((q) => q.id === 'ritorno_motivo');
+  assert.equal(isRequired(ritorno, { con_chi: 'Titolare', ritorno: true }, { returnVisit: true }), true);
+});

@@ -32,7 +32,7 @@ import {
   ui,
   yesNoIn,
 } from '@/lib/survey-i18n';
-import { MAX_PHOTO_BYTES, validateVisit } from '@/lib/survey-validation';
+import { MAX_PHOTO_BYTES, isRequired, validateVisit } from '@/lib/survey-validation';
 import { compressAll, inMemory } from '@/lib/compress-image';
 import { clearDraftPhotos, loadDraftPhotos, saveDraftPhotos } from '@/lib/photo-draft';
 import {
@@ -378,6 +378,8 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
   const formKey = useRef(null);
   const [drafts, setDrafts] = useState([]);
   const [resumedAt, setResumedAt] = useState(null);
+  // Negozi già rilevati: al ripasso il modulo chiede solo quello che decide l'esito (come il server).
+  const [visitedShops, setVisitedShops] = useState({});
   const resumedStep = useRef(null);
 
   // Bozza: si rilegge all'apertura e si riscrive a ogni modifica. Le foto restano fuori,
@@ -553,7 +555,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
 
   async function submit() {
     const data = { merchantName: merchant?.name, surveyor, answers };
-    const found = validateVisit(data);
+    const found = validateVisit(data, { returnVisit });
     if (Object.keys(found).length) {
       setErrors(found);
       // Porta il rilevatore alla prima sezione che contiene un errore, invece di
@@ -640,6 +642,17 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
   }, [merchant?.name, activitySection, onActivity]);
   useEffect(() => () => onActivity?.(null), [onActivity]);
 
+  // Riepilogo dei negozi già rilevati, riletto a ogni cambio di negozio: decide il ripasso.
+  useEffect(() => {
+    if (!merchant) return undefined;
+    let live = true;
+    fetch('/api/rilevazioni?visited=1', { cache: 'no-store' })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => live && d && setVisitedShops(d.visited ?? {}))
+      .catch(() => {});
+    return () => { live = false; };
+  }, [merchant?.id, merchant?.name]);
+
   // L'avviso «bozza ripresa» resta nella sezione in cui si è ripreso; al primo passo dopo, sparisce.
   useEffect(() => {
     if (resumedAt && resumedStep.current !== null && step !== resumedStep.current) {
@@ -659,6 +672,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
 
   const current = steps[step];
   const section = SECTIONS.find((s) => s.id === current);
+  const returnVisit = isReturnVisit(merchant, visitedShops, previous);
   const canGoNext = step < steps.length - 1;
   const choosing = current === 'negozio' && !merchant;
 
@@ -698,6 +712,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
           {sectionIn(section, locale, answers).intro && (
             <p className="mt-1.5 text-sm text-muted">{sectionIn(section, locale, answers).intro}</p>
           )}
+          {returnVisit && <p className="mt-3 rounded-xl border border-btc/30 bg-btc/10 px-4 py-3 text-sm text-btc">{t.returnVisitNote}</p>}
           <div className="mt-7 space-y-7">
             {section.questions
               .filter((q) => isVisible(q, answers))
@@ -711,6 +726,7 @@ function Survey({ locale, onLocale, operator, admin, onActivity, onSent }) {
                   photos={photos}
                   setPhotos={setPhotos}
                   answers={answers}
+                  returnVisit={returnVisit}
                   locale={locale}
                 />
               ))}
@@ -1590,7 +1606,7 @@ function VisitedBadge({ seen, locale }) {
   );
 }
 
-export function Question({ question, value, onChange, error, photos, setPhotos, answers, locale }) {
+export function Question({ question, value, onChange, error, photos, setPhotos, answers, returnVisit = false, locale }) {
   const id = question.id;
   const t = ui(locale);
   const { label, help } = askedIn(question, locale);
@@ -1656,9 +1672,7 @@ export function Question({ question, value, onChange, error, photos, setPhotos, 
     <div>
       <p className="text-sm font-semibold text-white">
         {label}
-        {question.required && !(question.optionalIf && isVisible({ showIf: question.optionalIf }, answers ?? {})) && (
-          <span className="text-btc"> *</span>
-        )}
+        {isRequired(question, answers ?? {}, { returnVisit }) && <span className="text-btc"> *</span>}
       </p>
       {help && <p className="mt-1 text-xs leading-relaxed text-muted">{help}</p>}
 
@@ -1924,6 +1938,13 @@ function PhotoStep({ photos, setPhotos, previous, onPrevious, errors, generic, l
 }
 
 /** Le foto della visita di prima che passano in quella nuova: tutte, tranne quelle tolte. */
+/** Il negozio scelto ha già una rilevazione? (riepilogo dei visitati, o visita da cui si riparte). */
+export function isReturnVisit(merchant, visitedShops, previous) {
+  if (!merchant) return false;
+  if (previous?.id) return true;
+  return Boolean((merchant.id && visitedShops[merchant.id]) || visitedShops[merchant.name?.toLowerCase()]);
+}
+
 export const keptPhotos = (previous) =>
   (previous?.photos ?? []).filter((ph) => !(previous.dropped ?? []).includes(ph.key));
 
