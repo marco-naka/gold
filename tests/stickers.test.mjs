@@ -191,3 +191,18 @@ test('la copia di sicurezza è uno ZIP valido', async () => {
   assert.equal(zip.readUInt32LE(end), 0x06054b50);
   assert.equal(zip.readUInt16LE(end + 10), 2);
 });
+
+test('i rilevatori entrano anche negli adesivi con il loro PIN, il PIN adesivi non apre il questionario', async () => {
+  const { canUseStickers } = await import('../lib/server/adesivi-auth.js');
+  const { sessionCookie } = await import('../lib/server/rilevazioni-auth.js');
+  process.env.RILEVAZIONI_SECRET = 'una-chiave-lunga-e-casuale-per-le-prove';
+  process.env.RILEVAZIONI_OPERATORI = 'Sabri:1111';
+  process.env.RILEVAZIONI_ADESIVI_PIN = '2000';
+  assert.equal(canUseStickers(req(sessionCookie('Sabri'))), true);
+  assert.equal(canUseStickers(req(stickerCookie())), true);
+  assert.equal(isAuthorized(req(stickerCookie())), false);
+  assert.equal(canUseStickers(req()), false);
+  assert.equal(canUseStickers(req({ name: 'adesivi', value: 'abc' })), false);
+  delete process.env.RILEVAZIONI_SECRET;
+  delete process.env.RILEVAZIONI_ADESIVI_PIN;
+});

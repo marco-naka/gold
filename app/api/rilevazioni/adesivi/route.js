@@ -3,8 +3,8 @@ import { ALL_MERCHANTS, MERCHANT_EXCLUSIONS } from '@/lib/merchants';
 import { NAME_MAX, NAME_MIN, cleanMaterials, photoRequired, stickerShops, stickerStatus } from '@/lib/stickers';
 import { MAX_PHOTO_BYTES } from '@/lib/survey-validation';
 import { sniffImage } from '@/lib/server/image-sniff';
-import { isAdmin } from '@/lib/server/rilevazioni-auth';
-import { isStickerSession } from '@/lib/server/adesivi-auth';
+import { currentOperator, isAdmin } from '@/lib/server/rilevazioni-auth';
+import { canUseStickers } from '@/lib/server/adesivi-auth';
 import { excludedIds } from '@/lib/server/merchant-exclusions';
 import { listVisits } from '@/lib/server/visits';
 import { listStickers, newStickerId, saveSticker, storeStickerPhoto } from '@/lib/server/stickers';
@@ -16,14 +16,14 @@ export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 /**
- * Area adesivi: chi monta gli adesivi (PIN `RILEVAZIONI_ADESIVI_PIN`) e l'admin.
+ * Area adesivi: chi monta gli adesivi (PIN `RILEVAZIONI_ADESIVI_PIN`), i rilevatori e l'admin.
  *
  * GET           → i negozi da mostrare, con l'ultimo passaggio di ciascuno
  * GET ?all=1    → (solo admin) anche tutti i passaggi, per il pannello
  * POST          → un passaggio: il materiale lasciato (con la foto), «non l'ha voluto» o «chiuso».
  *                 Si può ripassare da ogni negozio dell'elenco, anche da chi ha già l'adesivo.
  */
-const allowed = (request) => isStickerSession(request) || isAdmin(request);
+const allowed = canUseStickers;
 
 async function currentShops() {
   const excluded = new Set([...Object.keys(MERCHANT_EXCLUSIONS), ...(await excludedIds())]);
@@ -73,7 +73,8 @@ export async function POST(request) {
     status = 'lasciato';
     materials = ['adesivi'];
   }
-  const by = String(form.get('by') || '').trim().replace(/\s+/g, ' ');
+  // Con il PIN personale il nome è quello del PIN; con il PIN adesivi, quello scritto sul telefono.
+  const by = currentOperator(request) || String(form.get('by') || '').trim().replace(/\s+/g, ' ');
 
   const errors = {};
   if (!stickerStatus(status) || stickerStatus(status).legacy) errors.status = 'invalid';

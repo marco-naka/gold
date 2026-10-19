@@ -48,21 +48,21 @@ const when = (iso) =>
   new Intl.DateTimeFormat('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
 const day = (iso) => new Intl.DateTimeFormat('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit' }).format(new Date(iso));
 
-/** L'accesso: lo stesso PIN dei rilevatori, ma con il PIN degli adesivi si resta qui. */
+/** L'accesso: il PIN degli adesivi oppure quello di un rilevatore, e in tutti e due i casi si resta qui. */
 export function StickerGate() {
   return (
     <CodeGate
       locale="it"
       onLocale={() => {}}
       pinHint={null}
-      // Un PIN da rilevatore apre il questionario, non questa pagina.
-      onUnlock={() => window.location.assign('/rilevazioni')}
+      // Anche un PIN da rilevatore apre questa pagina: si ricarica con il suo cookie.
+      onUnlock={() => window.location.reload()}
     />
   );
 }
 
-export default function StickerApp() {
-  const [name, setName] = useState(null);
+export default function StickerApp({ operator = null }) {
+  const [name, setName] = useState(operator);
   const [shops, setShops] = useState(null);
   const [loadError, setLoadError] = useState(false);
   const [tab, setTab] = useState('todo');
@@ -92,6 +92,7 @@ export default function StickerApp() {
   };
 
   useEffect(() => {
+    if (operator) return;
     try {
       setName(localStorage.getItem(NAME_KEY) || '');
     } catch {
@@ -170,14 +171,21 @@ export default function StickerApp() {
           <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-btc">Adesivi e materiale</p>
           <h1 className="mt-1 text-2xl font-bold">Negozi</h1>
         </div>
-        <button
-          type="button"
-          onClick={() => saveName('')}
-          className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-muted hover:text-white"
-        >
-          <UserRound className="h-3.5 w-3.5" />
-          {name} · cambia
-        </button>
+        {operator ? (
+          <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-muted">
+            <UserRound className="h-3.5 w-3.5" />
+            {name}
+          </span>
+        ) : (
+          <button
+            type="button"
+            onClick={() => saveName('')}
+            className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-muted hover:text-white"
+          >
+            <UserRound className="h-3.5 w-3.5" />
+            {name} · cambia
+          </button>
+        )}
       </header>
 
       <div className="mt-5 grid grid-cols-3 gap-2" role="tablist">
