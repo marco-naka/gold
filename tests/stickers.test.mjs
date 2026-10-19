@@ -206,3 +206,17 @@ test('i rilevatori entrano anche negli adesivi con il loro PIN, il PIN adesivi n
   delete process.env.RILEVAZIONI_SECRET;
   delete process.env.RILEVAZIONI_ADESIVI_PIN;
 });
+
+test('senza PIN configurati, in produzione l\'area adesivi resta chiusa', async () => {
+  const { canUseStickers } = await import('../lib/server/adesivi-auth.js');
+  const saved = { ...process.env };
+  for (const k of ['RILEVAZIONI_OPERATORI', 'RILEVAZIONI_CODE', 'RILEVAZIONI_ADESIVI_PIN', 'RILEVAZIONI_SECRET']) delete process.env[k];
+  process.env.NODE_ENV = 'production';
+  try {
+    assert.equal(canUseStickers(req()), false);
+  } finally {
+    process.env.NODE_ENV = saved.NODE_ENV;
+    if (saved.NODE_ENV === undefined) delete process.env.NODE_ENV;
+    if (saved.RILEVAZIONI_OPERATORI !== undefined) process.env.RILEVAZIONI_OPERATORI = saved.RILEVAZIONI_OPERATORI;
+  }
+});
