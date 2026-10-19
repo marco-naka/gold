@@ -172,9 +172,15 @@ export default function StickerApp({ operator = null }) {
           <h1 className="mt-1 text-2xl font-bold">Negozi</h1>
         </div>
         {operator ? (
-          <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-muted">
-            <UserRound className="h-3.5 w-3.5" />
-            {name}
+          <span className="flex flex-col items-end gap-1.5">
+            <span className="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-muted">
+              <UserRound className="h-3.5 w-3.5" />
+              {name}
+            </span>
+            {/* Ritorno al questionario, per chi è entrato con il PIN da rilevatore. */}
+            <a href="/rilevazioni" className="text-xs text-muted underline underline-offset-2 hover:text-white">
+              Torna alle rilevazioni
+            </a>
           </span>
         ) : (
           <button

@@ -259,6 +259,12 @@ function SurveyApp({ locale, onLocale, operator, admin }) {
               {count !== null && <span className="ml-1.5 tabular-nums opacity-70">{count}</span>}
             </button>
           ))}
+          {/* L'area adesivi è un'altra pagina: ci si entra con lo stesso PIN personale. */}
+          {operator && (
+            <a href="/rilevazioni/adesivi" className="flex-1 rounded-full px-3 py-2 text-center text-sm font-semibold text-muted transition hover:text-white">
+              {t.tabStickers}
+            </a>
+          )}
         </div>
       </nav>
       {tab === 'nuova' && (
