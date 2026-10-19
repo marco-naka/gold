@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ALL_MERCHANTS, MERCHANT_EXCLUSIONS } from '@/lib/merchants';
-import { NAME_MAX, NAME_MIN, stickerShops, stickerStatus } from '@/lib/stickers';
+import { NAME_MAX, NAME_MIN, cleanMaterials, photoRequired, stickerShops, stickerStatus } from '@/lib/stickers';
 import { MAX_PHOTO_BYTES } from '@/lib/survey-validation';
 import { sniffImage } from '@/lib/server/image-sniff';
 import { isAdmin } from '@/lib/server/rilevazioni-auth';
@@ -20,7 +20,8 @@ export const dynamic = 'force-dynamic';
  *
  * GET           → i negozi da mostrare, con l'ultimo passaggio di ciascuno
  * GET ?all=1    → (solo admin) anche tutti i passaggi, per il pannello
- * POST          → un passaggio: foto della vetrina con l'adesivo, «non l'ha voluto» o «chiuso»
+ * POST          → un passaggio: il materiale lasciato (con la foto), «non l'ha voluto» o «chiuso».
+ *                 Si può ripassare da ogni negozio dell'elenco, anche da chi ha già l'adesivo.
  */
 const allowed = (request) => isStickerSession(request) || isAdmin(request);
 
@@ -36,7 +37,7 @@ export async function GET(request) {
   const all = request.nextUrl.searchParams.get('all') === '1';
   if (all && !isAdmin(request)) return NextResponse.json({ code: 'forbidden' }, { status: 403 });
   // Chi monta vede il proprio elenco; le foto restano dell'admin, che le apre dal pannello.
-  const visible = all ? shops : shops.map((s) => (s.sticker ? { ...s, sticker: { ...s.sticker, photo: null } } : s));
+  const visible = all ? shops : shops.map((s) => ({ ...s, photos: s.photos.length, ...(s.sticker ? { sticker: { ...s.sticker, photo: null } } : {}) }));
   return NextResponse.json(
     { shops: visible, ...(all ? { stickers: [...stickers].sort((a, b) => b.createdAt.localeCompare(a.createdAt)) } : {}) },
     { headers: { 'Cache-Control': 'no-store' } }
@@ -65,11 +66,18 @@ export async function POST(request) {
   }
 
   const merchantId = String(form.get('merchantId') || '').trim();
-  const status = String(form.get('status') || '').trim();
+  let status = String(form.get('status') || '').trim();
+  let materials = cleanMaterials(form.getAll('materials').map(String));
+  // Un telefono con la pagina di prima del materiale manda ancora «montato»: sono adesivi.
+  if (status === 'montato') {
+    status = 'lasciato';
+    materials = ['adesivi'];
+  }
   const by = String(form.get('by') || '').trim().replace(/\s+/g, ' ');
 
   const errors = {};
-  if (!stickerStatus(status)) errors.status = 'invalid';
+  if (!stickerStatus(status) || stickerStatus(status).legacy) errors.status = 'invalid';
+  if (status === 'lasciato' && !materials.length) errors.materials = 'required';
   if (by.length < NAME_MIN || by.length > NAME_MAX) errors.by = 'invalid';
 
   // Solo un negozio dell'elenco degli adesivi: niente id inventati, niente negozi fuori circuito.
@@ -77,11 +85,12 @@ export async function POST(request) {
   const shop = shops.find((s) => s.id === merchantId);
   if (!shop) errors.merchantId = 'unknown';
 
-  // La foto serve solo per «montato», e lì è obbligatoria: è la prova dell'adesivo in vetrina.
+  // La foto va con il materiale: obbligatoria se ci sono gli adesivi (la prova in vetrina),
+  // facoltativa per il resto. Con «non l'ha voluto» o «chiuso» non si salva.
   let image = null;
   const file = form.get('photo');
   const hasFile = file && typeof file !== 'string' && file.size > 0;
-  if (status === 'montato') {
+  if (status === 'lasciato' && (hasFile || photoRequired(materials))) {
     if (!hasFile) errors.photo = 'required';
     else if (file.size > MAX_PHOTO_BYTES) errors.photo = 'too_large';
     else {
@@ -96,7 +105,7 @@ export async function POST(request) {
 
   const id = newStickerId();
   const photo = image ? await storeStickerPhoto(image, id) : null;
-  if (status === 'montato' && !photo) return NextResponse.json({ code: 'photo_not_saved' }, { status: 500 });
+  if (image && !photo) return NextResponse.json({ code: 'photo_not_saved' }, { status: 500 });
 
   const record = {
     id,
@@ -105,11 +114,17 @@ export async function POST(request) {
     merchantName: shop.name,
     group: shop.group,
     status,
+    ...(status === 'lasciato' ? { materials } : {}),
     by,
     ...(photo ? { photo } : {}),
   };
   await saveSticker(record);
-  console.info(`[adesivi] ${shop.name}: ${status} (${by}, ${id})`);
+  console.info(`[adesivi] ${shop.name}: ${status}${materials.length && status === 'lasciato' ? ` ${materials.join('+')}` : ''} (${by}, ${id})`);
 
-  return NextResponse.json({ ok: true, id, sticker: { id, status, at: record.createdAt, by, photo: null } });
+  return NextResponse.json({
+    ok: true,
+    id,
+    sticker: { id, status, at: record.createdAt, by, materials: record.materials ?? [], photo: null },
+    hasPhoto: Boolean(photo),
+  });
 }

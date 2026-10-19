@@ -1,8 +1,6 @@
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import SurveyForm from '@/components/SurveyForm';
 import { isAuthorized, placeholderPin } from '@/lib/server/rilevazioni-auth';
-import { isStickerSession } from '@/lib/server/adesivi-auth';
 
 /**
  * Area interna per i rilevatori sul campo. Non è linkata da nessuna parte del sito, è esclusa
@@ -22,8 +20,8 @@ export default function Page() {
   // pagina chiedeva il codice a ogni apertura anche con il cookie valido.
   const request = { cookies: cookies() };
   const locked = !isAuthorized(request);
-  // Chi è entrato col PIN degli adesivi torna alla sua area invece di vedere di nuovo il PIN.
-  if (locked && isStickerSession(request)) redirect('/rilevazioni/adesivi');
+  // Chi ha il cookie degli adesivi vede comunque la pagina del codice: con il PIN di un
+  // rilevatore apre il questionario, con quello degli adesivi torna alla sua area.
   return (
     <main className="min-h-screen">
       <SurveyForm locked={locked} pinHint={locked ? placeholderPin() : null} />

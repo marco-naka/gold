@@ -8,7 +8,7 @@ import { isStickerSession } from '@/lib/server/adesivi-auth';
  * (`RILEVAZIONI_ADESIVI_PIN`) o da admin. Non linkata, non indicizzata.
  */
 export const metadata = {
-  title: 'Adesivi in vetrina',
+  title: 'Adesivi e materiale',
   robots: { index: false, follow: false, nocache: true },
 };
 

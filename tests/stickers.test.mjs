@@ -120,3 +120,74 @@ test('il cookie degli adesivi non si firma con niente di indovinabile, e cambiar
   delete process.env.RILEVAZIONI_ADESIVI_PIN;
   delete process.env.DATA_DIR;
 });
+
+test('materiale: i vecchi «montato» valgono adesivi, e ogni ripasso si somma senza cancellare niente', async () => {
+  const { materialsOf } = await import('../lib/stickers.js');
+  const merchants = [m('a', 'A'), m('b', 'B'), m('c', 'C')];
+  const photo = (key) => ({ key, size: 1, contentType: 'image/jpeg', sha256: 'x' });
+  const stickers = [
+    // Prima delle caselle: «montato» con la foto.
+    { ...sticker('a', 'montato', '2026-10-12T09:00:00Z'), id: 'AD-2026-AAAAA1', photo: photo('adesivi/2026/AD-2026-AAAAA1.jpg') },
+    // Ripasso: flyer e locandine, con un'altra foto.
+    { ...sticker('a', 'lasciato', '2026-10-19T09:00:00Z'), id: 'AD-2026-AAAAA2', materials: ['locandine', 'flyer'], photo: photo('adesivi/2026/AD-2026-AAAAA2.jpg') },
+    // Ripasso ancora: chiuso. Non toglie niente.
+    { ...sticker('a', 'chiuso', '2026-10-20T09:00:00Z'), id: 'AD-2026-AAAAA3' },
+    { ...sticker('b', 'lasciato', '2026-10-19T10:00:00Z'), materials: ['rollup_a3'] },
+    { ...sticker('c', 'chiuso', '2026-10-19T10:00:00Z') },
+  ];
+  const shops = Object.fromEntries(stickerShops({ merchants, stickers }).map((s) => [s.id, s]));
+  assert.deepEqual(materialsOf({ status: 'montato' }), ['adesivi']);
+  assert.deepEqual(Object.keys(shops.a.left).sort(), ['adesivi', 'flyer', 'locandine']);
+  assert.equal(shops.a.left.adesivi, '2026-10-12T09:00:00Z');
+  assert.equal(shops.a.sticker.status, 'chiuso');
+  assert.equal(shops.a.passes, 3);
+  // Tutte e due le foto restano, dalla più recente.
+  assert.deepEqual(shops.a.photos.map((p) => p.key), ['adesivi/2026/AD-2026-AAAAA2.jpg', 'adesivi/2026/AD-2026-AAAAA1.jpg']);
+  assert.equal(isStickerDone(shops.a), true);
+  assert.equal(isStickerDone(shops.b), true);
+  assert.equal(isStickerDone(shops.c), false);
+});
+
+test('materiale: caselle pulite, e la foto è obbligatoria solo con gli adesivi', async () => {
+  const { cleanMaterials, photoRequired } = await import('../lib/stickers.js');
+  assert.deepEqual(cleanMaterials(['locandine', 'flyer', 'flyer', 'bandiera']), ['flyer', 'locandine']);
+  assert.deepEqual(cleanMaterials(undefined), []);
+  assert.equal(photoRequired(['flyer']), false);
+  assert.equal(photoRequired(['flyer', 'adesivi']), true);
+});
+
+test('le foto non si sovrascrivono e i passaggi si aggiungono soltanto', async () => {
+  const prev = process.env.DATA_DIR;
+  process.env.DATA_DIR = mkdtempSync(join(tmpdir(), 'adesivi-foto-'));
+  try {
+    // Import nuovo: il modulo legge DATA_DIR quando si carica.
+    const store = await import(`../lib/server/stickers.js?t=${Date.now()}`);
+    const kind = { ext: 'jpg', type: 'image/jpeg' };
+    const first = await store.storeStickerPhoto({ buffer: Buffer.from('prima'), kind }, 'AD-2026-FOTO01');
+    await assert.rejects(store.storeStickerPhoto({ buffer: Buffer.from('dopo'), kind }, 'AD-2026-FOTO01'));
+    assert.equal(readFileSync(store.stickerPhotoPath(first.key), 'utf8'), 'prima');
+    assert.deepEqual(await store.photoFiles(), [first.key]);
+
+    const rec = { id: 'AD-2026-PASS01', createdAt: '2026-10-19T09:00:00Z', merchantId: 'a', status: 'chiuso', by: 'Ale' };
+    await store.saveSticker(rec);
+    await assert.rejects(store.saveSticker(rec));
+    await store.saveSticker({ ...rec, id: 'AD-2026-PASS02' });
+    assert.deepEqual((await store.listStickers()).map((r) => r.id), ['AD-2026-PASS01', 'AD-2026-PASS02']);
+  } finally {
+    if (prev === undefined) delete process.env.DATA_DIR;
+    else process.env.DATA_DIR = prev;
+  }
+});
+
+test('la copia di sicurezza è uno ZIP valido', async () => {
+  const { crc32, zipStore } = await import('../lib/server/zip.js');
+  assert.equal(crc32(Buffer.from('123456789')), 0xcbf43926);
+  const zip = zipStore([
+    { name: 'adesivi.json', data: Buffer.from('{"stickers":[]}') },
+    { name: 'adesivi/2026/AD-2026-ABCDEF.jpg', data: Buffer.from([0xff, 0xd8, 0xff]) },
+  ]);
+  assert.equal(zip.readUInt32LE(0), 0x04034b50);
+  const end = zip.length - 22;
+  assert.equal(zip.readUInt32LE(end), 0x06054b50);
+  assert.equal(zip.readUInt16LE(end + 10), 2);
+});

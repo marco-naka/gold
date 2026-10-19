@@ -1,12 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ArrowLeft, Camera, Check, CircleSlash, DoorClosed, LocateFixed, MapPin, Navigation, Search, SortAsc, Store, UserRound } from 'lucide-react';
+import { ArrowLeft, Camera, Check, CircleSlash, DoorClosed, LocateFixed, MapPin, Navigation, Search, SortAsc, Square, SquareCheck, Store, UserRound } from 'lucide-react';
 import Button from './ui/Button';
 import { cn } from './ui/cn';
 import { CodeGate } from './SurveyForm';
 import { compressImage, inMemory } from '@/lib/compress-image';
-import { NAME_MAX, NAME_MIN, byDistance, formatDistance, isStickerDone, matchesShop, stickerStatus } from '@/lib/stickers';
+import { MATERIALS, NAME_MAX, NAME_MIN, byDistance, formatDistance, isStickerDone, matchesShop, materialLabel, photoRequired, stickerStatus } from '@/lib/stickers';
 import { TIME_ZONE } from '@/lib/time';
 
 // Non da `lib/merchants`: importarlo porterebbe nel telefono tutto l'elenco dei negozi.
@@ -18,8 +18,9 @@ const directionsUrl = (shop) =>
     : mapsUrl(shop);
 
 /*
- * Area di chi monta gli adesivi in vetrina. Tre cose sole: cercare il negozio, mandare la foto
- * della vetrina con l'adesivo, oppure dire che non l'hanno voluto o che era chiuso.
+ * Area di chi passa dai negozi con adesivi e materiale. Cercare il negozio, spuntare cosa si è
+ * lasciato (flyer, adesivi, rollup A3, locandine) con la foto, oppure dire che non l'hanno voluto
+ * o che era chiuso. Si ripassa anche da chi ha già l'adesivo: la scheda dice cosa ha già avuto.
  */
 
 const NAME_KEY = 'naka-adesivi-nome';
@@ -32,8 +33,9 @@ const ERRORS = {
   too_large: 'La foto è troppo pesante. Scattane un’altra.',
   photo_not_saved: 'La foto non è stata salvata. Riprova.',
   network: 'Invio non riuscito: controlla la connessione e riprova.',
+  materials: 'Spunta almeno una cosa che hai lasciato.',
   photo: {
-    required: 'Manca la foto della vetrina.',
+    required: 'Con gli adesivi serve la foto della vetrina.',
     too_large: 'La foto è troppo pesante. Scattane un’altra.',
     not_image: 'Il file non è una foto. Scatta o scegli una foto.',
   },
@@ -44,6 +46,7 @@ const ERRORS = {
 
 const when = (iso) =>
   new Intl.DateTimeFormat('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+const day = (iso) => new Intl.DateTimeFormat('it-CH', { timeZone: TIME_ZONE, day: '2-digit', month: '2-digit' }).format(new Date(iso));
 
 /** L'accesso: lo stesso PIN dei rilevatori, ma con il PIN degli adesivi si resta qui. */
 export function StickerGate() {
@@ -63,6 +66,8 @@ export default function StickerApp() {
   const [shops, setShops] = useState(null);
   const [loadError, setLoadError] = useState(false);
   const [tab, setTab] = useState('todo');
+  // Nei «Fatti», per ripassare: solo chi non ha ancora un certo materiale.
+  const [missing, setMissing] = useState(null);
   const [q, setQ] = useState('');
   const [limit, setLimit] = useState(PAGE);
   const [open, setOpen] = useState(null);
@@ -122,7 +127,7 @@ export default function StickerApp() {
   const done = useMemo(() => (shops ?? []).filter(isStickerDone), [shops]);
   const todoJoined = useMemo(() => todo.filter((s) => s.group === 'aderisce'), [todo]);
   const TABS = { todo, joined: todoJoined, done };
-  const filtered = (TABS[tab] ?? todo).filter((s) => matchesShop(s, q));
+  const filtered = (TABS[tab] ?? todo).filter((s) => matchesShop(s, q)).filter((s) => tab !== 'done' || !missing || !s.left?.[missing]);
   // Se il negozio cercato non è in questa scheda: dove sta, per portarci con un tocco.
   const elsewhere = q && !filtered.length ? (done.some((s) => matchesShop(s, q)) && tab !== 'done' ? 'done' : todo.some((s) => matchesShop(s, q)) && tab !== 'todo' ? 'todo' : null) : null;
   const list = sort === 'near' && position ? byDistance(filtered, position) : filtered;
@@ -138,7 +143,21 @@ export default function StickerApp() {
           shop={shop}
           name={name}
           onBack={() => setOpen(null)}
-          onSent={(sticker) => setShops((all) => all.map((s) => (s.id === shop.id ? { ...s, sticker } : s)))}
+          onSent={(sticker, hasPhoto) =>
+            setShops((all) =>
+              all.map((s) =>
+                s.id === shop.id
+                  ? {
+                      ...s,
+                      sticker,
+                      left: { ...s.left, ...Object.fromEntries((sticker.materials ?? []).map((id) => [id, sticker.at])) },
+                      passes: (s.passes ?? 0) + 1,
+                      photos: (s.photos ?? 0) + (hasPhoto ? 1 : 0),
+                    }
+                  : s,
+              ),
+            )
+          }
         />
       );
     }
@@ -148,7 +167,7 @@ export default function StickerApp() {
     <div className="mx-auto w-full max-w-xl px-4 pb-16 pt-6">
       <header className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-btc">Adesivi in vetrina</p>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-btc">Adesivi e materiale</p>
           <h1 className="mt-1 text-2xl font-bold">Negozi</h1>
         </div>
         <button
@@ -174,6 +193,7 @@ export default function StickerApp() {
             aria-selected={tab === id}
             onClick={() => {
               setTab(id);
+              setMissing(null);
               setLimit(PAGE);
             }}
             className={cn(
@@ -185,6 +205,31 @@ export default function StickerApp() {
           </button>
         ))}
       </div>
+
+      {tab === 'done' && (
+        <div className="mt-3">
+          <p className="text-xs text-muted">Per ripassare, mostra solo chi non ha ancora:</p>
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
+            {MATERIALS.map((m) => (
+              <button
+                key={m.id}
+                type="button"
+                aria-pressed={missing === m.id}
+                onClick={() => {
+                  setMissing((cur) => (cur === m.id ? null : m.id));
+                  setLimit(PAGE);
+                }}
+                className={cn(
+                  'rounded-full border px-3 py-1 text-xs font-semibold transition',
+                  missing === m.id ? 'border-btc/50 bg-btc/15 text-btc' : 'border-white/10 bg-white/5 text-muted hover:text-white',
+                )}
+              >
+                {m.label} ({done.filter((s) => !s.left?.[m.id]).length})
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="relative mt-3">
         <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
@@ -260,6 +305,7 @@ export default function StickerApp() {
                         {s.distance != null && <span className="text-xs font-semibold text-btc">{formatDistance(s.distance)}</span>}
                         <GroupBadge group={s.group} />
                         {s.sticker && <StatusBadge sticker={s.sticker} />}
+                        <LeftBadges left={s.left} />
                       </span>
                     </span>
                   </button>
@@ -305,7 +351,7 @@ function EmptyList({ q, tab, elsewhere, onSwitch }) {
       </p>
     );
   }
-  const empty = { todo: 'Tutto fatto.', joined: 'Nessun negozio aderente ancora da fare.', done: 'Ancora nessun negozio fatto.' };
+  const empty = { todo: 'Tutto fatto.', joined: 'Nessun negozio aderente ancora da fare.', done: 'Nessun negozio qui.' };
   return <p className="mt-6 text-sm text-muted">{q ? 'Nessun negozio con questo nome.' : empty[tab]}</p>;
 }
 
@@ -317,20 +363,31 @@ function GroupBadge({ group }) {
   );
 }
 
+/** L'ultimo passaggio. Il materiale di tutti i passaggi lo dice `LeftBadges`. */
 function StatusBadge({ sticker }) {
   const s = stickerStatus(sticker.status);
   if (!s) return null;
-  const tone =
-    sticker.status === 'montato'
-      ? 'border-btc/40 bg-btc/10 text-btc'
-      : sticker.status === 'chiuso'
-        ? 'border-amber-400/30 bg-amber-400/10 text-amber-300'
-        : 'border-red-400/30 bg-red-400/10 text-red-300';
+  if (sticker.status === 'lasciato' || sticker.status === 'montato') {
+    return (
+      <span className="rounded-full border border-white/15 bg-white/5 px-2 py-0.5 text-[11px] text-muted">Ultimo passaggio · {when(sticker.at)}</span>
+    );
+  }
+  const tone = sticker.status === 'chiuso' ? 'border-amber-400/30 bg-amber-400/10 text-amber-300' : 'border-red-400/30 bg-red-400/10 text-red-300';
   return (
     <span className={cn('rounded-full border px-2 py-0.5 text-[11px] font-semibold', tone)}>
       {s.label} · {when(sticker.at)}
     </span>
   );
+}
+
+/** Cosa ha già avuto il negozio, da tutti i passaggi. */
+function LeftBadges({ left }) {
+  const ids = MATERIALS.map((m) => m.id).filter((id) => left?.[id]);
+  return ids.map((id) => (
+    <span key={id} className="flex items-center gap-1 rounded-full border border-btc/40 bg-btc/10 px-2 py-0.5 text-[11px] font-semibold text-btc">
+      <Check className="h-3 w-3" /> {materialLabel(id)} · {day(left[id])}
+    </span>
+  ));
 }
 
 /* ------------------------------------------------------------ il nome, una volta */
@@ -342,9 +399,9 @@ function NameStep({ onSave }) {
   return (
     <div className="mx-auto w-full max-w-sm px-5 py-20">
       <div className="glass p-7">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-btc">Adesivi in vetrina</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-btc">Adesivi e materiale</p>
         <h1 className="mt-2 text-xl font-bold">Come ti chiami?</h1>
-        <p className="mt-2 text-sm text-muted">Lo chiediamo una volta sola: resta su questo telefono e finisce su ogni foto che invii.</p>
+        <p className="mt-2 text-sm text-muted">Lo chiediamo una volta sola: resta su questo telefono e finisce su ogni passaggio che invii.</p>
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -372,6 +429,7 @@ function NameStep({ onSave }) {
 /* ------------------------------------------------------------- il negozio */
 
 function ShopStep({ shop, name, onBack, onSent }) {
+  const [materials, setMaterials] = useState([]);
   const [photo, setPhoto] = useState(null);
   const [preview, setPreview] = useState(null);
   const [confirm, setConfirm] = useState(null);
@@ -401,13 +459,17 @@ function ShopStep({ shop, name, onBack, onSent }) {
       body.append('merchantId', shop.id);
       body.append('status', status);
       body.append('by', name);
-      if (status === 'montato') {
-        if (!photo) {
-          setError(ERRORS.photo.required);
-          setBusy(false);
+      if (status === 'lasciato') {
+        if (!materials.length) {
+          setError(ERRORS.materials);
           return;
         }
-        body.append('photo', await compressImage(photo));
+        if (photoRequired(materials) && !photo) {
+          setError(ERRORS.photo.required);
+          return;
+        }
+        for (const id of materials) body.append('materials', id);
+        if (photo) body.append('photo', await compressImage(photo));
       }
       let res;
       try {
@@ -419,8 +481,8 @@ function ShopStep({ shop, name, onBack, onSent }) {
       }
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
-        onSent(json.sticker);
-        setSent(status);
+        onSent(json.sticker, json.hasPhoto);
+        setSent(json.sticker);
       } else if (json.code === 'invalid_fields' && json.errors) {
         const [field, code] = Object.entries(json.errors)[0];
         const msg = ERRORS[field];
@@ -443,7 +505,8 @@ function ShopStep({ shop, name, onBack, onSent }) {
           </span>
           <h2 className="mt-4 text-xl font-bold">Inviato</h2>
           <p className="mt-2 text-sm text-muted">
-            {shop.name}: {stickerStatus(sent)?.label}.
+            {shop.name}:{' '}
+            {sent.status === 'lasciato' ? `lasciato ${sent.materials.map(materialLabel).join(', ')}` : stickerStatus(sent.status)?.label}.
           </p>
           <Button type="button" onClick={onBack} className="mt-6 w-full">
             Torna all’elenco
@@ -485,9 +548,59 @@ function ShopStep({ shop, name, onBack, onSent }) {
         </div>
       </div>
 
+      {shop.passes > 0 && (
+        <section className="mt-5 rounded-xl border border-white/10 bg-white/5 p-4 text-sm">
+          <p className="font-semibold">Ripasso</p>
+          {Object.keys(shop.left ?? {}).length ? (
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              <LeftBadges left={shop.left} />
+            </div>
+          ) : (
+            <p className="mt-1 text-muted">Finora nessun materiale lasciato.</p>
+          )}
+          <p className="mt-2 text-xs text-muted">
+            {shop.passes === 1 ? '1 passaggio' : `${shop.passes} passaggi`}
+            {shop.photos ? ` · ${shop.photos === 1 ? '1 foto salvata' : `${shop.photos} foto salvate`}` : ''}. Quello che invii ora si aggiunge: niente di prima si perde.
+          </p>
+        </section>
+      )}
+
       <section className="glass mt-6 p-5">
-        <h2 className="font-semibold">Foto della vetrina con l’adesivo</h2>
-        <p className="mt-1 text-sm text-muted">Da fuori, con l’adesivo ben visibile.</p>
+        <h2 className="font-semibold">Cosa hai lasciato?</h2>
+        <p className="mt-1 text-sm text-muted">Spunta tutto quello che lasci oggi.</p>
+        <div className="mt-3 grid grid-cols-2 gap-2">
+          {MATERIALS.map((m) => {
+            const on = materials.includes(m.id);
+            const Icon = on ? SquareCheck : Square;
+            return (
+              <button
+                key={m.id}
+                type="button"
+                role="checkbox"
+                aria-checked={on}
+                onClick={() => {
+                  setError(null);
+                  setMaterials((cur) => (on ? cur.filter((x) => x !== m.id) : [...cur, m.id]));
+                }}
+                className={cn(
+                  'flex items-center gap-2 rounded-xl border p-3 text-left text-sm font-semibold transition',
+                  on ? 'border-btc/50 bg-btc/15 text-btc' : 'border-white/10 bg-white/5 text-white hover:border-white/25',
+                )}
+              >
+                <Icon className="h-5 w-5 shrink-0" />
+                <span className="min-w-0">
+                  {m.label}
+                  {shop.left?.[m.id] && <span className="block text-[11px] font-normal text-muted">già lasciato il {day(shop.left[m.id])}</span>}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        <h3 className="mt-5 font-semibold">Foto della vetrina{photoRequired(materials) ? '' : ' (facoltativa)'}</h3>
+        <p className="mt-1 text-sm text-muted">
+          {photoRequired(materials) ? 'Con gli adesivi è obbligatoria: da fuori, con l’adesivo ben visibile.' : 'Da fuori, con il materiale visibile.'}
+        </p>
 
         <input ref={input} type="file" accept="image/*" onChange={pick} className="hidden" />
         {preview ? (
@@ -508,7 +621,13 @@ function ShopStep({ shop, name, onBack, onSent }) {
           </button>
         )}
 
-        <Button type="button" variant="btc" disabled={!photo || busy} onClick={() => send('montato')} className="mt-4 w-full">
+        <Button
+          type="button"
+          variant="btc"
+          disabled={!materials.length || (photoRequired(materials) && !photo) || busy}
+          onClick={() => send('lasciato')}
+          className="mt-4 w-full"
+        >
           {busy && !confirm ? 'Invio…' : 'Invia'}
         </Button>
       </section>
@@ -532,7 +651,7 @@ function ShopStep({ shop, name, onBack, onSent }) {
         ) : (
           <div className="mt-2 grid grid-cols-2 gap-2">
             <Button type="button" variant="ghost" disabled={busy} onClick={() => setConfirm('rifiutato')} className="flex items-center justify-center gap-1.5">
-              <CircleSlash className="h-4 w-4" /> Non ha voluto l’adesivo
+              <CircleSlash className="h-4 w-4" /> Non ha voluto il materiale
             </Button>
             <Button type="button" variant="ghost" disabled={busy} onClick={() => setConfirm('chiuso')} className="flex items-center justify-center gap-1.5">
               <DoorClosed className="h-4 w-4" /> Chiuso, da ripassare
